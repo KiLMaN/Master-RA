@@ -1,0 +1,5 @@
+#!/bin/sh
+
+#gcc -Wall -lwiringPi -lpthread -o test servo.c
+
+gcc -Wall -lwiringPi -lpthread -o stepper stepper.c
