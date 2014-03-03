@@ -7,6 +7,9 @@
 #include <gst/interfaces/xoverlay.h>
 #include <gst/video/video.h>
 #include <pthread.h>
+#include <glib.h>
+#include <glibconfig.h> // for guintptr
+
 
 GST_DEBUG_CATEGORY_STATIC (debug_category);
 #define GST_CAT_DEFAULT debug_category
@@ -283,7 +286,7 @@ static void gst_native_surface_init (JNIEnv *env, jobject thiz, jobject surface)
   if (data->native_window) {
     ANativeWindow_release (data->native_window);
     if (data->native_window == new_native_window) {
-      GST_DEBUG ("New native window is the same as the previous one", data->native_window);
+      GST_DEBUG ("New native window is the same as the previous one");
       if (data->video_sink) {
         gst_x_overlay_expose(GST_X_OVERLAY (data->video_sink));
         gst_x_overlay_expose(GST_X_OVERLAY (data->video_sink));

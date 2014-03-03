@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cdtprojectproperties>
+<section name="org.eclipse.cdt.internal.ui.wizards.settingswizards.IncludePaths">
+<language name="c,cpp">
+<includepath>${GSTREAMER_SDK_ROOT_ANDROID}\include\gstreamer-0.10\</includepath>
+<includepath>${NDK-PATH}\usr\include\</includepath>
+<includepath>${GSTREAMER_SDK_ROOT_ANDROID}\include\glib-2.0\</includepath>
+<includepath>${GSTREAMER_SDK_ROOT_ANDROID}\lib/glib-2.0\include/</includepath>
+
+</language>
+</section>
+<section name="org.eclipse.cdt.internal.ui.wizards.settingswizards.Macros">
+<language name="c,cpp">
+
+</language>
+</section>
+</cdtprojectproperties>
