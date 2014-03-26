@@ -136,7 +136,6 @@
 <vertex x="25.4" y="19.05"/>
 <vertex x="25.4" y="16.51"/>
 </polygon>
-<dimension x1="0" y1="32.375" x2="49.2" y2="32.375" x3="24.6" y3="39.37" textsize="1.778" layer="20"/>
 </plain>
 <libraries>
 <library name="LB1948MC">
