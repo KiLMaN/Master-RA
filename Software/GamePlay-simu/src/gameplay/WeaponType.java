@@ -1,5 +1,11 @@
 package gameplay;
 
-public class WeaponType {
+	public enum WeaponType {
+		  Fire,
+		  Water,
+		  Ice,
+		  Electric,
+		  Wood,
+		  Metal;	
+		}
 
-}

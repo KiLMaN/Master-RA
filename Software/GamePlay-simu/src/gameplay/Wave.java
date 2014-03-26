@@ -1,14 +1,22 @@
 package gameplay;
 
+import java.util.ArrayList;
+
 public class Wave {
 
 	private int numberWave;
 	private int totalEnemiesWave;
 	private int remainingEnemies;
 	
-	
-	
-	
+	public ArrayList<Enemies> currentEnemies;
+		
+	public Wave(int numberWave, int totalEnemiesWave, int remainingEnemies, ArrayList<Enemies> currentEnemies) {
+		super();
+		this.numberWave = numberWave;
+		this.totalEnemiesWave = totalEnemiesWave;
+		this.remainingEnemies = remainingEnemies;
+		this.currentEnemies = currentEnemies;
+	}
 	
 	public int getNumberWave() {
 		return numberWave;

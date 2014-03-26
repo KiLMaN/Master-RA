@@ -1,6 +1,6 @@
 package gameplay;
 
-public class Enemis {
+public class Enemies {
 
 	private int idEnemi;
 	private String nameEnemi;	
@@ -8,6 +8,13 @@ public class Enemis {
 	private boolean lifeEnemi;
 	
 	
+	public Enemies(int idEnemi, String nameEnemi, int lifePointsEnemis, boolean lifeEnemi) {
+		super();
+		this.idEnemi = idEnemi;
+		this.nameEnemi = nameEnemi;
+		this.lifePointsEnemis = lifePointsEnemis;
+		this.lifeEnemi = lifeEnemi;
+	}
 	public int getIdEnemi() {
 		return idEnemi;
 	}

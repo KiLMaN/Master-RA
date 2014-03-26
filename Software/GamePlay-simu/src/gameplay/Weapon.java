@@ -1,5 +1,7 @@
 package gameplay;
 
+import java.util.ArrayList;
+
 public class Weapon {
 
 	
@@ -12,7 +14,20 @@ public class Weapon {
 	private int timeToRecharge;
 	private boolean rechargeWeapon;
 	
+	public ArrayList<WeaponType> currentWeaponType;
 	
+	public Weapon(int idWeapon, String nameWeapon, int numberDamage, float range, int numberEnemiesKilled, int costWeapon, int timeToRecharge, boolean rechargeWeapon, ArrayList<WeaponType> currentWeaponType) {
+		super();
+		this.idWeapon = idWeapon;
+		this.nameWeapon = nameWeapon;
+		this.numberDamage = numberDamage;
+		this.range = range;
+		this.numberEnemiesKilled = numberEnemiesKilled;
+		this.costWeapon = costWeapon;
+		this.timeToRecharge = timeToRecharge;
+		this.rechargeWeapon = rechargeWeapon;
+		this.currentWeaponType = currentWeaponType;
+	}
 	public int getIdWeapon() {
 		return idWeapon;
 	}

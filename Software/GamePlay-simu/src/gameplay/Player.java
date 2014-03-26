@@ -10,6 +10,15 @@ public class Player {
 	
 	
 	
+	public Player(int idPlayer, String nickname, int lifesPlayer, int pointsPlayer, int numberEnemiesKilled) {
+		super();
+		this.idPlayer = idPlayer;
+		this.nickname = nickname;
+		this.lifesPlayer = lifesPlayer;
+		this.pointsPlayer = pointsPlayer;
+		this.numberEnemiesKilled = numberEnemiesKilled;
+	}
+	
 	public int getIdPlayer() {
 		return idPlayer;
 	}
