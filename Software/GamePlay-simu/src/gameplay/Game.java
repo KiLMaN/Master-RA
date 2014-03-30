@@ -11,17 +11,23 @@ public class Game {
 	private Wave currentWave;
 
 	public ArrayList<Tower> currentTower;
+	public ArrayList<Weapon> currentWeapon;
 	public ArrayList<Enemies> currentEnemies;
 
-	public Game(int numberEnemiesKilled, int numberWaveGame, Player currentPlayer, Wave currentWave,	ArrayList<Tower> currentTower, ArrayList<Enemies> currentEnemies) {
+	public Game(int numberEnemiesKilled, int numberWaveGame, Player currentPlayer, Wave currentWave, ArrayList<Tower> currentTower, ArrayList<Weapon> currentWeapon, ArrayList<Enemies> currentEnemies) {
 		super();
+		
+		
 		this.numberEnemiesKilled = numberEnemiesKilled;
 		this.numberWaveGame = numberWaveGame;
 		this.currentPlayer = currentPlayer;
 		this.currentWave = currentWave;
 		this.currentTower = currentTower;
+		this.currentWeapon = currentWeapon;
 		this.currentEnemies = currentEnemies;
 	}
+	
+
 
 	public Player getCurrentPlayer() {
 		return currentPlayer;
