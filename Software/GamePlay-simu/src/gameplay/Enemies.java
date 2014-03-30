@@ -2,43 +2,45 @@ package gameplay;
 
 public class Enemies {
 
-	private int idEnemi;
-	private String nameEnemi;	
-	private int lifePointsEnemis;
-	private boolean lifeEnemi;
-	
-	
-	public Enemies(int idEnemi, String nameEnemi, int lifePointsEnemis, boolean lifeEnemi) {
-		super();
-		this.idEnemi = idEnemi;
-		this.nameEnemi = nameEnemi;
-		this.lifePointsEnemis = lifePointsEnemis;
-		this.lifeEnemi = lifeEnemi;
+	// TODO : ADD CLASS OF ENEMIE (HEALTH, SPEED)
+	private Position position;
+	private int health;
+	private float speed;
+	private boolean spawned = false;
+
+	public Enemies(int health, int speed) {
+		this.health = health;
+		this.speed = speed;
 	}
-	public int getIdEnemi() {
-		return idEnemi;
+
+	public void spawn(Position position) {
+		this.spawned = true;
+		this.position = position;
+		// TODO Auto-generated method stub
 	}
-	public void setIdEnemi(int idEnemi) {
-		this.idEnemi = idEnemi;
+
+	public void move() {
+		if (!spawned)
+			return;
+		Position objectif = Game.currentGame.getObjectiveEnemie();
+		position.moveTo(objectif, speed);
 	}
-	public String getNameEnemi() {
-		return nameEnemi;
+
+	public Position getPosition() {
+		return this.position;
 	}
-	public void setNameEnemi(String nameEnemi) {
-		this.nameEnemi = nameEnemi;
+
+	/* Prendre des dommages par une arme, retourne true si mort */
+	public boolean hitBy(Weapon weapon) {
+		if (!spawned)
+			return false;
+
+		System.out.println("Tir avec arme : " + weapon.getNameWeapon());
+		this.health -= weapon.getNumberDamage();
+		if (this.health <= 0)
+			this.health = 0;
+
+		return this.health == 0;
 	}
-	public int getLifePointsEnemis() {
-		return lifePointsEnemis;
-	}
-	public void setLifePointsEnemis(int lifePointsEnemis) {
-		this.lifePointsEnemis = lifePointsEnemis;
-	}
-	public boolean isLifeEnemi() {
-		return lifeEnemi;
-	}
-	public void setLifeEnemi(boolean lifeEnemi) {
-		this.lifeEnemi = lifeEnemi;
-	}
-		
-		
+
 }

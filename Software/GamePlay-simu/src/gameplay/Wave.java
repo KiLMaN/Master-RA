@@ -4,36 +4,53 @@ import java.util.ArrayList;
 
 public class Wave {
 
-	private int numberWave;
-	private int totalEnemiesWave;
-	private int remainingEnemies;
-	
-	public ArrayList<Enemies> currentEnemies;
-		
-	public Wave(int numberWave, int totalEnemiesWave, int remainingEnemies, ArrayList<Enemies> currentEnemies) {
-		super();
-		this.numberWave = numberWave;
-		this.totalEnemiesWave = totalEnemiesWave;
-		this.remainingEnemies = remainingEnemies;
-		this.currentEnemies = currentEnemies;
+	private int cooldown_spawn;
+
+	private ArrayList<Enemies> enemiesToSpawn;
+	private ArrayList<Enemies> enemiesAlive;
+	private ArrayList<Enemies> enemiesDead;
+
+	public Wave(ArrayList<Enemies> enemiesToSpawn) {
+		this.enemiesToSpawn = enemiesToSpawn;
+		enemiesAlive = new ArrayList<Enemies>();
+		enemiesDead = new ArrayList<Enemies>();
+		cooldown_spawn = GameConfig.ENEMIE_SPAWN_COOLDOWN;
 	}
-	
-	public int getNumberWave() {
-		return numberWave;
+
+	public void decreaseSpawnCooldown() {
+		this.cooldown_spawn--;
 	}
-	public void setNumberWave(int numberWave) {
-		this.numberWave = numberWave;
+
+	public int getSpawnCooldown() {
+		return this.cooldown_spawn;
 	}
-	public int getTotalEnemiesWave() {
-		return totalEnemiesWave;
+
+	public void setSpawnCooldown(int cooldown) {
+		this.cooldown_spawn = cooldown;
 	}
-	public void setTotalEnemiesWave(int totalEnemiesWave) {
-		this.totalEnemiesWave = totalEnemiesWave;
+
+	public void spawnEnemies(int countSpawn, Position positionSpawn) {
+
+		while (countSpawn > 0 && enemiesToSpawn.size() > 0) {
+			Enemies enemie = enemiesToSpawn.remove(0);
+			enemie.spawn(positionSpawn.clone());
+
+			enemiesAlive.add(enemie);
+			countSpawn--;
+		}
 	}
-	public int getRemainingEnemies() {
-		return remainingEnemies;
+
+	public ArrayList<Enemies> getEnemiesLeftToSpawn() {
+		return enemiesToSpawn;
 	}
-	public void setRemainingEnemies(int remainingEnemies) {
-		this.remainingEnemies = remainingEnemies;
+
+	public ArrayList<Enemies> getEnemiesAlive() {
+		return enemiesAlive;
 	}
+
+	public void enemieKilled(Enemies target) {
+		enemiesAlive.remove(target);
+		enemiesDead.add(target);
+	}
+
 }

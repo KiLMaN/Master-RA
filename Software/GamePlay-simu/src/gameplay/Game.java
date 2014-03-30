@@ -4,30 +4,112 @@ import java.util.ArrayList;
 
 public class Game {
 
+	public static Game currentGame;
+
+	private Boolean playing = false;
+
+	private Boolean paused = false;
+
 	private int numberEnemiesKilled;
-	private int numberWaveGame;
 
 	private Player currentPlayer;
-	private Wave currentWave;
 
-	public ArrayList<Tower> currentTower;
-	public ArrayList<Weapon> currentWeapon;
-	public ArrayList<Enemies> currentEnemies;
+	private int currentWaveId = 0;
+	private ArrayList<Wave> listWaves;
 
-	public Game(int numberEnemiesKilled, int numberWaveGame, Player currentPlayer, Wave currentWave, ArrayList<Tower> currentTower, ArrayList<Weapon> currentWeapon, ArrayList<Enemies> currentEnemies) {
-		super();
-		
-		
-		this.numberEnemiesKilled = numberEnemiesKilled;
-		this.numberWaveGame = numberWaveGame;
-		this.currentPlayer = currentPlayer;
-		this.currentWave = currentWave;
-		this.currentTower = currentTower;
-		this.currentWeapon = currentWeapon;
-		this.currentEnemies = currentEnemies;
+	private ArrayList<Tower> listTowers;
+	private ArrayList<Weapon> listWeapon;
+	private ArrayList<Enemies> listEnemies;
+
+	private Position startPointEnemie;
+	private Position objectiveEnemie;
+
+	public Game() {
+		currentGame = this;
+		this.listTowers = GameConfig.defaultTower;
+		this.listWaves = GameConfig.defaultwaves;
+		this.startPointEnemie = GameConfig.startPoint;
+		this.objectiveEnemie = GameConfig.objective;
 	}
-	
 
+	/* Global Game Tick */
+	/* Toute la logique du jeu est inclue dans cette fonction */
+	public void gameTick() {
+		// TODO :
+		// Si la partie n'est pas en pause
+		if (!isPaused()) {
+			/* Recuperer la vague */
+			Wave currentWave = getCurrentWave();
+
+			ArrayList<Enemies> enemiesToSpawn = currentWave
+					.getEnemiesLeftToSpawn();
+			ArrayList<Enemies> enemiesAlive = currentWave.getEnemiesAlive();
+
+			if (enemiesToSpawn.size() > 0) {
+				currentWave.decreaseSpawnCooldown();
+				if (currentWave.getSpawnCooldown() == 0) {
+					// Generer des enemis (1)
+					// Et Supprimer 1 du compteur de la currentWave
+					currentWave.spawnEnemies(1, startPointEnemie);
+					// Reset du cooldown
+					currentWave
+							.setSpawnCooldown(GameConfig.ENEMIE_SPAWN_COOLDOWN);
+
+					System.out.println("Spawn d'un enemie @ "
+							+ startPointEnemie.toString());
+				}
+			} else {
+				// stop();
+			}
+
+			if (enemiesAlive.size() > 0) {
+				for (Enemies enemie : enemiesAlive) {
+					enemie.move();
+					//TODO : TEST SI ARRIVEE
+				}
+
+				for (Tower tower : listTowers) {
+					tower.tickReloadTimers();
+
+					Enemies target = tower.getTarget();
+					if (target == null) {
+						System.out.println("recherche d'un enemie");
+						tower.targetClosestEnemi(enemiesAlive);
+					}
+
+					
+					if (tower.targetedEnemieInRange()) {
+						
+						/*System.out.println("tir d'une tour @ "
+								+ tower.getPosition().toString()
+								+ " sur enemie @ "
+								+ target.getPosition().toString());*/
+
+						if (tower.shootTargetedEnemie()) {
+							System.out.println("Enemie Mort !");
+							currentWave.enemieKilled(target);
+						}
+					} else
+						tower.targetClosestEnemi(enemiesAlive);
+					// Tirer avec la tour
+
+				}
+			} else {
+				if (enemiesToSpawn.size() == 0) {
+					// Tous les enemie du terrain sont mort et il n'y a plus
+					// d'enemies a faire apparaitre
+					//setPaused(true);
+					System.out.println("Wave ended");
+					if(listWaves.size() > currentWaveId+1)
+						currentWaveId++;
+				}
+			}
+		}
+	}
+
+	public Wave getCurrentWave() {
+		return this.listWaves.get(currentWaveId);
+	}
 
 	public Player getCurrentPlayer() {
 		return currentPlayer;
@@ -35,14 +117,6 @@ public class Game {
 
 	public void setCurrentPlayer(Player currentPlayer) {
 		this.currentPlayer = currentPlayer;
-	}
-
-	public Wave getCurrentWave() {
-		return currentWave;
-	}
-
-	public void setCurrentWave(Wave currentWave) {
-		this.currentWave = currentWave;
 	}
 
 	public int getNumberEnemiesKilled() {
@@ -53,12 +127,36 @@ public class Game {
 		this.numberEnemiesKilled = numberEnemiesKilled;
 	}
 
-	public int getNumberWaveGame() {
-		return numberWaveGame;
+	public boolean isPaused() {
+		return this.paused;
 	}
 
-	public void setNumberWaveGame(int numberWaveGame) {
-		this.numberWaveGame = numberWaveGame;
+	public void setPaused(boolean paused) {
+		this.paused = paused;
+	}
+
+	public boolean isPlaying() {
+		return this.playing;
+	}
+
+	public void start() {
+		this.playing = true;
+	}
+
+	public void stop() {
+		this.playing = false;
+	}
+
+	public Position getObjectiveEnemie() {
+		return this.objectiveEnemie;
+	}
+	public Position getStartPointEnemie()
+	{
+		return startPointEnemie;
+	}
+
+	public ArrayList<Tower> getTowers() {
+		return listTowers;
 	}
 
 }
