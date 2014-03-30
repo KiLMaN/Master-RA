@@ -11,12 +11,17 @@ public class Weapon {
 	private float range;
 	private int numberEnemiesKilled;
 	private int costWeapon;
+	private int lockedCostWeapon;
 	private int timeToRecharge;
 	private boolean rechargeWeapon;
+	private boolean lockedWeapon;
 	
 	public ArrayList<WeaponType> currentWeaponType;
 	
-	public Weapon(int idWeapon, String nameWeapon, int numberDamage, float range, int numberEnemiesKilled, int costWeapon, int timeToRecharge, boolean rechargeWeapon, ArrayList<WeaponType> currentWeaponType) {
+	public Weapon(int idWeapon, String nameWeapon, int numberDamage,
+			float range, int numberEnemiesKilled, int costWeapon,
+			int lockedCostWeapon, int timeToRecharge, boolean rechargeWeapon,
+			boolean lockedWeapon, ArrayList<WeaponType> currentWeaponType) {
 		super();
 		this.idWeapon = idWeapon;
 		this.nameWeapon = nameWeapon;
@@ -24,8 +29,10 @@ public class Weapon {
 		this.range = range;
 		this.numberEnemiesKilled = numberEnemiesKilled;
 		this.costWeapon = costWeapon;
+		this.lockedCostWeapon = lockedCostWeapon;
 		this.timeToRecharge = timeToRecharge;
 		this.rechargeWeapon = rechargeWeapon;
+		this.lockedWeapon = lockedWeapon;
 		this.currentWeaponType = currentWeaponType;
 	}
 	public int getIdWeapon() {
@@ -75,5 +82,23 @@ public class Weapon {
 	}
 	public void setRechargeWeapon(boolean rechargeWeapon) {
 		this.rechargeWeapon = rechargeWeapon;
+	}
+	public int getLockedCostWeapon() {
+		return lockedCostWeapon;
+	}
+	public void setLockedCostWeapon(int lockedCostWeapon) {
+		this.lockedCostWeapon = lockedCostWeapon;
+	}
+	public boolean isLockedWeapon() {
+		return lockedWeapon;
+	}
+	public void setLockedWeapon(boolean lockedWeapon) {
+		this.lockedWeapon = lockedWeapon;
+	}
+	public ArrayList<WeaponType> getCurrentWeaponType() {
+		return currentWeaponType;
+	}
+	public void setCurrentWeaponType(ArrayList<WeaponType> currentWeaponType) {
+		this.currentWeaponType = currentWeaponType;
 	}
 }

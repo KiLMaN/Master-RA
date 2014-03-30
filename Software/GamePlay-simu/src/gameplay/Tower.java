@@ -6,26 +6,43 @@ public class Tower {
 
 	private int idTower;
 	private String nameTower;
-	private float positionXTower;
-	private float positionYTower;
 	private int levelTower;
 	private boolean free;
 	
-	private Weapon currentWeapon;
+	private int puissanceTour = 0;
 	
-	public ArrayList<Enemies> currentEnemies;
+	private ArrayList<Weapon> currentWeapon;
 	
+	private ArrayList<Enemies> currentEnemies;
 	
-	public Tower(int idTower, String nameTower, float positionXTower, float positionYTower, int levelTower, Weapon currentWeapon, boolean free, ArrayList<Enemies> currentEnemies) {
+		public Tower(int idTower, String nameTower, int levelTower, boolean free,
+			ArrayList<Weapon> currentWeapon, ArrayList<Enemies> currentEnemies) {
 		super();
 		this.idTower = idTower;
 		this.nameTower = nameTower;
-		this.positionXTower = positionXTower;
-		this.positionYTower = positionYTower;
 		this.levelTower = levelTower;
-		this.currentWeapon = currentWeapon;
 		this.free = free;
+		this.currentWeapon = currentWeapon;
 		this.currentEnemies = currentEnemies;
+	}
+
+	public void shoot(){
+		while(currentEnemies.size() != 0){
+			//choix arme la plus puissante(arme)
+			
+	
+	 	if( currentWeapon.get(puissanceTour).isRechargeWeapon() ==libre){
+	 		
+	  	choix ennemis dans champs d'action
+	   tant que (ennemis dans champs d'action et vie.ennemie!=0 et tpsrecharge==0
+	   	random (tire) //proba=0.75
+	   si ennemi touche alors 
+	   vie.ennemi=vie.ennemie-degat.arme
+	  
+	 	}
+	  
+	 
+		}
 	}
 
 	public boolean isFree() {
