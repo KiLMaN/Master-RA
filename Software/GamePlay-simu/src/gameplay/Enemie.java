@@ -1,6 +1,6 @@
 package gameplay;
 
-public class Enemies {
+public class Enemie {
 
 	// TODO : ADD CLASS OF ENEMIE (HEALTH, SPEED)
 	private Position position;
@@ -8,7 +8,7 @@ public class Enemies {
 	private float speed;
 	private boolean spawned = false;
 
-	public Enemies(int health, int speed) {
+	public Enemie(int health, int speed) {
 		this.health = health;
 		this.speed = speed;
 	}

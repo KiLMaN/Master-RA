@@ -7,7 +7,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import gameplay.Enemies;
+import gameplay.Enemie;
 import gameplay.Game;
 import gameplay.Tower;
 
@@ -64,7 +64,7 @@ public class GamePlaySimu {
 					g2.setStroke(new BasicStroke(1));
 				}
 				g.setColor(Color.RED);
-				for (Enemies enemie : game.getCurrentWave().getEnemiesAlive()) {
+				for (Enemie enemie : game.getCurrentWave().getEnemiesAlive()) {
 					g.drawOval((int) enemie.getPosition().getPositionX() - 3,
 							(int) enemie.getPosition().getPositionY() - 3, 6, 6);
 				}

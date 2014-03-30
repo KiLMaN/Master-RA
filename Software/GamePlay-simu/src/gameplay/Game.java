@@ -19,7 +19,7 @@ public class Game {
 
 	private ArrayList<Tower> listTowers;
 	private ArrayList<Weapon> listWeapon;
-	private ArrayList<Enemies> listEnemies;
+	private ArrayList<Enemie> listEnemies;
 
 	private Position startPointEnemie;
 	private Position objectiveEnemie;
@@ -41,9 +41,9 @@ public class Game {
 			/* Recuperer la vague */
 			Wave currentWave = getCurrentWave();
 
-			ArrayList<Enemies> enemiesToSpawn = currentWave
+			ArrayList<Enemie> enemiesToSpawn = currentWave
 					.getEnemiesLeftToSpawn();
-			ArrayList<Enemies> enemiesAlive = currentWave.getEnemiesAlive();
+			ArrayList<Enemie> enemiesAlive = currentWave.getEnemiesAlive();
 
 			if (enemiesToSpawn.size() > 0) {
 				currentWave.decreaseSpawnCooldown();
@@ -63,7 +63,7 @@ public class Game {
 			}
 
 			if (enemiesAlive.size() > 0) {
-				for (Enemies enemie : enemiesAlive) {
+				for (Enemie enemie : enemiesAlive) {
 					enemie.move();
 					//TODO : TEST SI ARRIVEE
 				}
@@ -71,7 +71,7 @@ public class Game {
 				for (Tower tower : listTowers) {
 					tower.tickReloadTimers();
 
-					Enemies target = tower.getTarget();
+					Enemie target = tower.getTarget();
 					if (target == null) {
 						System.out.println("recherche d'un enemie");
 						tower.targetClosestEnemi(enemiesAlive);

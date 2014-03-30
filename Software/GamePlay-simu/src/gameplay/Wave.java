@@ -6,14 +6,14 @@ public class Wave {
 
 	private int cooldown_spawn;
 
-	private ArrayList<Enemies> enemiesToSpawn;
-	private ArrayList<Enemies> enemiesAlive;
-	private ArrayList<Enemies> enemiesDead;
+	private ArrayList<Enemie> enemiesToSpawn;
+	private ArrayList<Enemie> enemiesAlive;
+	private ArrayList<Enemie> enemiesDead;
 
-	public Wave(ArrayList<Enemies> enemiesToSpawn) {
+	public Wave(ArrayList<Enemie> enemiesToSpawn) {
 		this.enemiesToSpawn = enemiesToSpawn;
-		enemiesAlive = new ArrayList<Enemies>();
-		enemiesDead = new ArrayList<Enemies>();
+		enemiesAlive = new ArrayList<Enemie>();
+		enemiesDead = new ArrayList<Enemie>();
 		cooldown_spawn = GameConfig.ENEMIE_SPAWN_COOLDOWN;
 	}
 
@@ -32,7 +32,7 @@ public class Wave {
 	public void spawnEnemies(int countSpawn, Position positionSpawn) {
 
 		while (countSpawn > 0 && enemiesToSpawn.size() > 0) {
-			Enemies enemie = enemiesToSpawn.remove(0);
+			Enemie enemie = enemiesToSpawn.remove(0);
 			enemie.spawn(positionSpawn.clone());
 
 			enemiesAlive.add(enemie);
@@ -40,15 +40,15 @@ public class Wave {
 		}
 	}
 
-	public ArrayList<Enemies> getEnemiesLeftToSpawn() {
+	public ArrayList<Enemie> getEnemiesLeftToSpawn() {
 		return enemiesToSpawn;
 	}
 
-	public ArrayList<Enemies> getEnemiesAlive() {
+	public ArrayList<Enemie> getEnemiesAlive() {
 		return enemiesAlive;
 	}
 
-	public void enemieKilled(Enemies target) {
+	public void enemieKilled(Enemie target) {
 		enemiesAlive.remove(target);
 		enemiesDead.add(target);
 	}

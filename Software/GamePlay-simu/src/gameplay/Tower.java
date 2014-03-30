@@ -10,7 +10,7 @@ public class Tower {
 	 */
 
 	private ArrayList<Weapon> weapons;
-	private Enemies target;
+	private Enemie target;
 	private Position position;
 	private boolean enemieEngaged = false;
 
@@ -62,7 +62,7 @@ public class Tower {
 	 * }
 	 */
 
-	public Enemies getTarget() {
+	public Enemie getTarget() {
 		return this.target;
 	}
 
@@ -70,15 +70,15 @@ public class Tower {
 		return this.position;
 	}
 
-	public void targetClosestEnemi(ArrayList<Enemies> enemiesAlive) {
+	public void targetClosestEnemi(ArrayList<Enemie> enemiesAlive) {
 		if (enemieEngaged) // Si on a déjà attaqué un enemie, on se verouille
 							// dessus
 			return;
 
-		Enemies nearest = null;
+		Enemie nearest = null;
 		float distanceClosest = 0;
 		float newDistance = 0;
-		for (Enemies enemie : enemiesAlive) {
+		for (Enemie enemie : enemiesAlive) {
 			if (nearest == null) {
 				nearest = enemie;
 				distanceClosest = nearest.getPosition().distanceTo(

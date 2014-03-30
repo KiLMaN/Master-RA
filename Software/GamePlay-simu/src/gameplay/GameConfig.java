@@ -15,7 +15,7 @@ public class GameConfig {
 	static {
 		defaultwaves = new ArrayList<Wave>();
 
-		ArrayList<Enemies> enemies = new ArrayList<Enemies>();
+		ArrayList<Enemie> enemies = new ArrayList<Enemie>();
 
 		int cpt = 10;
 		/*while (cpt > 0) {
@@ -38,11 +38,11 @@ public class GameConfig {
 		defaultwaves.add(wave);*/
 		
 		
-		enemies = new ArrayList<Enemies>();
+		enemies = new ArrayList<Enemie>();
 
 		cpt = 20;
 		while (cpt > 0) {
-			Enemies enemie = new Enemies(30, 2);
+			Enemie enemie = new Enemie(30, 2);
 			enemies.add(enemie);
 			cpt--;
 		}
