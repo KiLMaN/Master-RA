@@ -29,7 +29,7 @@ public class GamePlaySimu {
 		while (game.isPlaying() && !game.isPaused()) {
 			game.gameTick();
 			mainMap.repaint();
-			Thread.sleep(20);
+			Thread.sleep(100);
 		}
 	}
 

@@ -47,7 +47,7 @@ public class Enemie {
 		if (!spawned)
 			return false;
 
-		System.out.println("Tir avec arme : " + weapon.getNameWeapon());
+		// System.out.println("Tir avec arme : " + weapon.getNameWeapon());
 		this.health -= weapon.getNumberDamage();
 		if (this.health <= 0)
 			this.health = 0;

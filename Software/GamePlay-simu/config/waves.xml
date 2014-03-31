@@ -15,8 +15,8 @@
 		<enemie COUNT="10" SPEED="1" HEALTH="15" />
 	</wave>
 	<wave ID="4" RANDOM="1">
-		<enemie COUNT="50" SPEED="5" HEALTH="10" />
-		<enemie COUNT="50" SPEED="5" HEALTH="10" />
-		<enemie COUNT="50" SPEED="1" HEALTH="15" />
+		<enemie COUNT="50" SPEED="5" HEALTH="20" />
+		<enemie COUNT="50" SPEED="2" HEALTH="10" />
+		<enemie COUNT="50" SPEED="1" HEALTH="50" />
 	</wave>
 </waves>

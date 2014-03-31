@@ -22,7 +22,6 @@ public class Game {
 	private Position startPointEnemie;
 	private Position objectiveEnemie;
 
-
 	public Game() {
 		currentGame = this;
 		this.listTowers = GameConfig.defaultTower;
@@ -54,8 +53,10 @@ public class Game {
 					currentWave
 							.setSpawnCooldown(GameConfig.ENEMIE_SPAWN_COOLDOWN);
 
-					System.out.println("Spawn d'un enemie @ "
-							+ startPointEnemie.toString());
+					/*
+					 * System.out.println("Spawn d'un enemie @ " +
+					 * startPointEnemie.toString());
+					 */
 				}
 			} else {
 				// stop();
@@ -64,7 +65,7 @@ public class Game {
 			if (enemiesAlive.size() > 0) {
 				for (Enemie enemie : enemiesAlive) {
 					enemie.move();
-					//TODO : TEST SI ARRIVEE
+					// TODO : TEST SI ARRIVEE
 				}
 
 				for (Tower tower : listTowers) {
@@ -72,21 +73,21 @@ public class Game {
 
 					Enemie target = tower.getTarget();
 					if (target == null || !target.isAlive()) {
-						System.out.println("recherche d'un enemie");
+						// System.out.println("recherche d'un enemie");
 						tower.targetClosestEnemi(enemiesAlive);
 						target = tower.getTarget();
 					}
 
-					
 					if (tower.targetedEnemieInRange()) {
-						
-						/*System.out.println("tir d'une tour @ "
-								+ tower.getPosition().toString()
-								+ " sur enemie @ "
-								+ target.getPosition().toString());*/
+
+						/*
+						 * System.out.println("tir d'une tour @ " +
+						 * tower.getPosition().toString() + " sur enemie @ " +
+						 * target.getPosition().toString());
+						 */
 
 						if (tower.shootTargetedEnemie()) {
-							System.out.println("Enemie Mort !");
+							/* System.out.println("Enemie Mort !"); */
 							currentWave.enemieKilled(target);
 						}
 					} else
@@ -98,10 +99,12 @@ public class Game {
 				if (enemiesToSpawn.size() == 0) {
 					// Tous les enemie du terrain sont mort et il n'y a plus
 					// d'enemies a faire apparaitre
-					//setPaused(true);
-					System.out.println("Wave ended");
-					if(listWaves.size() > currentWaveId+1)
+					// setPaused(true);
+					/* System.out.println("Wave ended"); */
+					if (listWaves.size() > currentWaveId + 1)
 						currentWaveId++;
+					else
+						stop();
 				}
 			}
 		}
@@ -150,8 +153,8 @@ public class Game {
 	public Position getObjectiveEnemie() {
 		return this.objectiveEnemie;
 	}
-	public Position getStartPointEnemie()
-	{
+
+	public Position getStartPointEnemie() {
 		return startPointEnemie;
 	}
 
