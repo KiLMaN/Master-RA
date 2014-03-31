@@ -4,6 +4,7 @@ public class Enemie {
 
 	// TODO : ADD CLASS OF ENEMIE (HEALTH, SPEED)
 	private Position position;
+	private Path path;
 	private int health;
 	private float speed;
 	private boolean spawned = false;
@@ -11,6 +12,10 @@ public class Enemie {
 	public Enemie(int health, int speed) {
 		this.health = health;
 		this.speed = speed;
+	}
+
+	public void setPath(Path path) {
+		this.path = path;
 	}
 
 	public void spawn(Position position) {
@@ -22,8 +27,15 @@ public class Enemie {
 	public void move() {
 		if (!spawned)
 			return;
-		Position objectif = Game.currentGame.getObjectiveEnemie();
-		position.moveTo(objectif, speed);
+		if (path == null)
+			return;
+		// Position objectif = Game.currentGame.getObjectiveEnemie();
+		Position objectif = path.getNextPoint();
+		if (objectif != null) {
+			position.moveTo(objectif, speed);
+			if (path.isCloseToPath(position))
+				path.removeFirstPoint();
+		}
 	}
 
 	public Position getPosition() {
@@ -43,4 +55,7 @@ public class Enemie {
 		return this.health == 0;
 	}
 
+	public boolean isAlive() {
+		return this.health > 0;
+	}
 }

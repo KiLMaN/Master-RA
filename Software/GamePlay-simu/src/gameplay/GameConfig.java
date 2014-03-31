@@ -3,7 +3,8 @@ package gameplay;
 import java.util.ArrayList;
 
 public class GameConfig {
-	public static int ENEMIE_SPAWN_COOLDOWN = 10; /* 10 cycles entre apparitions */
+	public static int ENEMIE_SPAWN_COOLDOWN = 1; /* 10 cycles entre apparitions */
+	public static float PATH_THRESHOLD = 2 ; /* Seuil pour passer au point suivant */
 
 	public static ArrayList<Wave> defaultwaves;
 
@@ -11,8 +12,15 @@ public class GameConfig {
 	public static Position objective = new Position(100, 100);
 
 	public static ArrayList<Tower> defaultTower;
+	public static Path defaulPath;
 
 	static {
+		defaulPath = new Path();
+		defaulPath.addPoint(new Position(10, 50));
+		defaulPath.addPoint(new Position(40, 50));
+		defaulPath.addPoint(new Position(40, 20));
+		defaulPath.addPoint(new Position(100, 100));
+		
 		defaultwaves = new ArrayList<Wave>();
 
 		ArrayList<Enemie> enemies = new ArrayList<Enemie>();
@@ -40,7 +48,7 @@ public class GameConfig {
 		
 		enemies = new ArrayList<Enemie>();
 
-		cpt = 20;
+		cpt = 100;
 		while (cpt > 0) {
 			Enemie enemie = new Enemie(30, 2);
 			enemies.add(enemie);
@@ -52,7 +60,7 @@ public class GameConfig {
 
 	static {
 
-		Weapon weapon = new Weapon(1, "Lance Roquette", 2, 10, 0, 4,
+		Weapon weapon = new Weapon(1, "Lance Roquette", 20, 20, 0, 1,
 				WeaponType.Wood, 0, false);
 		Weapon weapon2 = new Weapon(2, "coup de point ", 5, 2, 0, 2,
 				WeaponType.Wood, 0, false);

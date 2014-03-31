@@ -1,9 +1,16 @@
 package gameplay;
 
+import tools.MathUtils;
+
 public class Position {
 
 	private float positionX;
 	private float positionY;
+
+	public Position() {
+		this.positionX = 0;
+		this.positionY = 0;
+	}
 
 	public Position(Position position) {
 		this.positionX = position.getPositionX();
@@ -46,6 +53,7 @@ public class Position {
 		float deltaX = this.positionX - objectif.getPositionX();
 		float deltaY = this.positionY - objectif.getPositionY();
 
+		// TODO : PATHFINDING FOLLOWER
 		if (Math.abs(deltaX) > Math.abs(deltaY)) {
 			this.positionX += (deltaX < 0) ? distance : -distance;
 		} else if (Math.abs(deltaX) < Math.abs(deltaY)) {

@@ -1,5 +1,6 @@
 package gameplay;
 
+import java.awt.Component;
 import java.util.ArrayList;
 
 public class Wave {
@@ -9,7 +10,7 @@ public class Wave {
 	private ArrayList<Enemie> enemiesToSpawn;
 	private ArrayList<Enemie> enemiesAlive;
 	private ArrayList<Enemie> enemiesDead;
-
+	public int spawnCounter = 0;
 	public Wave(ArrayList<Enemie> enemiesToSpawn) {
 		this.enemiesToSpawn = enemiesToSpawn;
 		enemiesAlive = new ArrayList<Enemie>();
@@ -34,9 +35,10 @@ public class Wave {
 		while (countSpawn > 0 && enemiesToSpawn.size() > 0) {
 			Enemie enemie = enemiesToSpawn.remove(0);
 			enemie.spawn(positionSpawn.clone());
-
+			enemie.setPath(GameConfig.defaulPath.clone());
 			enemiesAlive.add(enemie);
 			countSpawn--;
+			spawnCounter++;
 		}
 	}
 
@@ -49,8 +51,15 @@ public class Wave {
 	}
 
 	public void enemieKilled(Enemie target) {
-		enemiesAlive.remove(target);
-		enemiesDead.add(target);
+		if(!enemiesAlive.remove(target))
+		{
+			System.err.println("Error removing !");
+		}
+			enemiesDead.add(target);
+	}
+
+	public ArrayList<Enemie> getEnemiesDead() {
+		return enemiesDead;
 	}
 
 }

@@ -18,11 +18,10 @@ public class Game {
 	private ArrayList<Wave> listWaves;
 
 	private ArrayList<Tower> listTowers;
-	private ArrayList<Weapon> listWeapon;
-	private ArrayList<Enemie> listEnemies;
 
 	private Position startPointEnemie;
 	private Position objectiveEnemie;
+
 
 	public Game() {
 		currentGame = this;
@@ -50,7 +49,7 @@ public class Game {
 				if (currentWave.getSpawnCooldown() == 0) {
 					// Generer des enemis (1)
 					// Et Supprimer 1 du compteur de la currentWave
-					currentWave.spawnEnemies(1, startPointEnemie);
+					currentWave.spawnEnemies(2, startPointEnemie);
 					// Reset du cooldown
 					currentWave
 							.setSpawnCooldown(GameConfig.ENEMIE_SPAWN_COOLDOWN);
@@ -72,9 +71,10 @@ public class Game {
 					tower.tickReloadTimers();
 
 					Enemie target = tower.getTarget();
-					if (target == null) {
+					if (target == null || !target.isAlive()) {
 						System.out.println("recherche d'un enemie");
 						tower.targetClosestEnemi(enemiesAlive);
+						target = tower.getTarget();
 					}
 
 					

@@ -17,50 +17,7 @@ public class Tower {
 	public Tower(Position position, ArrayList<Weapon> weapons) {
 		this.position = position;
 		this.weapons = weapons;
-
 	}
-
-	/*
-	 * public void shoot(){ while(currentEnemies.size() != 0){ //choix arme la
-	 * plus puissante(arme)
-	 * 
-	 * 
-	 * if( currentWeapon.get(puissanceTour).isRechargeWeapon() ==libre){
-	 * 
-	 * choix ennemis dans champs d'action tant que (ennemis dans champs d'action
-	 * et vie.ennemie!=0 et tpsrecharge==0 random (tire) //proba=0.75 si ennemi
-	 * touche alors vie.ennemi=vie.ennemie-degat.arme
-	 * 
-	 * }
-	 * 
-	 * 
-	 * } }
-	 */
-
-	/*
-	 * public boolean isFree() { return free; }
-	 * 
-	 * public void setFree(boolean free) { this.free = free; }
-	 * 
-	 * public ArrayList<Enemies> getCurrentEnemies() { return currentEnemies; }
-	 * 
-	 * public void setCurrentEnemies(ArrayList<Enemies> currentEnemies) {
-	 * this.currentEnemies = currentEnemies; }
-	 * 
-	 * public int getIdTower() { return idTower; }
-	 * 
-	 * public void setIdTower(int idTower) { this.idTower = idTower; }
-	 * 
-	 * public String getNameTower() { return nameTower; }
-	 * 
-	 * public void setNameTower(String nameTower) { this.nameTower = nameTower;
-	 * }
-	 * 
-	 * public int getLevelTower() { return levelTower; }
-	 * 
-	 * public void setLevelTower(int levelTower) { this.levelTower = levelTower;
-	 * }
-	 */
 
 	public Enemie getTarget() {
 		return this.target;
@@ -79,15 +36,17 @@ public class Tower {
 		float distanceClosest = 0;
 		float newDistance = 0;
 		for (Enemie enemie : enemiesAlive) {
-			if (nearest == null) {
-				nearest = enemie;
-				distanceClosest = nearest.getPosition().distanceTo(
-						this.getPosition());
-			} else {
-				if (distanceClosest > (newDistance = enemie.getPosition()
-						.distanceTo(this.getPosition()))) {
+			if (enemie.isAlive()) {
+				if (nearest == null) {
 					nearest = enemie;
-					distanceClosest = newDistance;
+					distanceClosest = nearest.getPosition().distanceTo(
+							this.getPosition());
+				} else {
+					if (distanceClosest > (newDistance = enemie.getPosition()
+							.distanceTo(this.getPosition()))) {
+						nearest = enemie;
+						distanceClosest = newDistance;
+					}
 				}
 			}
 		}
@@ -135,8 +94,8 @@ public class Tower {
 		if (best != null) {
 			boolean dead = target.hitBy(best);
 			best.startReload();
-			if (dead)
-				target = null;
+			/*if (dead)
+				target = null;*/
 
 			return dead;
 		} else {
