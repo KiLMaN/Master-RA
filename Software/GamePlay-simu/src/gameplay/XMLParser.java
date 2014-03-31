@@ -13,8 +13,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import tools.MessageBox;
-
 public class XMLParser {
 
 	private String fileName = "default.xml";
@@ -30,6 +28,7 @@ public class XMLParser {
 	public void loadFile() {
 		try {
 			File fXmlFile = new File(fileName);
+
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory
 					.newInstance();
 			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
@@ -40,11 +39,11 @@ public class XMLParser {
 					+ xmlDoc.getDocumentElement().getNodeName());
 			this.loaded = true;
 		} catch (IOException ioExt) {
-			MessageBox.ShowError(ioExt);
+			System.err.println(ioExt);
 		} catch (ParserConfigurationException e) {
-			MessageBox.ShowError(e);
+			System.err.println(e);
 		} catch (SAXException e) {
-			MessageBox.ShowError(e);
+			System.err.println(e);
 		}
 	}
 

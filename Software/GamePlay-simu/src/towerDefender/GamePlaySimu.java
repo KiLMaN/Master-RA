@@ -22,7 +22,6 @@ public class GamePlaySimu {
 	static Game game = new Game();
 
 	public static void main(String[] args) throws InterruptedException {
-		// TODO Auto-generated method stub
 		initWindow();
 		System.out.println("Starting Simulation GamePlay");
 		game.start();

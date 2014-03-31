@@ -48,23 +48,12 @@ public class Position {
 	}
 
 	public void moveTo(Position objectif, float distance) {
-		// TODO : PATHFINDING FOLLOWER
-
 		double deltaX = this.positionX - objectif.getPositionX();
 		double deltaY = this.positionY - objectif.getPositionY();
 		double delta = Math.sqrt((deltaX * deltaX) + (deltaY * deltaY));
 
 		this.positionX -= (distance * deltaX) / delta;
-
 		this.positionY -= (distance * deltaY) / delta;
-
-		/*
-		 * if (Math.abs(deltaX) > Math.abs(deltaY)) { this.positionX += (deltaX
-		 * < 0) ? distance : -distance; } else if (Math.abs(deltaX) <
-		 * Math.abs(deltaY)) { this.positionY += (deltaY < 0) ? distance :
-		 * -distance; } else { if (deltaX == 0) return; else this.positionX +=
-		 * (deltaX < 0) ? distance : -distance; }
-		 */
 	}
 
 	public Position clone() {
