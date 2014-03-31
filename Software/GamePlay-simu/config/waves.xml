@@ -1,0 +1,22 @@
+<waves>
+	<wave ID="1">
+		<enemie COUNT="5" SPEED="5" HEALTH="5" />
+		<enemie COUNT="5" SPEED="2" HEALTH="10" />
+		<enemie COUNT="5" SPEED="1" HEALTH="15" />
+	</wave>
+	<wave ID="2" RANDOM="1">
+		<enemie COUNT="10" SPEED="2" HEALTH="5" />
+		<enemie COUNT="10" SPEED="2" HEALTH="10" />
+		<enemie COUNT="10" SPEED="1" HEALTH="15" />
+	</wave>
+	<wave ID="3" RANDOM="1">
+		<enemie COUNT="10" SPEED="2" HEALTH="5" />
+		<enemie COUNT="10" SPEED="2" HEALTH="10" />
+		<enemie COUNT="10" SPEED="1" HEALTH="15" />
+	</wave>
+	<wave ID="4" RANDOM="1">
+		<enemie COUNT="50" SPEED="5" HEALTH="10" />
+		<enemie COUNT="50" SPEED="5" HEALTH="10" />
+		<enemie COUNT="50" SPEED="1" HEALTH="15" />
+	</wave>
+</waves>

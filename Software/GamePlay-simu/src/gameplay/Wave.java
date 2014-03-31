@@ -1,7 +1,8 @@
 package gameplay;
 
-import java.awt.Component;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Random;
 
 public class Wave {
 
@@ -11,6 +12,7 @@ public class Wave {
 	private ArrayList<Enemie> enemiesAlive;
 	private ArrayList<Enemie> enemiesDead;
 	public int spawnCounter = 0;
+
 	public Wave(ArrayList<Enemie> enemiesToSpawn) {
 		this.enemiesToSpawn = enemiesToSpawn;
 		enemiesAlive = new ArrayList<Enemie>();
@@ -51,15 +53,21 @@ public class Wave {
 	}
 
 	public void enemieKilled(Enemie target) {
-		if(!enemiesAlive.remove(target))
-		{
+		if (!enemiesAlive.remove(target)) {
 			System.err.println("Error removing !");
-		}
+		} else {
 			enemiesDead.add(target);
+		}
+
 	}
 
 	public ArrayList<Enemie> getEnemiesDead() {
 		return enemiesDead;
+	}
+
+	public void randomiseSpawn() {
+		long seed = System.nanoTime();
+		Collections.shuffle(enemiesToSpawn, new Random(seed));
 	}
 
 }

@@ -49,7 +49,7 @@ public class Game {
 				if (currentWave.getSpawnCooldown() == 0) {
 					// Generer des enemis (1)
 					// Et Supprimer 1 du compteur de la currentWave
-					currentWave.spawnEnemies(2, startPointEnemie);
+					currentWave.spawnEnemies(1, startPointEnemie);
 					// Reset du cooldown
 					currentWave
 							.setSpawnCooldown(GameConfig.ENEMIE_SPAWN_COOLDOWN);

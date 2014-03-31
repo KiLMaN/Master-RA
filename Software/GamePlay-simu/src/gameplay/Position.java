@@ -1,7 +1,5 @@
 package gameplay;
 
-import tools.MathUtils;
-
 public class Position {
 
 	private float positionX;

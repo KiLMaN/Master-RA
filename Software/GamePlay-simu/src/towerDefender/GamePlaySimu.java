@@ -1,5 +1,11 @@
 package towerDefender;
 
+import gameplay.Enemie;
+import gameplay.Game;
+import gameplay.GameConfig;
+import gameplay.Position;
+import gameplay.Tower;
+
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -9,11 +15,6 @@ import java.util.Iterator;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import gameplay.Enemie;
-import gameplay.Game;
-import gameplay.GameConfig;
-import gameplay.Position;
-import gameplay.Tower;
 
 public class GamePlaySimu {
 
@@ -28,7 +29,7 @@ public class GamePlaySimu {
 		while (game.isPlaying() && !game.isPaused()) {
 			game.gameTick();
 			mainMap.repaint();
-			Thread.sleep(100);
+			Thread.sleep(20);
 		}
 	}
 
@@ -47,11 +48,18 @@ public class GamePlaySimu {
 			protected void paintComponent(Graphics g) {
 				super.paintComponent(g);
 
-				
-				g.drawString("Alives : "+game.getCurrentWave().getEnemiesAlive().size(),150,150);
-				g.drawString("Left : "+game.getCurrentWave().getEnemiesLeftToSpawn().size(),150,160);
-				g.drawString("Dead : "+game.getCurrentWave().getEnemiesDead().size(),150,170);
-				g.drawString("SPC : "+game.getCurrentWave().spawnCounter,150,180);
+				g.drawString("Alives : "
+						+ game.getCurrentWave().getEnemiesAlive().size(), 150,
+						150);
+				g.drawString("Left : "
+						+ game.getCurrentWave().getEnemiesLeftToSpawn().size(),
+						150, 160);
+				g.drawString("Dead : "
+						+ game.getCurrentWave().getEnemiesDead().size(), 150,
+						170);
+				g.drawString("SPC : " + game.getCurrentWave().spawnCounter,
+						150, 180);
+
 				Iterator<Position> ite = GameConfig.defaulPath.getPath()
 						.iterator();
 				Position old = ite.next();
@@ -74,7 +82,7 @@ public class GamePlaySimu {
 					else
 						g.setColor(Color.CYAN);
 					Graphics2D g2 = (Graphics2D) g;
-					g2.setStroke(new BasicStroke(3));
+					g2.setStroke(new BasicStroke(1));
 					if (tower.getTarget() != null) {
 						if (tower.getTarget().isAlive()) {
 
