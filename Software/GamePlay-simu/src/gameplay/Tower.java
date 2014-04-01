@@ -14,6 +14,11 @@ public class Tower {
 	private Position position;
 	private boolean enemieEngaged = false;
 
+	public Tower(Position position) {
+		this.position = position;
+		this.weapons = new ArrayList<Weapon>();
+	}
+
 	public Tower(Position position, ArrayList<Weapon> weapons) {
 		this.position = position;
 		this.weapons = weapons;
@@ -94,8 +99,9 @@ public class Tower {
 		if (best != null) {
 			boolean dead = target.hitBy(best);
 			best.startReload();
-			/*if (dead)
-				target = null;*/
+			/*
+			 * if (dead) target = null;
+			 */
 
 			return dead;
 		} else {
@@ -111,5 +117,10 @@ public class Tower {
 				}
 			}
 		}
+	}
+
+	public void setWeapons(ArrayList<Weapon> weapons) {
+		this.weapons = weapons;
+
 	}
 }

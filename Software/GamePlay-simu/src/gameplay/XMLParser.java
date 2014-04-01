@@ -1,7 +1,7 @@
 package gameplay;
 
-import java.io.File;
 import java.io.IOException;
+import java.util.regex.Pattern;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -13,31 +13,31 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import comon.FileReaderInterface;
+
 public class XMLParser {
 
 	private String fileName = "default.xml";
-	private boolean loaded = false;
 	private Document xmlDoc = null;
 
 	public XMLParser(String fileName) {
 		this.fileName = fileName;
-		this.loaded = false;
 		this.xmlDoc = null;
 	}
 
-	public void loadFile() {
+	public void loadFile(FileReaderInterface reader) {
 		try {
-			File fXmlFile = new File(fileName);
+			// File fXmlFile = new File(fileName);
+			reader.setFile(fileName);
 
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory
 					.newInstance();
 			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-			xmlDoc = dBuilder.parse(fXmlFile);
+			xmlDoc = dBuilder.parse(reader.getStream());
 			xmlDoc.getDocumentElement().normalize();
 
 			System.out.println("Root element :"
 					+ xmlDoc.getDocumentElement().getNodeName());
-			this.loaded = true;
 		} catch (IOException ioExt) {
 			System.err.println(ioExt);
 		} catch (ParserConfigurationException e) {
@@ -59,7 +59,11 @@ public class XMLParser {
 		return getNode(name, 0);
 	}
 
-	public Node getSubNode(Node parent, String name, int index) {
+	public NodeList getNodes(String name) {
+		return getSubNodes(xmlDoc, name);
+	}
+
+	public static Node getSubNode(Node parent, String name, int index) {
 		NodeList list;
 		if ((list = getSubNodes(parent, name)) != null)
 			return list.item(index);
@@ -67,21 +71,64 @@ public class XMLParser {
 			return null;
 	}
 
-	public Node getSubNode(Node parent, String name) {
+	public static Node getSubNode(Node parent, String name) {
 		return getSubNode(parent, name, 0);
 	}
 
-	public NodeList getSubNodes(Node parent, String name) {
-		if (this.loaded)
-			if (parent instanceof Element)
-				return ((Element) parent).getElementsByTagName(name);
-			else
-				return null;
+	public static NodeList getSubNodes(Node parent, String name) {
+		if (parent instanceof Element)
+			return ((Element) parent).getElementsByTagName(name);
 		else
 			return null;
+
 	}
 
-	public NodeList getNodes(String name) {
-		return getSubNodes(xmlDoc, name);
+	public static int getIntAttribute(Node Parent, String elementName) {
+		Node data = Parent.getAttributes().getNamedItem(elementName);
+		if (data != null) {
+			String str = data.getTextContent();
+			try {
+				int ret = Integer.parseInt(str);
+				return ret;
+			} catch (NumberFormatException e) {
+				return 0;
+			}
+		} else
+			return 0;
+	}
+
+	public static float getFloatAttribute(Node Parent, String elementName) {
+		Node data = Parent.getAttributes().getNamedItem(elementName);
+		if (data != null) {
+			String str = data.getTextContent();
+			try {
+				float ret = Float.parseFloat(str);
+				return ret;
+			} catch (NumberFormatException e) {
+				return 0;
+			}
+		} else
+			return 0;
+	}
+
+	public static String getStringAttribute(Node Parent, String elementName) {
+		Node data = Parent.getAttributes().getNamedItem(elementName);
+		if (data != null) {
+			String str = data.getTextContent();
+			return str;
+		} else
+			return "";
+	}
+
+	public static boolean getBooleanAttribute(Node Parent, String elementName) {
+		final Pattern patternBool = Pattern.compile(Pattern.quote("1|true"),
+				Pattern.CASE_INSENSITIVE);
+
+		Node data = Parent.getAttributes().getNamedItem(elementName);
+		if (data != null) {
+			String str = data.getTextContent();
+			return patternBool.matcher(str).find();
+		} else
+			return false;
 	}
 }

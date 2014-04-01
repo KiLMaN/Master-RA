@@ -32,12 +32,16 @@ public class Wave {
 		this.cooldown_spawn = cooldown;
 	}
 
-	public void spawnEnemies(int countSpawn, Position positionSpawn) {
+	public void spawnEnemies(int countSpawn, Position positionSpawn,
+			Position positionObjectif) {
 
 		while (countSpawn > 0 && enemiesToSpawn.size() > 0) {
 			Enemie enemie = enemiesToSpawn.remove(0);
 			enemie.spawn(positionSpawn.clone());
-			enemie.setPath(GameConfig.defaulPath.clone());
+			// enemie.setPath(GameConfig.defaulPath.clone());
+			enemie.setObjectif(positionObjectif);
+			enemie.computePath();
+
 			enemiesAlive.add(enemie);
 			countSpawn--;
 			spawnCounter++;

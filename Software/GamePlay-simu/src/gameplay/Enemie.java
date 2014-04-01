@@ -1,9 +1,11 @@
 package gameplay;
 
+
 public class Enemie {
 
 	// TODO : ADD CLASS OF ENEMIE (HEALTH, SPEED)
 	private Position position;
+	private Position objectif;
 	private Path path;
 	private int health;
 	private float speed;
@@ -57,5 +59,21 @@ public class Enemie {
 
 	public boolean isAlive() {
 		return this.health > 0;
+	}
+
+	public void setObjectif(Position positionObjectif) {
+		this.objectif = positionObjectif;
+	}
+
+	public boolean computePath() {
+		if (this.objectif == null || this.position == null)
+			return false;
+		this.path = new Path();
+		this.path.addPoint(objectif);
+		return true;
+	}
+
+	public Path getPath() {
+		return this.path;
 	}
 }

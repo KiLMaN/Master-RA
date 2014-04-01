@@ -22,12 +22,27 @@ public class Game {
 	private Position startPointEnemie;
 	private Position objectiveEnemie;
 
-	public Game() {
+	private ArrayList<Weapon> defaultWeapons;
+
+	public Game(ArrayList<Tower> towers, ArrayList<Wave> waves,
+			Position startPoint, Position objectivePoint) {
 		currentGame = this;
-		this.listTowers = GameConfig.defaultTower;
-		this.listWaves = GameConfig.defaultwaves;
-		this.startPointEnemie = GameConfig.startPoint;
-		this.objectiveEnemie = GameConfig.objective;
+		this.listTowers = towers;
+		this.listWaves = waves;
+		this.startPointEnemie = startPoint;
+		this.objectiveEnemie = objectivePoint;
+	}
+
+	public Game(ArrayList<Tower> towers, ArrayList<Wave> waves) {
+
+		this(towers, waves, new Position(20, 20), new Position(200, 200));
+
+		// this.startPointsEnemie.add(new Position(20, 20));
+		// this.objectivesEnemie.add(new Position(200, 200));
+	}
+
+	public Game() {
+		this(new ArrayList<Tower>(), new ArrayList<Wave>());
 	}
 
 	/* Global Game Tick */
@@ -48,7 +63,8 @@ public class Game {
 				if (currentWave.getSpawnCooldown() == 0) {
 					// Generer des enemis (1)
 					// Et Supprimer 1 du compteur de la currentWave
-					currentWave.spawnEnemies(1, startPointEnemie);
+					currentWave.spawnEnemies(1, startPointEnemie,
+							objectiveEnemie);
 					// Reset du cooldown
 					currentWave
 							.setSpawnCooldown(GameConfig.ENEMIE_SPAWN_COOLDOWN);
@@ -160,6 +176,25 @@ public class Game {
 
 	public ArrayList<Tower> getTowers() {
 		return listTowers;
+	}
+
+	public void setTowers(ArrayList<Tower> towers) {
+		this.listTowers = towers;
+	}
+
+	public void assignWeapons() {
+		for (Tower tower : listTowers) {
+			tower.setWeapons(defaultWeapons);
+		}
+	}
+
+	public void setWaves(ArrayList<Wave> waves) {
+		this.listWaves = waves;
+		this.currentWaveId = 0;
+	}
+
+	public void setDefaultWeapons(ArrayList<Weapon> weapons) {
+		this.defaultWeapons = weapons;
 	}
 
 }

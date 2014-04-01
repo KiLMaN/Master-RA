@@ -1,27 +1,50 @@
-package towerDefender;
+package simulation;
 
 import gameplay.Enemie;
 import gameplay.Game;
-import gameplay.GameConfig;
-import gameplay.Position;
 import gameplay.Tower;
+import gameplay.XMLParser;
+import gameplay.XMLParserTower;
+import gameplay.XMLParserWave;
+import gameplay.XMLParserWeapon;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.util.Iterator;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-public class GamePlaySimu {
+import org.w3c.dom.Node;
+
+public class SimulationPC {
 
 	static JFrame mainMap;
 	static Game game = new Game();
 
 	public static void main(String[] args) throws InterruptedException {
+		System.out.println("Loading Weapons");
+		XMLParser parserWeapon = new XMLParser("config/weapons.xml");
+		parserWeapon.loadFile(new FileReaderPC());
+		Node rootWeapon = parserWeapon.getRoot();
+		game.setDefaultWeapons(XMLParserWeapon.parseXMLWeapon(rootWeapon));
+
+		System.out.println("Loading Tower Positions");
+		XMLParser parserTower = new XMLParser("config/towers.xml");
+		parserTower.loadFile(new FileReaderPC());
+		Node rootTower = parserTower.getRoot();
+		game.setTowers(XMLParserTower.parseXMLTowers(rootTower));
+
+		game.assignWeapons();
+
+		System.out.println("Loading Enemies Waves");
+		XMLParser parserWaves = new XMLParser("config/waves.xml");
+		parserWaves.loadFile(new FileReaderPC());
+		Node rootWave = parserWaves.getRoot();
+		game.setWaves(XMLParserWave.parseXMLWaves(rootWave));
+
 		initWindow();
 		System.out.println("Starting Simulation GamePlay");
 		game.start();
@@ -36,11 +59,8 @@ public class GamePlaySimu {
 		mainMap = new JFrame();
 		mainMap.setResizable(false);
 
-		mainMap.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		mainMap.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		JPanel pannel = new JPanel() {
-			/**
-			 * 
-			 */
 			private static final long serialVersionUID = -8463156070648999928L;
 
 			@Override
@@ -58,18 +78,6 @@ public class GamePlaySimu {
 						170);
 				g.drawString("SPC : " + game.getCurrentWave().spawnCounter,
 						150, 180);
-
-				Iterator<Position> ite = GameConfig.defaulPath.getPath()
-						.iterator();
-				Position old = ite.next();
-				while (ite.hasNext()) {
-					Position pos = ite.next();
-					g.setColor(Color.GRAY);
-					g.drawLine((int) old.getPositionX(),
-							(int) old.getPositionY(), (int) pos.getPositionX(),
-							(int) pos.getPositionY());
-					old = pos;
-				}
 
 				for (Tower tower : game.getTowers()) {
 					g.setColor(Color.BLUE);
