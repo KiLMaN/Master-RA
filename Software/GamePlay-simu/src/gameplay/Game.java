@@ -7,22 +7,19 @@ public class Game {
 	public static Game currentGame;
 
 	private Boolean playing = false;
-
 	private Boolean paused = false;
 
 	private int numberEnemiesKilled;
+	private int currentWaveId = 0;
 
 	private Player currentPlayer;
 
-	private int currentWaveId = 0;
 	private ArrayList<Wave> listWaves;
-
 	private ArrayList<Tower> listTowers;
+	private ArrayList<Weapon> defaultWeapons;
 
 	private Position startPointEnemie;
 	private Position objectiveEnemie;
-
-	private ArrayList<Weapon> defaultWeapons;
 
 	public Game(ArrayList<Tower> towers, ArrayList<Wave> waves,
 			Position startPoint, Position objectivePoint) {
@@ -78,6 +75,7 @@ public class Game {
 				// stop();
 			}
 
+			// si il reste des ennemis en vie
 			if (enemiesAlive.size() > 0) {
 				for (Enemie enemie : enemiesAlive) {
 					enemie.move();
@@ -93,7 +91,7 @@ public class Game {
 						tower.targetClosestEnemi(enemiesAlive);
 						target = tower.getTarget();
 					}
-
+					// si un ennemi est à portée
 					if (tower.targetedEnemieInRange()) {
 
 						/*
@@ -101,9 +99,10 @@ public class Game {
 						 * tower.getPosition().toString() + " sur enemie @ " +
 						 * target.getPosition().toString());
 						 */
-
+						// renvoie false si l'ennemi n'est pas touché right
+						// sinon
 						if (tower.shootTargetedEnemie()) {
-							/* System.out.println("Enemie Mort !"); */
+							/* System.out.println("Ennemi Mort !"); */
 							currentWave.enemieKilled(target);
 						}
 					} else
@@ -126,16 +125,80 @@ public class Game {
 		}
 	}
 
+	public boolean isPlaying() {
+		return this.playing;
+	}
+
+	public void start() {
+		this.playing = true;
+	}
+
+	public void stop() {
+		this.playing = false;
+	}
+
+	public static Game getCurrentGame() {
+		return currentGame;
+	}
+
+	public static void setCurrentGame(Game currentGame) {
+		Game.currentGame = currentGame;
+	}
+
+	public Boolean getPlaying() {
+		return playing;
+	}
+
+	public void setPlaying(Boolean playing) {
+		this.playing = playing;
+	}
+
+	public Boolean getPaused() {
+		return paused;
+	}
+
+	public void setPaused(Boolean paused) {
+		this.paused = paused;
+	}
+
+	public int getCurrentWaveId() {
+		return currentWaveId;
+	}
+
+	public void setCurrentWaveId(int currentWaveId) {
+		this.currentWaveId = currentWaveId;
+	}
+
+	public ArrayList<Wave> getListWaves() {
+		return listWaves;
+	}
+
+	public void setListWaves(ArrayList<Wave> listWaves) {
+		this.listWaves = listWaves;
+	}
+
+	public ArrayList<Tower> getListTowers() {
+		return listTowers;
+	}
+
+	public void setListTowers(ArrayList<Tower> listTowers) {
+		this.listTowers = listTowers;
+	}
+
+	public void setStartPointEnemie(Position startPointEnemie) {
+		this.startPointEnemie = startPointEnemie;
+	}
+
+	public void setObjectiveEnemie(Position objectiveEnemie) {
+		this.objectiveEnemie = objectiveEnemie;
+	}
+
 	public Wave getCurrentWave() {
 		return this.listWaves.get(currentWaveId);
 	}
 
-	public Player getCurrentPlayer() {
-		return currentPlayer;
-	}
-
-	public void setCurrentPlayer(Player currentPlayer) {
-		this.currentPlayer = currentPlayer;
+	public ArrayList<Weapon> getDefaultWeapons() {
+		return defaultWeapons;
 	}
 
 	public int getNumberEnemiesKilled() {
@@ -154,16 +217,12 @@ public class Game {
 		this.paused = paused;
 	}
 
-	public boolean isPlaying() {
-		return this.playing;
+	public Player getCurrentPlayer() {
+		return currentPlayer;
 	}
 
-	public void start() {
-		this.playing = true;
-	}
-
-	public void stop() {
-		this.playing = false;
+	public void setCurrentPlayer(Player currentPlayer) {
+		this.currentPlayer = currentPlayer;
 	}
 
 	public Position getObjectiveEnemie() {

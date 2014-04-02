@@ -1,6 +1,5 @@
 package gameplay;
 
-
 public class Enemie {
 
 	// TODO : ADD CLASS OF ENEMIE (HEALTH, SPEED)
@@ -16,16 +15,14 @@ public class Enemie {
 		this.speed = speed;
 	}
 
-	public void setPath(Path path) {
-		this.path = path;
-	}
-
 	public void spawn(Position position) {
 		this.spawned = true;
 		this.position = position;
 		// TODO Auto-generated method stub
 	}
 
+	// Si l'ennemi a été généré et qu'on a un chemin alors on va au prochain
+	// point du chemin
 	public void move() {
 		if (!spawned)
 			return;
@@ -40,10 +37,6 @@ public class Enemie {
 		}
 	}
 
-	public Position getPosition() {
-		return this.position;
-	}
-
 	/* Prendre des dommages par une arme, retourne true si mort */
 	public boolean hitBy(Weapon weapon) {
 		if (!spawned)
@@ -51,9 +44,10 @@ public class Enemie {
 
 		// System.out.println("Tir avec arme : " + weapon.getNameWeapon());
 		this.health -= weapon.getNumberDamage();
-		if (this.health <= 0)
+		if (this.health <= 0) {
 			this.health = 0;
-
+			this.spawned = false;
+		}
 		return this.health == 0;
 	}
 
@@ -61,10 +55,7 @@ public class Enemie {
 		return this.health > 0;
 	}
 
-	public void setObjectif(Position positionObjectif) {
-		this.objectif = positionObjectif;
-	}
-
+	// calcul du chemin des ennemis à emprunter ici POUR LE MOMENT, ligne droite
 	public boolean computePath() {
 		if (this.objectif == null || this.position == null)
 			return false;
@@ -73,7 +64,51 @@ public class Enemie {
 		return true;
 	}
 
+	public boolean isSpawned() {
+		return spawned;
+	}
+
+	public void setSpawned(boolean spawned) {
+		this.spawned = spawned;
+	}
+
+	public Position getPosition() {
+		return this.position;
+	}
+
+	public void setPosition(Position position) {
+		this.position = position;
+	}
+
+	public int getHealth() {
+		return health;
+	}
+
+	public void setHealth(int health) {
+		this.health = health;
+	}
+
+	public float getSpeed() {
+		return speed;
+	}
+
+	public void setSpeed(float speed) {
+		this.speed = speed;
+	}
+
+	public Position getObjectif() {
+		return objectif;
+	}
+
+	public void setObjectif(Position positionObjectif) {
+		this.objectif = positionObjectif;
+	}
+
 	public Path getPath() {
 		return this.path;
+	}
+
+	public void setPath(Path path) {
+		this.path = path;
 	}
 }

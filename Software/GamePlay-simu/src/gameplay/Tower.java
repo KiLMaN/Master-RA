@@ -32,6 +32,7 @@ public class Tower {
 		return this.position;
 	}
 
+	// calcul l'ennemile plus proche de la Tour et le cible
 	public void targetClosestEnemi(ArrayList<Enemie> enemiesAlive) {
 		if (enemieEngaged) // Si on a déjà attaqué un enemie, on se verouille
 							// dessus
