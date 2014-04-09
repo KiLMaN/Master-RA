@@ -9,19 +9,20 @@ public class Tower {
 	 * private boolean free; private int puissanceTour = 0;
 	 */
 
-	private ArrayList<Weapon> weapons;
+	// private ArrayList<Weapon> weapons;
+	private ArrayList<Pweapon> pweapons;
 	private Enemie target;
 	private Position position;
 	private boolean enemieEngaged = false;
 
 	public Tower(Position position) {
 		this.position = position;
-		this.weapons = new ArrayList<Weapon>();
+		this.pweapons = new ArrayList<Pweapon>();
 	}
 
-	public Tower(Position position, ArrayList<Weapon> weapons) {
+	public Tower(Position position, ArrayList<Pweapon> pweapons) {
 		this.position = position;
-		this.weapons = weapons;
+		this.pweapons = pweapons;
 	}
 
 	public Enemie getTarget() {
@@ -68,10 +69,10 @@ public class Tower {
 
 	private float getMaxRange() {
 		float maxRange = 0;
-		for (Weapon weapon : weapons) {
-			if (!weapon.isLocked()) {
-				if (maxRange < weapon.getRange())
-					maxRange = weapon.getRange();
+		for (Pweapon pweapon : pweapons) {
+			if (!pweapon.isLocked()) {
+				if (maxRange < pweapon.Weapon.getRange())
+					maxRange = pweapon.Weapon.getRange();
 			}
 		}
 		return maxRange;
@@ -84,21 +85,21 @@ public class Tower {
 	public boolean shootTargetedEnemie() {
 		float distanceEnemie = this.position.distanceTo(target.getPosition());
 		float maxDamage = 0;
-		Weapon best = null;
-		for (Weapon weapon : weapons) {
-			if (!weapon.isLocked()) {
-				if (distanceEnemie < weapon.getRange()) {
-					if (maxDamage < weapon.getNumberDamage()) {
-						if (!weapon.isReloading()) {
-							best = weapon;
-							maxDamage = weapon.getNumberDamage();
+		Pweapon best = null;
+		for (Pweapon pweapon : pweapons) {
+			if (!pweapon.isLocked()) {
+				if (distanceEnemie < pweapon.Weapon.getRange()) {
+					if (maxDamage < pweapon.Weapon.getNumberDamage()) {
+						if (!pweapon.isReloading()) {
+							best = pweapon;
+							maxDamage = pweapon.Weapon.getNumberDamage();
 						}
 					}
 				}
 			}
 		}
 		if (best != null) {
-			boolean dead = target.hitBy(best);
+			boolean dead = target.hitBy(best.Weapon);
 			best.startReload();
 			/*
 			 * if (dead) target = null;
@@ -111,17 +112,17 @@ public class Tower {
 	}
 
 	public void tickReloadTimers() {
-		for (Weapon weapon : weapons) {
-			if (!weapon.isLocked()) {
-				if (weapon.isReloading()) {
-					weapon.tickReloading();
+		for (Pweapon pweapon : pweapons) {
+			if (!pweapon.isLocked()) {
+				if (pweapon.isReloading()) {
+					pweapon.tickReloading();
 				}
 			}
 		}
 	}
 
-	public void setWeapons(ArrayList<Weapon> weapons) {
-		this.weapons = weapons;
+	public void setWeapons(ArrayList<Pweapon> pweapons) {
+		this.pweapons = pweapons;
 
 	}
 }

@@ -30,7 +30,7 @@ public class XMLParserWeapon {
 				boolean bLOCKED = XMLParser.getBooleanAttribute(list.item(i),
 						"LOCKED");
 
-				Weapon weapon = new Weapon(0, strNAME, intDAMAGE, intRANGE, 0,
+				Weapon weapon = new Weapon(i, strNAME, intDAMAGE, intRANGE, 0,
 						intRELOADTIME, WeaponType.Fire, intCOST, bLOCKED);
 				weapons.add(weapon);
 			}

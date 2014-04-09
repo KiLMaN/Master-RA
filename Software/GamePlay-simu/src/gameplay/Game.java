@@ -91,7 +91,7 @@ public class Game {
 						tower.targetClosestEnemi(enemiesAlive);
 						target = tower.getTarget();
 					}
-					// si un ennemi est à portée
+					// si la cible ennemie est à portée
 					if (tower.targetedEnemieInRange()) {
 
 						/*
@@ -243,7 +243,14 @@ public class Game {
 
 	public void assignWeapons() {
 		for (Tower tower : listTowers) {
-			tower.setWeapons(defaultWeapons);
+			ArrayList<Pweapon> pweapons = new ArrayList<Pweapon>();
+			for (Weapon weapon : defaultWeapons) {
+				Pweapon pweapon = null;
+				pweapon = new Pweapon(weapon, weapon.getReloadingTime(),
+						weapon.isLocked());
+				pweapons.add(pweapon);
+			}
+			tower.setWeapons(pweapons);
 		}
 	}
 

@@ -1,6 +1,5 @@
 package gameplay;
 
-
 public class Weapon {
 
 	private int idWeapon;
@@ -10,7 +9,7 @@ public class Weapon {
 	private float range;
 
 	private int reloadgingTime;
-	private int currentReload;
+	// private int currentReload;
 
 	private boolean locked;
 	private int costWeapon;
@@ -18,6 +17,8 @@ public class Weapon {
 	private int numberEnemiesKilled;
 
 	public WeaponType WeaponType;
+
+	// public Pweapon Pweapon;
 
 	public Weapon(int idWeapon, String nameWeapon, int numberDamage,
 			float range, int numberEnemiesKilled, int timeToRecharge,
@@ -29,9 +30,10 @@ public class Weapon {
 		this.numberEnemiesKilled = numberEnemiesKilled;
 		this.costWeapon = costWeapon;
 		this.reloadgingTime = timeToRecharge;
-		this.currentReload = 0;
+		// this.currentReload = 0;
 		this.locked = lockedWeapon;
 		this.WeaponType = WeaponType;
+		// Pweapon = new Pweapon(this,timeToRecharge,lockedWeapon);
 	}
 
 	public int getIdWeapon() {
@@ -82,19 +84,20 @@ public class Weapon {
 		this.costWeapon = costWeapon;
 	}
 
-	public boolean isReloading() {
-		return currentReload != 0;
-	}
-
-	public void tickReloading() {
-		this.currentReload--;
-	}
-
-	public void startReload() {
-		this.currentReload = this.reloadgingTime;
-	}
+	/*
+	 * public boolean isReloading() { return currentReload != 0; }
+	 * 
+	 * public void tickReloading() { this.currentReload--; }
+	 * 
+	 * public void startReload() { this.currentReload = this.reloadgingTime; }
+	 */
 
 	public boolean isLocked() {
 		return this.locked;
 	}
+
+	public int getReloadingTime() {
+		return this.reloadgingTime;
+	}
+
 }
