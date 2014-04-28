@@ -2,6 +2,8 @@ package gameplay;
 
 import java.util.ArrayList;
 
+import simulation.SimulationPC;
+
 public class Tower {
 
 	/*
@@ -100,6 +102,16 @@ public class Tower {
 		}
 		if (best != null) {
 			boolean dead = target.hitBy(best.Weapon);
+			// incrémenter points du joueur
+			if (dead == true) {
+				int pointsPlayer = SimulationPC.game.getCurrentPlayer()
+						.getPointsPlayer();
+				SimulationPC.game.getCurrentPlayer().setPointsPlayer(
+						pointsPlayer + 1);
+				System.out.println("Points player :"
+						+ SimulationPC.game.getCurrentPlayer()
+								.getPointsPlayer());
+			}
 			best.startReload();
 			/*
 			 * if (dead) target = null;

@@ -2,6 +2,7 @@ package simulation;
 
 import gameplay.Enemie;
 import gameplay.Game;
+import gameplay.Player;
 import gameplay.Tower;
 import gameplay.XMLParser;
 import gameplay.XMLParserTower;
@@ -22,7 +23,7 @@ import org.w3c.dom.Node;
 public class SimulationPC {
 
 	static JFrame mainMap;
-	static Game game = new Game();
+	public static Game game = new Game();
 
 	public static void main(String[] args) throws InterruptedException {
 		System.out.println("Loading Weapons");
@@ -44,6 +45,8 @@ public class SimulationPC {
 		parserWaves.loadFile(new FileReaderPC());
 		Node rootWave = parserWaves.getRoot();
 		game.setWaves(XMLParserWave.parseXMLWaves(rootWave));
+
+		game.setCurrentPlayer(new Player(1, "player n°1", 3, 0, 0));
 
 		initWindow();
 		System.out.println("Starting Simulation GamePlay");

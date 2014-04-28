@@ -24,8 +24,8 @@ public class Game {
 	public Game(ArrayList<Tower> towers, ArrayList<Wave> waves,
 			Position startPoint, Position objectivePoint) {
 		currentGame = this;
-		this.listTowers = towers;
-		this.listWaves = waves;
+		this.listTowers = towers; // utile ?
+		this.listWaves = waves; // utile ?
 		this.startPointEnemie = startPoint;
 		this.objectiveEnemie = objectivePoint;
 	}
