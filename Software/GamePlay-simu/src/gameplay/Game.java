@@ -78,8 +78,19 @@ public class Game {
 			// si il reste des ennemis en vie
 			if (enemiesAlive.size() > 0) {
 				for (Enemie enemie : enemiesAlive) {
-					enemie.move();
-					// TODO : TEST SI ARRIVEE
+					// enemie.move();
+					if (enemie.move()) {
+						System.out.println("enemie arrivé");
+						int lifesPlayer = this.getCurrentPlayer()
+								.getLifesPlayer();
+						this.getCurrentPlayer().setLifesPlayer(--lifesPlayer);
+						System.out.println("vies restantes: " + lifesPlayer);
+						if (lifesPlayer == 0) {
+							System.out.println("game over");
+							stop();
+						}
+					}
+
 				}
 
 				for (Tower tower : listTowers) {

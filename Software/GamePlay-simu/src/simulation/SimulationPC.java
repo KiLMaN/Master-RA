@@ -46,7 +46,7 @@ public class SimulationPC {
 		Node rootWave = parserWaves.getRoot();
 		game.setWaves(XMLParserWave.parseXMLWaves(rootWave));
 
-		game.setCurrentPlayer(new Player(1, "player n°1", 3, 0, 0));
+		game.setCurrentPlayer(new Player(1, "player n°1", 20, 0, 0));
 
 		initWindow();
 		System.out.println("Starting Simulation GamePlay");

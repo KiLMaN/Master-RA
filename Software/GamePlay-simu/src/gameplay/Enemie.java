@@ -23,18 +23,21 @@ public class Enemie {
 
 	// Si l'ennemi a été généré et qu'on a un chemin alors on va au prochain
 	// point du chemin
-	public void move() {
+	public boolean move() {
 		if (!spawned)
-			return;
+			return false;
 		if (path == null)
-			return;
+			return false;
 		// Position objectif = Game.currentGame.getObjectiveEnemie();
 		Position objectif = path.getNextPoint();
 		if (objectif != null) {
 			position.moveTo(objectif, speed);
-			if (path.isCloseToPath(position))
+			if (path.isCloseToPath(position)) {
 				path.removeFirstPoint();
+				return true;
+			}
 		}
+		return false;
 	}
 
 	/* Prendre des dommages par une arme, retourne true si mort */
