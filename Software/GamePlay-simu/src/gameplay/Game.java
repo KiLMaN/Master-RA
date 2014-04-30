@@ -77,20 +77,33 @@ public class Game {
 
 			// si il reste des ennemis en vie
 			if (enemiesAlive.size() > 0) {
+				ArrayList<Enemie> enemiesToKill = new ArrayList<Enemie>();
 				for (Enemie enemie : enemiesAlive) {
 					// enemie.move();
 					if (enemie.move()) {
+
 						System.out.println("enemie arrivé");
 						int lifesPlayer = this.getCurrentPlayer()
 								.getLifesPlayer();
 						this.getCurrentPlayer().setLifesPlayer(--lifesPlayer);
 						System.out.println("vies restantes: " + lifesPlayer);
+						enemiesToKill.add(enemie);
+						// currentWave.enemieKilled(enemie);
+
+						// enemiesAlive = currentWave.getEnemiesAlive();
 						if (lifesPlayer == 0) {
 							System.out.println("game over");
 							stop();
 						}
 					}
 
+				}
+
+				if (enemiesToKill.size() > 0) {
+
+					for (Enemie enemie : enemiesToKill) {
+						currentWave.enemieKilled(enemie);
+					}
 				}
 
 				for (Tower tower : listTowers) {

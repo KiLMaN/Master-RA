@@ -34,24 +34,72 @@ public class Enemie {
 			position.moveTo(objectif, speed);
 			if (path.isCloseToPath(position)) {
 				path.removeFirstPoint();
-				return true;
 			}
+			return false;
+		} else {
+			return true;
 		}
-		return false;
 	}
 
 	/* Prendre des dommages par une arme, retourne true si mort */
-	public boolean hitBy(Weapon weapon) {
+	public boolean hitBy(Weapon weapon, Tower tower) {
 		if (!spawned)
 			return false;
 
 		// System.out.println("Tir avec arme : " + weapon.getNameWeapon());
-		this.health -= weapon.getNumberDamage();
+		if (decideShootMiss(tower)) {
+			this.health -= weapon.getNumberDamage();
+		}
 		if (this.health <= 0) {
 			this.health = 0;
 			this.spawned = false;
 		}
 		return this.health == 0;
+	}
+
+	public boolean decideShootMiss(Tower tower) {
+		int x = (Math.random() < 0.5) ? 0 : 1;
+		if (x == 1) {
+			int killSuccess = tower.getKillSuccess();
+			if (killSuccess < tower.getKillSuccessRatio()) {
+				tower.setKillSuccess(++killSuccess);
+				ReinitialyzeFrequencyShoot(tower);
+				return true;
+			} else {
+				ReinitialyzeFrequencyShoot(tower);
+				return false;
+			}
+		} else {
+			if (tower.getKillSuccess() == tower.getKillSuccessRatio()) {
+				ReinitialyzeFrequencyShoot(tower);
+				return false;
+			}
+			if ((tower.getKillSuccess() < tower.getKillSuccessRatio())
+					&& ((10 - tower.getFrequencyShoot()) > (tower
+							.getKillSuccessRatio() - tower.getKillSuccess()))) {
+				ReinitialyzeFrequencyShoot(tower);
+				return false;
+			}
+			if ((tower.getKillSuccess() < tower.getKillSuccessRatio())
+					&& ((10 - tower.getFrequencyShoot()) <= (tower
+							.getKillSuccessRatio() - tower.getKillSuccess()))) {
+				int killSuccess = tower.getKillSuccess();
+				tower.setKillSuccess(++killSuccess);
+				ReinitialyzeFrequencyShoot(tower);
+				return true;
+			}
+		}
+		ReinitialyzeFrequencyShoot(tower);
+		return false;
+	}
+
+	private void ReinitialyzeFrequencyShoot(Tower tower) {
+		int frequencyShoot = tower.getFrequencyShoot();
+		tower.setFrequencyShoot(++frequencyShoot);
+		if (tower.getFrequencyShoot() > 10) {
+			tower.setFrequencyShoot(1);
+			tower.setKillSuccess(0);
+		}
 	}
 
 	public boolean isAlive() {

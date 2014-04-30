@@ -16,15 +16,32 @@ public class Tower {
 	private Enemie target;
 	private Position position;
 	private boolean enemieEngaged = false;
+	private int killSuccessRatio; // sur 10
+	private int killSuccess = 0;
+	private int frequencyShoot = 1; // sur 10
 
 	public Tower(Position position) {
+		// this.position = position;
+		// this.pweapons = new ArrayList<Pweapon>();
+		this(position, 7);
+	}
+
+	public Tower(Position position, int killSuccessRatio) {
 		this.position = position;
 		this.pweapons = new ArrayList<Pweapon>();
+		this.killSuccessRatio = killSuccessRatio;
 	}
 
 	public Tower(Position position, ArrayList<Pweapon> pweapons) {
 		this.position = position;
 		this.pweapons = pweapons;
+	}
+
+	public Tower(Position position, ArrayList<Pweapon> pweapons,
+			int killSuccessRatio) {
+		this.position = position;
+		this.pweapons = pweapons;
+		this.killSuccessRatio = killSuccessRatio;
 	}
 
 	public Enemie getTarget() {
@@ -33,6 +50,26 @@ public class Tower {
 
 	public Position getPosition() {
 		return this.position;
+	}
+
+	public int getKillSuccessRatio() {
+		return this.killSuccessRatio;
+	}
+
+	public int getKillSuccess() {
+		return this.killSuccess;
+	}
+
+	public void setKillSuccess(int killSuccess) {
+		this.killSuccess = killSuccess;
+	}
+
+	public int getFrequencyShoot() {
+		return this.frequencyShoot;
+	}
+
+	public void setFrequencyShoot(int frequencyShoot) {
+		this.frequencyShoot = frequencyShoot;
 	}
 
 	// calcul l'ennemile plus proche de la Tour et le cible
@@ -101,7 +138,7 @@ public class Tower {
 			}
 		}
 		if (best != null) {
-			boolean dead = target.hitBy(best.Weapon);
+			boolean dead = target.hitBy(best.Weapon, this);
 			// incrémenter points du joueur
 			if (dead == true) {
 				int pointsPlayer = SimulationPC.game.getCurrentPlayer()
