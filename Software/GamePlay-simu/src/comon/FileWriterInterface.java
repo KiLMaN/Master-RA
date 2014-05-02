@@ -1,6 +1,6 @@
 package comon;
 
-import java.io.FileOutputStream;
+import java.io.OutputStream;
 
 /* The file Writing ONLY */
 public interface FileWriterInterface {
@@ -9,7 +9,7 @@ public interface FileWriterInterface {
 	public void setFile(String fileName);
 
 	/* Get The Output Stream */
-	public FileOutputStream getStream();
+	public OutputStream getStream();
 
 	/* Close the file */
 	public void close();

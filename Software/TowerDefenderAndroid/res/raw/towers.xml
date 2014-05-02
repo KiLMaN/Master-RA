@@ -1,0 +1,17 @@
+<towers>
+	<tower>
+		<position X="50" Y="50" />
+	</tower>
+	<tower>
+		<position X="60" Y="50" />
+	</tower>
+	<tower>
+		<position X="70" Y="50" />
+	</tower>
+	<tower>
+		<position X="80" Y="50" />
+	</tower>
+	<tower>
+		<position X="90" Y="50" />
+	</tower>
+</towers>

@@ -1,145 +1,142 @@
 package net.towerdefender;
 
-import java.util.Iterator;
-import gameplay.Enemie;
-import gameplay.Game;
-import gameplay.GameConfig;
-import gameplay.Position;
-import gameplay.Tower;
-import android.os.Bundle;
-import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.RectF;
-import android.util.Log;
-import android.view.Menu;
-import android.view.View;
+import net.towerdefender.activity.GameActivity;
 
-public class TowerDefender extends Activity {
-
-	Game game;
-
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		game = new Game();
-		game.start();
-
-		// setContentView(R.layout.activity_tower_defender);
-		TowerDefenderView towerDefenderView = new TowerDefenderView(this);
-		setContentView(towerDefenderView);
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.tower_defender, menu);
-		return true;
-	}
-
-	public class TowerDefenderView extends View {
-		public TowerDefenderView(Context context) {
-			super(context);
-		}
-
-		@SuppressLint("DrawAllocation")
-		@Override
-		public void onDraw(Canvas canvas) {
-			
-			
-			
-			canvas.drawColor(Color.BLACK);
-			canvas.scale(5, 5);
-
-			Iterator<Position> ite = GameConfig.defaulPath.getPath().iterator();
-			Position old = ite.next();
-			while (ite.hasNext()) {
-				Position pos = ite.next();
-				drawLine(canvas, old, pos, Color.GRAY);
-				old = pos;
-			}
-
-			for (Tower tower : game.getTowers()) {
-				drawOval(canvas, new RectF(tower.getPosition().getPositionX(),
-						tower.getPosition().getPositionY(), 10, 10), Color.BLUE);
-
-				int color = 0;
-				if (tower.targetedEnemieInRange())
-					color = Color.MAGENTA;
-				else
-					color = Color.CYAN;
-
-				if (tower.getTarget() != null) {
-					if (tower.getTarget().isAlive()) {
-
-						drawLine(canvas, tower.getTarget().getPosition(),
-								tower.getPosition(), color);
-					}
-				}
-			}
-
-			for (Enemie enemi : game.getCurrentWave().getEnemiesAlive()) {
-				drawOval(canvas, new RectF(enemi.getPosition().getPositionX(),
-						enemi.getPosition().getPositionY(), 10, 10), Color.RED);
-			}
-
-			drawOval(canvas, new RectF((int) game.getObjectiveEnemie()
-					.getPositionX(), (int) game.getObjectiveEnemie()
-					.getPositionY(), 10, 10), Color.GREEN);
-			
-			drawOval(canvas, new RectF((int) game.getStartPointEnemie()
-					.getPositionX(), (int) game.getStartPointEnemie()
-					.getPositionY(), 10, 10), Color.BLACK);
-			
-			invalidate();
-			
-			if (game.isPlaying() && !game.isPaused()) {
-				game.gameTick();
-
-				try {
-					Thread.sleep(100);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-
-		}
-
-		public void drawOval(Canvas canvas, RectF position, int color) {
-			Paint p = new Paint();
-			// smooths
-			p.setAntiAlias(true);
-			p.setColor(color);
-			p.setStyle(Paint.Style.STROKE);
-			p.setStrokeWidth(1f);
-			// opacity
-			p.setAlpha(255); //
-
-			canvas.drawOval(new RectF(position.left - (position.right / 2),
-					position.top - (position.bottom / 2), position.left
-							+ (position.right / 2), position.top
-							+ (position.bottom / 2)), p);
-
-		}
-
-		public void drawLine(Canvas canvas, Position start, Position end,
-				int color) {
-			Paint p = new Paint();
-			// smooths
-			p.setAntiAlias(true);
-			p.setColor(color);
-			p.setStyle(Paint.Style.STROKE);
-			p.setStrokeWidth(1f);
-			// opacity
-			p.setAlpha(255); //
-
-			canvas.drawLine(start.getPositionX(), start.getPositionY(),
-					end.getPositionX(), end.getPositionY(), p);
-		}
-	}
+/**
+ * (c) 2010 Nicolas Gramlich (c) 2011 Zynga
+ * 
+ * @author Nicolas Gramlich
+ * @since 00:06:23 - 11.07.2010 BaseAugmentedRealityGameActivity
+ */
+public class TowerDefender extends GameActivity {
+	/*
+	 * // =========================================================== //
+	 * Constants // ===========================================================
+	 * 
+	 * private static final int CAMERA_WIDTH = 1280; private static final int
+	 * CAMERA_HEIGHT = 720;
+	 * 
+	 * // =========================================================== // Fields
+	 * // ===========================================================
+	 * 
+	 * private Camera mCamera;
+	 * 
+	 * private BitmapTextureAtlas mBitmapTextureAtlas; private ITextureRegion
+	 * mFaceTextureRegion;
+	 * 
+	 * private BitmapTextureAtlas mOnScreenControlTexture; private
+	 * ITextureRegion mOnScreenControlBaseTextureRegion; private ITextureRegion
+	 * mOnScreenControlKnobTextureRegion;
+	 * 
+	 * // =========================================================== //
+	 * Constructors //
+	 * ===========================================================
+	 * 
+	 * // =========================================================== // Getter
+	 * & Setter // ===========================================================
+	 * 
+	 * // =========================================================== // Methods
+	 * for/from SuperClass/Interfaces //
+	 * ===========================================================
+	 * 
+	 * @Override public EngineOptions onCreateEngineOptions() {
+	 * 
+	 * this.mCamera = new Camera(0, 0, CAMERA_WIDTH, CAMERA_HEIGHT); HUD hud =
+	 * new HUD(); mCamera.setHUD(hud);
+	 * 
+	 * EngineOptions engineOption = new EngineOptions(true,
+	 * ScreenOrientation.LANDSCAPE_FIXED, new RatioResolutionPolicy(
+	 * CAMERA_WIDTH, CAMERA_HEIGHT), this.mCamera);
+	 * 
+	 * engineOption.setWakeLockOptions(WakeLockOptions.SCREEN_ON); return
+	 * engineOption; }
+	 * 
+	 * @Override public void onCreateResources( OnCreateResourcesCallback
+	 * pOnCreateResourcesCallback) {
+	 * BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
+	 * 
+	 * this.mBitmapTextureAtlas = new BitmapTextureAtlas(
+	 * this.getTextureManager(), 32, 32, TextureOptions.BILINEAR);
+	 * this.mFaceTextureRegion = BitmapTextureAtlasTextureRegionFactory
+	 * .createFromAsset(this.mBitmapTextureAtlas, this, "face_box.png", 0, 0);
+	 * this.mBitmapTextureAtlas.load();
+	 * 
+	 * this.mOnScreenControlTexture = new BitmapTextureAtlas(
+	 * this.getTextureManager(), 256, 128, TextureOptions.BILINEAR);
+	 * this.mOnScreenControlBaseTextureRegion =
+	 * BitmapTextureAtlasTextureRegionFactory
+	 * .createFromAsset(this.mOnScreenControlTexture, this,
+	 * "onscreen_control_base.png", 0, 0);
+	 * this.mOnScreenControlKnobTextureRegion =
+	 * BitmapTextureAtlasTextureRegionFactory
+	 * .createFromAsset(this.mOnScreenControlTexture, this,
+	 * "onscreen_control_knob.png", 128, 0);
+	 * this.mOnScreenControlTexture.load();
+	 * 
+	 * pOnCreateResourcesCallback.onCreateResourcesFinished();
+	 * 
+	 * }
+	 * 
+	 * @Override public void onCreateScene(OnCreateSceneCallback
+	 * pOnCreateSceneCallback) { this.mEngine.registerUpdateHandler(new
+	 * FPSLogger());
+	 * 
+	 * final Scene scene = new Scene(); // scene.setBackgroundEnabled(false); //
+	 * scene.setBackground(new Background(0.09804f, 0.6274f, 0.8784f)); // final
+	 * float centerX = (CAMERA_WIDTH - this.mFaceTextureRegion // .getWidth()) /
+	 * 2; // final float centerY = (CAMERA_HEIGHT - this.mFaceTextureRegion //
+	 * .getHeight()) / 2; // final Sprite face = new Sprite(centerX, centerY, //
+	 * this.mFaceTextureRegion, this.getVertexBufferObjectManager()); // final
+	 * PhysicsHandler physicsHandler = new PhysicsHandler(face); //
+	 * face.registerUpdateHandler(physicsHandler);
+	 * 
+	 * // scene.attachChild(face);
+	 * 
+	 * // scene.setChildScene(analogOnScreenControl);
+	 * pOnCreateSceneCallback.onCreateSceneFinished(scene); // return scene;
+	 * 
+	 * }
+	 * 
+	 * // =========================================================== // Methods
+	 * // ===========================================================
+	 * 
+	 * @Override public void onPopulateScene(Scene pScene,
+	 * OnPopulateSceneCallback pOnPopulateSceneCallback) throws Exception {
+	 * 
+	 * final AnalogOnScreenControl analogOnScreenControl = new
+	 * AnalogOnScreenControl( 0, CAMERA_HEIGHT -
+	 * this.mOnScreenControlBaseTextureRegion.getHeight() - 1, this.mCamera,
+	 * this.mOnScreenControlBaseTextureRegion,
+	 * this.mOnScreenControlKnobTextureRegion, 0.1f, 200,
+	 * this.getVertexBufferObjectManager(), new IAnalogOnScreenControlListener()
+	 * {
+	 * 
+	 * @Override public void onControlChange( final BaseOnScreenControl
+	 * pBaseOnScreenControl, final float pValueX, final float pValueY) { //
+	 * physicsHandler // .setVelocity(pValueX * 100, pValueY * 100); // scene. }
+	 * 
+	 * @Override public void onControlClick( final AnalogOnScreenControl
+	 * pAnalogOnScreenControl) {
+	 * 
+	 * face.registerEntityModifier(new SequenceEntityModifier( new
+	 * ScaleModifier(0.25f, 1, 1.5f), new ScaleModifier(0.25f, 1.5f, 1)));
+	 * 
+	 * } }); analogOnScreenControl.getControlBase().setBlendFunction(
+	 * GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
+	 * analogOnScreenControl.getControlBase().setAlpha(0.5f);
+	 * analogOnScreenControl.getControlBase().setScaleCenter(0, 128);
+	 * analogOnScreenControl.getControlBase().setScale(1.0f);
+	 * analogOnScreenControl.getControlKnob().setScale(1.0f);
+	 * analogOnScreenControl.refreshControlKnobPosition();
+	 * pScene.setChildScene(analogOnScreenControl);
+	 * 
+	 * pOnPopulateSceneCallback.onPopulateSceneFinished();
+	 * 
+	 * }
+	 * 
+	 * // =========================================================== // Inner
+	 * and Anonymous Classes //
+	 * ===========================================================
+	 */
 
 }

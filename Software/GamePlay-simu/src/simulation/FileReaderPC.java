@@ -3,6 +3,7 @@ package simulation;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 
 import comon.FileReaderInterface;
 
@@ -10,7 +11,7 @@ public class FileReaderPC implements FileReaderInterface {
 
 	private String _fileName;
 	private boolean _opened;
-	private FileInputStream _file;
+	private InputStream _file;
 
 	public FileReaderPC() {
 		this._fileName = "default.txt";
@@ -23,7 +24,7 @@ public class FileReaderPC implements FileReaderInterface {
 	}
 
 	@Override
-	public FileInputStream getStream() {
+	public InputStream getStream() {
 		if (this._opened)
 			return this._file;
 		try {

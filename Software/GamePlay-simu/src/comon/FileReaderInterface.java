@@ -1,6 +1,6 @@
 package comon;
 
-import java.io.FileInputStream;
+import java.io.InputStream;
 
 /* The file Reading ONLY */
 public interface FileReaderInterface {
@@ -9,7 +9,7 @@ public interface FileReaderInterface {
 	public void setFile(String fileName);
 
 	/* Get The Output Stream */
-	public FileInputStream getStream();
+	public InputStream getStream();
 
 	/* Close the file */
 	public void close();
