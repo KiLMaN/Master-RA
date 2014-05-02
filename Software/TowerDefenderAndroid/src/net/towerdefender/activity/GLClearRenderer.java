@@ -50,7 +50,7 @@ public class GLClearRenderer implements Renderer {
 
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
 		// No need to do anything here.
-		gl.glClearColor(0.0f, 0.0f, 0.0f, 0.5f);
+		gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
 		gl.glClearDepthf(1.0f);
 		gl.glEnable(GL10.GL_DEPTH_TEST);

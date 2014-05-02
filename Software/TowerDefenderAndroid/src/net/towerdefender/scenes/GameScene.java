@@ -12,18 +12,12 @@ import org.andengine.engine.camera.hud.controls.AnalogOnScreenControl;
 import org.andengine.engine.camera.hud.controls.AnalogOnScreenControl.IAnalogOnScreenControlListener;
 import org.andengine.engine.camera.hud.controls.BaseOnScreenControl;
 import org.andengine.entity.scene.background.Background;
-import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.text.Text;
 import org.andengine.entity.text.TextOptions;
-import org.andengine.opengl.texture.bitmap.BitmapTexture;
-import org.andengine.opengl.texture.region.TextureRegion;
 import org.andengine.opengl.util.GLState;
 import org.andengine.util.HorizontalAlign;
-import org.andengine.util.adt.io.in.ByteArrayInputStreamOpener;
 import org.andengine.util.color.Color;
 
-import android.graphics.SurfaceTexture;
-import android.hardware.Camera;
 import android.opengl.GLES20;
 
 public class GameScene extends BaseScene {
@@ -32,14 +26,6 @@ public class GameScene extends BaseScene {
 	private Text scoreText;
 	private Text fpsText;
 	private int score = 0;
-
-	public Camera mCamera;
-	public SurfaceTexture mSurfaceTextureCamera;
-	public BitmapTexture mTexture;
-	public TextureRegion mTextureRegion;
-	private Sprite mSpriteVideo;
-	private ByteArrayInputStreamOpener byteArrayInput;
-	private byte[] dataCamera = new byte[0];
 
 	@Override
 	public void createScene() {
@@ -68,10 +54,9 @@ public class GameScene extends BaseScene {
 		Background background = new Background(Color.RED) {
 			public void onDraw(GLState pGLState,
 					org.andengine.engine.camera.Camera pCamera) {
-				GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
-				GLES20.glClear(GL10.GL_COLOR_BUFFER_BIT
+				GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT
 						| GL10.GL_DEPTH_BUFFER_BIT);
-				GLES20.glClearColor(0, 0, 0, .5f);
+				GLES20.glClearColor(0, 0, 0, 0);
 
 			};
 		};
@@ -132,8 +117,8 @@ public class GameScene extends BaseScene {
 				GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 		analogOnScreenControl.getControlBase().setAlpha(0.5f);
 		analogOnScreenControl.getControlBase().setScaleCenter(0, 128);
-		analogOnScreenControl.getControlBase().setScale(1.5f);
-		analogOnScreenControl.getControlKnob().setScale(1.5f);
+		analogOnScreenControl.getControlBase().setScale(3f);
+		analogOnScreenControl.getControlKnob().setScale(3f);
 		analogOnScreenControl.getBackground().setColor(0, 0, 0, 0);
 		analogOnScreenControl.refreshControlKnobPosition();
 

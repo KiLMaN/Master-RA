@@ -13,13 +13,13 @@ import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
 
 /**
- * (c) 2010 Nicolas Gramlich 
- * (c) 2011 Zynga Inc.
+ * (c) 2010 Nicolas Gramlich (c) 2011 Zynga Inc.
  * 
  * @author Nicolas Gramlich
  * @since 12:07:52 - 09.03.2010
  */
-public class AssetBitmapTextureAtlasSource extends BaseTextureAtlasSource implements IBitmapTextureAtlasSource {
+public class AssetBitmapTextureAtlasSource extends BaseTextureAtlasSource
+		implements IBitmapTextureAtlasSource {
 	// ===========================================================
 	// Constants
 	// ===========================================================
@@ -35,11 +35,15 @@ public class AssetBitmapTextureAtlasSource extends BaseTextureAtlasSource implem
 	// Constructors
 	// ===========================================================
 
-	public static AssetBitmapTextureAtlasSource create(final AssetManager pAssetManager, final String pAssetPath) {
-		return AssetBitmapTextureAtlasSource.create(pAssetManager, pAssetPath, 0, 0);
+	public static AssetBitmapTextureAtlasSource create(
+			final AssetManager pAssetManager, final String pAssetPath) {
+		return AssetBitmapTextureAtlasSource.create(pAssetManager, pAssetPath,
+				0, 0);
 	}
 
-	public static AssetBitmapTextureAtlasSource create(final AssetManager pAssetManager, final String pAssetPath, final int pTextureX, final int pTextureY) {
+	public static AssetBitmapTextureAtlasSource create(
+			final AssetManager pAssetManager, final String pAssetPath,
+			final int pTextureX, final int pTextureY) {
 		final BitmapFactory.Options decodeOptions = new BitmapFactory.Options();
 		decodeOptions.inJustDecodeBounds = true;
 
@@ -48,15 +52,20 @@ public class AssetBitmapTextureAtlasSource extends BaseTextureAtlasSource implem
 			in = pAssetManager.open(pAssetPath);
 			BitmapFactory.decodeStream(in, null, decodeOptions);
 		} catch (final IOException e) {
-			Debug.e("Failed loading Bitmap in AssetBitmapTextureAtlasSource. AssetPath: " + pAssetPath, e);
+			Debug.e("Failed loading Bitmap in AssetBitmapTextureAtlasSource. AssetPath: "
+					+ pAssetPath, e);
 		} finally {
 			StreamUtils.close(in);
 		}
 
-		return new AssetBitmapTextureAtlasSource(pAssetManager, pAssetPath, pTextureX, pTextureY, decodeOptions.outWidth, decodeOptions.outHeight);
+		return new AssetBitmapTextureAtlasSource(pAssetManager, pAssetPath,
+				pTextureX, pTextureY, decodeOptions.outWidth - 1,
+				decodeOptions.outHeight - 1);
 	}
 
-	AssetBitmapTextureAtlasSource(final AssetManager pAssetManager, final String pAssetPath, final int pTextureX, final int pTextureY, final int pTextureWidth, final int pTextureHeight) {
+	AssetBitmapTextureAtlasSource(final AssetManager pAssetManager,
+			final String pAssetPath, final int pTextureX, final int pTextureY,
+			final int pTextureWidth, final int pTextureHeight) {
 		super(pTextureX, pTextureY, pTextureWidth, pTextureHeight);
 
 		this.mAssetManager = pAssetManager;
@@ -65,7 +74,9 @@ public class AssetBitmapTextureAtlasSource extends BaseTextureAtlasSource implem
 
 	@Override
 	public AssetBitmapTextureAtlasSource deepCopy() {
-		return new AssetBitmapTextureAtlasSource(this.mAssetManager, this.mAssetPath, this.mTextureX, this.mTextureY, this.mTextureWidth, this.mTextureHeight);
+		return new AssetBitmapTextureAtlasSource(this.mAssetManager,
+				this.mAssetPath, this.mTextureX, this.mTextureY,
+				this.mTextureWidth, this.mTextureHeight);
 	}
 
 	// ===========================================================
@@ -86,7 +97,9 @@ public class AssetBitmapTextureAtlasSource extends BaseTextureAtlasSource implem
 			in = this.mAssetManager.open(this.mAssetPath);
 			return BitmapFactory.decodeStream(in, null, decodeOptions);
 		} catch (final IOException e) {
-			Debug.e("Failed loading Bitmap in " + this.getClass().getSimpleName() + ". AssetPath: " + this.mAssetPath, e);
+			Debug.e("Failed loading Bitmap in "
+					+ this.getClass().getSimpleName() + ". AssetPath: "
+					+ this.mAssetPath, e);
 			return null;
 		} finally {
 			StreamUtils.close(in);
