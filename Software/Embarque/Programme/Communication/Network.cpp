@@ -4,7 +4,7 @@
 #include <stdio.h>
 
 #include "Tcp.h"
-//#include "Udp.h"
+#include "Udp.h"
 #include "Network.h"
 
 #define DEBUG 1
@@ -16,26 +16,26 @@ Network::Network()
 
 Network::~Network()
 {
-   // stopUdpServeur();
+    stopUdpServeur();
     stopTcpServeur();
 
 }
 
 // UDP managment
-/*int Network::startUdpServeur(){
-	return startUdpReception(this);
+int Network::startUdpServeur(){
+	return startUdpReception();
 }
 int Network::stopUdpServeur(){
 	return stopUdpReception();
 }
 int Network::isUdpRunning(){
 	return isUdpReceiving() ;
-}*/
+}
 
 
 // TCP managment
-int Network::startTcpServeur(){
-    return startTcpReception();
+int Network::startTcpServeur( AccelStepper *stepper ){
+    return startTcpReception( stepper );
 }
 int Network::stopTcpServeur(){
     return stopTcpReception();

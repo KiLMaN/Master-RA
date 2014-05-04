@@ -3,11 +3,12 @@
 #include <unistd.h>
 #include <stdio.h>
 
-#include "Def.h"
+#include "../Def.h"
 #include "Frame.h"
-#include "Tools.h"
+#include "../Tools/Tools.h"
 
 #define DEBUG 1
+
 
 Frame::Frame(char *receiveFrame, int sizeRead)
 {
@@ -75,7 +76,7 @@ netMessage* Frame::prepareMessage(char message[],int size){
 }
 
 
-netMessage* Frame::decodeFrame(bool *authorizedClient,int* numberConnectedclient){
+netMessage* Frame::decodeFrame(bool *authorizedClient,int* numberConnectedclient, AccelStepper *stepper, char *ip,  bool* activeVideo){
     switch(_receiveFrame[0]){
         case (char) 0xCC:{
             #ifdef DEBUG
@@ -94,6 +95,12 @@ netMessage* Frame::decodeFrame(bool *authorizedClient,int* numberConnectedclient
                 fflush(stdout);
             #endif
             *(authorizedClient) = false;
+            if( *(activeVideo) == true ){
+              	  system((char *) "killall -9 raspivid");
+			  	  char answer[] = {(char) 0x91};
+			  	  *(activeVideo) = false;
+			 
+			}
             char answer[] = {(char) 0xDD};
             return prepareMessage(answer, 1);
             break;
@@ -106,9 +113,17 @@ netMessage* Frame::decodeFrame(bool *authorizedClient,int* numberConnectedclient
                     fflush(stdout);
                 #endif
 
-                /// OPEN VIDEO
-                char answer[] = {(char) 0x81};
-                return prepareMessage(answer, 1);
+				if ( *activeVideo == false ){
+				
+                	char command[200];
+                	
+                	sprintf(command,"raspivid -t 0 -h %i -w %i -fps 25 -hf -n  -o - | gst-launch-0.10 -v fdsrc ! h264parse ! rtph264pay config-interval=1 pt=96 ! gdppay ! tcpserversink host=%s port=%i &", GST_HEIGHT, GST_WIDTH,ip ,GST_PORT);
+                	system(command);
+                	char answer[] = {(char) 0x81};
+                	printf("%s\n",command);
+                	*(activeVideo) = true;
+                	return prepareMessage(answer, 1);
+                }
             }
             char answer[] = {(char) 0x81,0x00};
             return prepareMessage(answer, 2);
@@ -122,9 +137,14 @@ netMessage* Frame::decodeFrame(bool *authorizedClient,int* numberConnectedclient
                     printf("Close video\n");
                     fflush(stdout);
                 #endif
-                /// CLOSE VIDEO
-                char answer[] = {(char) 0x91};
-                return prepareMessage(answer, 1);
+                
+                if( *(activeVideo) == true ){
+              	  system((char *) "killall -9 raspivid");
+			  	  char answer[] = {(char) 0x91};
+			  	  *(activeVideo) = false;
+			  	  return prepareMessage(answer, 1);
+			  	}
+			  	
             }
             char answer[] = {(char) 0x91, 0x00};
             return prepareMessage(answer, 2);
@@ -133,10 +153,28 @@ netMessage* Frame::decodeFrame(bool *authorizedClient,int* numberConnectedclient
 
         case (char) 0xA0:{
             if( *authorizedClient == true ){
+		long moveSize = (_receiveFrame[2] == 0x00)?_receiveFrame[3]:-_receiveFrame[3];
+
                 #ifdef DEBUG
-                    printf("Move\n");
+                    printf("Move motor %i Size: %d\n",_receiveFrame[1],moveSize);
                     fflush(stdout);
                 #endif
+                
+                if( _receiveFrame[1] == 0x00){
+                	if ( moveSize < SERVO_MIN_POS)
+                		moveSize = SERVO_MIN_POS;
+                	else if( moveSize > SERVO_MAX_POS)
+                		moveSize = SERVO_MAX_POS;
+                		
+                	char command[120];
+					sprintf(command,"echo %i=%i%% > /dev/servoblaster",SERVO_BLASTER_ID,moveSize);
+					printf("%s\n",command);
+					fflush(stdout);
+					system(command);
+					}
+                else if (_receiveFrame[1] == 0x80 ){
+                	stepper->move(moveSize*STEPPER_STEPS);
+                }
             }
         }
         default:{
@@ -147,5 +185,3 @@ netMessage* Frame::decodeFrame(bool *authorizedClient,int* numberConnectedclient
     }
     return NULL;
 }
-
-

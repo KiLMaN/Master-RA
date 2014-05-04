@@ -7,7 +7,7 @@
 //
 
 #include "Tools.h"
-
+#include <stdint.h>
 
 unsigned short calculateCRC16(char *data, unsigned short length)
 {

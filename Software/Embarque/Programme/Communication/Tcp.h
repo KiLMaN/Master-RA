@@ -1,7 +1,9 @@
 #ifndef TCP_H
 #define TCP_H
 
-int startTcpReception();
+#include "../Stepper/AccelStepper.h"
+
+int startTcpReception(AccelStepper* stepper);
 int stopTcpReception();
 int isTcpReceiving();
 

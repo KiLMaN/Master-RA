@@ -7,27 +7,30 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <net/if.h>
+#include <arpa/inet.h>
 
 #include <pthread.h>
-
 #include "Frame.h"
-
-#include "Def.h"
+#include "../Def.h"
 #include "Tcp.h"
 
-#define TIME_OUT 10
-#define DEBUG 1
 
+#define DEBUG 1
 
 struct connectHandler{
     int* connectedClient;
+    AccelStepper *stepper;
     int  sock;
 };
 
+int	sockfd;
+
+
 int _continueTcp = 0;
+bool isWorking = false;
 pthread_t ReceiveTcpMsg;
 
-int openTcpSocket();
+void openTcpSocket();
 void *receiveTcpMessage(void *temp);
 void *connection_handler(void *socket_desc);
 
@@ -37,11 +40,11 @@ int isTcpReceiving() {
     return _continueTcp;
 }
 
-int startTcpReception(){
+int startTcpReception(AccelStepper *stepper){
     _continueTcp = 1;
-    
+
     // Create thread for TCP reception
-    pthread_create(&ReceiveTcpMsg,NULL,receiveTcpMessage,NULL);
+    pthread_create(&ReceiveTcpMsg,NULL,receiveTcpMessage,(void *)stepper);
     return 1;
 }
 
@@ -50,17 +53,20 @@ int stopTcpReception(){
         return 1;
     _continueTcp = 0; // Set the continue flag to 0 for indicate end
 
-	#ifdef DEBUG
-		printf("TCP: Stop server \n");
-        	fflush(stdout);
-    	#endif
-    void * ret;
-    pthread_join(ReceiveTcpMsg,&ret); // Wait the end of this thread
+
+    while( isWorking == true ) usleep(100000);
+
+    pthread_cancel(ReceiveTcpMsg);
+
+    #ifdef DEBUG
+        printf("TCP: Stop server \n");
+        fflush(stdout);
+    #endif
     return 1;
 }
 
-int openTcpSocket(){
-    int	sockfd, port = TCP_PORT_DEFAULT;
+void openTcpSocket(){
+    int port = TCP_PORT_DEFAULT;
 	struct sockaddr_in	serv_addr;
 
 
@@ -82,19 +88,29 @@ int openTcpSocket(){
             printf("Tcp: Can't bind local address: Port:%i \n",port);
             fflush(stdout);
         #endif
+        close(sockfd);
+        sockfd = 0;
     }
 	#ifdef DEBUG
         printf("Tcp: Open socket OK: Port: %i\n",port);
         fflush(stdout);
     #endif
-	return sockfd;
 }
 
 
 
 /// Recieve functions
 void *receiveTcpMessage(void* temp){
-    int sockfd = openTcpSocket(); // Open socket for Tcp connection
+	AccelStepper *stepper = (AccelStepper *) temp;
+	if ( stepper == NULL )
+		return NULL;
+
+
+    openTcpSocket(); // Open socket for Tcp connection
+    while( sockfd == 0){
+        sleep(1);
+        openTcpSocket();
+    }
 
     if( sockfd == 0) // Error on open socket
         return NULL;
@@ -105,7 +121,6 @@ void *receiveTcpMessage(void* temp){
 
 	int _connectedClient = 0;
 
-//	pthread_t thread_id;
 	int c = sizeof(struct sockaddr_in);
 
 
@@ -115,22 +130,28 @@ void *receiveTcpMessage(void* temp){
 		    connectHandler *ch =  (connectHandler *) malloc(sizeof(connectHandler));
             ch->connectedClient = &_connectedClient;
             ch->sock = newsockfd;
+            ch->stepper = stepper;
             connection_handler((void *) ch);
-			//pthread_create( &thread_id , NULL ,  connection_handler , (void*)ch);
 		}
 	}
 	return NULL;
 }
 
+char* getIp(int newfd) {
+    struct sockaddr_in addr;
+    socklen_t addr_size = sizeof(struct sockaddr_in);
+    int res = getpeername(newfd, (struct sockaddr *)&addr, &addr_size);
+    char *clientip = new char[20];
+    strcpy(clientip, inet_ntoa(addr.sin_addr));
+    
+    return clientip;
+}
+
 void *connection_handler(void *tCh)
 {
-    // time out definition
-    struct timeval tv;
-    tv.tv_sec = TIME_OUT;
-    tv.tv_usec = 0;
-
 	bool authorizedClient = false;
-
+	bool activeVideo = false;
+	
 	#ifdef DEBUG
 		printf("Tcp: Client connection\n");
 		fflush(stdout);
@@ -139,21 +160,21 @@ void *connection_handler(void *tCh)
 
     //Get the socket descriptor
     connectHandler *ch = (connectHandler *) tCh;
+    char *ip = getIp(ch->sock);
+   
+    
+    fflush(stdout);
     int sock = ch->sock;
     int read_size;
     char client_message[2000];
 
-
-	setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, (char *)&tv,sizeof(struct timeval) ); // SET Time OUT
-
-
     //Receive a message from client
-    while( _continueTcp && (read_size = (int)read(sock , client_message , 2000)) > 0 )
-    {
+    while( _continueTcp && (read_size = (int)read(sock , client_message , 2000)) > 0 ){
 		 if(strlen(client_message) > 0){                        // If data recieve
+             isWorking = true;
             Frame *f = new Frame(client_message, read_size);
             if(f->verifyFormat() == true){
-                netMessage* m = f->decodeFrame(&authorizedClient, ch->connectedClient);
+                netMessage* m = f->decodeFrame(&authorizedClient, ch->connectedClient, ch->stepper, ip , &activeVideo);
                 if(m != NULL && m->size > 0){
                      if(write(sock,m->msg,m->size) < 0){
 						#ifdef DEBUG
@@ -166,6 +187,7 @@ void *connection_handler(void *tCh)
 
 		//clear the message buffer
 		memset(client_message, 0, 2000);
+        isWorking = false;
         }
     }
 
@@ -173,6 +195,10 @@ void *connection_handler(void *tCh)
     if( authorizedClient == true && *(ch->connectedClient) > 0){
         *ch->connectedClient = *ch->connectedClient - 1;
     }
-
+    if ( activeVideo == true ){
+    	system((char *) "killall -9 raspivid");
+    }
+    isWorking = false;
+    
     return NULL;
 }
