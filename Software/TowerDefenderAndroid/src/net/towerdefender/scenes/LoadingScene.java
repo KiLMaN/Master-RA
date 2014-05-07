@@ -10,7 +10,7 @@ public class LoadingScene extends BaseScene {
 	@Override
 	public void createScene() {
 		setBackground(new Background(Color.WHITE));
-		Text LoadingText = new Text(0, 0, resourcesManager.Coolvetiva, "Loading...",
+		Text LoadingText = new Text(0, 0, resourcesManager.Coolvetica, "Loading...",
 				vbom);
 		LoadingText.setPosition(camera.getCenterX()
 				- (LoadingText.getWidth() / 2), camera.getCenterY()

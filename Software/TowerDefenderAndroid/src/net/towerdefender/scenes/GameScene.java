@@ -7,13 +7,16 @@ import net.towerdefender.manager.ResourcesManager;
 import net.towerdefender.manager.SceneManager;
 import net.towerdefender.manager.SceneManager.SceneType;
 
+import org.andengine.engine.camera.Camera;
 import org.andengine.engine.camera.hud.HUD;
 import org.andengine.engine.camera.hud.controls.AnalogOnScreenControl;
 import org.andengine.engine.camera.hud.controls.AnalogOnScreenControl.IAnalogOnScreenControlListener;
 import org.andengine.engine.camera.hud.controls.BaseOnScreenControl;
 import org.andengine.entity.scene.background.Background;
+import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.text.Text;
 import org.andengine.entity.text.TextOptions;
+import org.andengine.input.touch.TouchEvent;
 import org.andengine.opengl.util.GLState;
 import org.andengine.util.HorizontalAlign;
 import org.andengine.util.color.Color;
@@ -23,8 +26,9 @@ import android.opengl.GLES20;
 public class GameScene extends BaseScene {
 
 	private HUD gameHUD;
+	private Sprite pictureSettings;
 	private Text scoreText;
-	private Text fpsText;
+	private Text lifeText;
 	private int score = 0;
 
 	@Override
@@ -47,7 +51,20 @@ public class GameScene extends BaseScene {
 
 	@Override
 	public void disposeScene() {
-
+		gameHUD.detachSelf();
+		gameHUD.dispose();
+		
+		pictureSettings.detachSelf();
+		pictureSettings.dispose();
+		
+		scoreText.detachSelf();
+		scoreText.dispose();
+		
+		lifeText.detachSelf();
+		lifeText.dispose();
+		
+		this.detachSelf();
+		this.dispose();
 	}
 
 	private void createBackground() {
@@ -65,19 +82,40 @@ public class GameScene extends BaseScene {
 
 	private void createHUD() {
 		gameHUD = new HUD();
+		
+		// CREATE SPRITE SETTINGS
+		pictureSettings = new Sprite(0, 0, resourcesManager.buttonOptionSettings_region, vbom) {
+			@Override
+			protected void preDraw(GLState pGLState, Camera pCamera) {
+				super.preDraw(pGLState, pCamera);
+				pGLState.enableDither();
+			}
+			/*
+		     public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
+   	          //Insert Code Here
+   	          return true;
+		     }
+		     */
+
+		};
+		pictureSettings.setHeight(100);
+		pictureSettings.setWidth(100);
+		gameHUD.attachChild(pictureSettings);
 
 		// CREATE SCORE TEXT
-		scoreText = new Text(0, 0, resourcesManager.Coolvetiva,
+		scoreText = new Text(0, 0, resourcesManager.Coolvetica,
 				"Score: 0123456789", new TextOptions(HorizontalAlign.LEFT),
 				vbom);
-		scoreText.setPosition(0, 0);
+		scoreText.setPosition(0, 100);
 		scoreText.setText("Score: 0");
-		gameHUD.attachChild(scoreText);
-		fpsText = new Text(0, 0, resourcesManager.Coolvetiva, "FPS : ",
+		gameHUD.attachChild(scoreText);	
+		
+		// CREATE LIFE TEXT
+		lifeText = new Text(0, 0, resourcesManager.Coolvetica, "Life : 987654321",
 				new TextOptions(HorizontalAlign.LEFT), vbom);
-		fpsText.setPosition(0, 100);
-		fpsText.setText("FPS : NA");
-		gameHUD.attachChild(fpsText);
+		lifeText.setPosition(0, 200);
+		lifeText.setText("Life : 0");
+		gameHUD.attachChild(lifeText);
 
 		camera.setHUD(gameHUD);
 	}

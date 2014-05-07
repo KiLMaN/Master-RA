@@ -32,7 +32,7 @@ public class ResourcesManager {
 
 	private static final ResourcesManager INSTANCE = new ResourcesManager();
 
-	public Font Coolvetiva;
+	public Font Coolvetica;
 
 	public Engine engine;
 	public GameActivity activity;
@@ -53,6 +53,8 @@ public class ResourcesManager {
 	public ITextureRegion onScreenControlBase;
 	public ITextureRegion onScreenControlKnob;
 	private BuildableBitmapTextureAtlas onScreenControlTextureAtlas;
+	public ITextureRegion buttonOptionSettings_region;
+	private BuildableBitmapTextureAtlas gameTextureAtlas;
 
 	// ---------------------------------------------
 	// TEXTURES & TEXTURE REGIONS
@@ -126,6 +128,25 @@ public class ResourcesManager {
 		} catch (final TextureAtlasBuilderException e) {
 			Log.e("TD", e.toString());
 		}
+
+		BitmapTextureAtlasTextureRegionFactory
+				.setAssetBasePath("gfx/TowerDefender/game/");
+
+		gameTextureAtlas = new BuildableBitmapTextureAtlas(
+				activity.getTextureManager(), 512, 512, TextureOptions.BILINEAR);
+
+		buttonOptionSettings_region = BitmapTextureAtlasTextureRegionFactory
+				.createFromAsset(gameTextureAtlas, activity, "settings.png");
+
+		try {
+			this.gameTextureAtlas
+					.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(
+							0, 1, 0));
+			this.gameTextureAtlas.load();
+		} catch (final TextureAtlasBuilderException e) {
+			Log.e("TD2", e.toString());
+		}
+
 	}
 
 	private void loadGameFonts() {
@@ -150,11 +171,11 @@ public class ResourcesManager {
 				activity.getTextureManager(), 256, 256,
 				TextureOptions.BILINEAR_PREMULTIPLYALPHA);
 
-		Coolvetiva = FontFactory.createStrokeFromAsset(
+		Coolvetica = FontFactory.createStrokeFromAsset(
 				activity.getFontManager(), mainFontTexture,
 				activity.getAssets(), "coolvetica.ttf", 50, true, Color.WHITE,
 				2, Color.WHITE, true);
-		Coolvetiva.load();
+		Coolvetica.load();
 	}
 
 	public void unloadGameTextures() {
