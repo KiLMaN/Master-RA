@@ -32,6 +32,7 @@ import android.hardware.Camera.AutoFocusCallback;
 import android.hardware.Camera.Parameters;
 import android.hardware.Camera.PreviewCallback;
 import android.hardware.Camera.Size;
+import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.util.Log;
 import edu.dhbw.andar.exceptions.AndARException;
@@ -204,10 +205,10 @@ public class CameraPreviewHandler implements PreviewCallback {
 			this.mode = pMode;
 			switch(mode) {
 			case MODE_RGB:
-				frameSink.setMode(GL10.GL_RGB);
+				frameSink.setMode(GLES20.GL_RGB);
 				break;
 			case MODE_GRAY:
-				frameSink.setMode(GL10.GL_LUMINANCE);
+				frameSink.setMode(GLES20.GL_LUMINANCE);
 				break;
 			}
 		}		

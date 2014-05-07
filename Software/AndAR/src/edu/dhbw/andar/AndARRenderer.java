@@ -34,7 +34,6 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.PixelFormat;
-import android.opengl.GLDebugHelper;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView.Renderer;
 import android.util.Log;
@@ -122,16 +121,17 @@ public class AndARRenderer implements Renderer, PreviewFrameSink {
 	 */
 	@Override
 	public final void onDrawFrame(GL10 gl) {
-		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
+		GLES20.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 
-		if (DEBUG)
-			gl = (GL10) GLDebugHelper.wrap(gl,
-					GLDebugHelper.CONFIG_CHECK_GL_ERROR, log);
+		/*
+		 * if (DEBUG) gl = (GL10) GLDebugHelper.wrap(gl,
+		 * GLDebugHelper.CONFIG_CHECK_GL_ERROR, log);
+		 */
 		setupDraw2D(gl);
-		gl.glDisable(GL10.GL_DEPTH_TEST);
-		gl.glEnable(GL10.GL_TEXTURE_2D);
-		gl.glDisable(GL10.GL_LIGHTING);
-		gl.glBindTexture(GL10.GL_TEXTURE_2D, textureName);
+		GLES20.glDisable(GLES20.GL_DEPTH_TEST);
+		GLES20.glEnable(GLES20.GL_TEXTURE_2D);
+		// GLES20.glDisable(GLES20.GL_LIGHTING);
+		GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureName);
 		// load new preview frame as a texture, if needed
 		if (frameEnqueued) {
 			frameLock.lock();
@@ -141,41 +141,45 @@ public class AndARRenderer implements Renderer, PreviewFrameSink {
 				// just update the image
 				// can we just update a portion(non power of two)?...seems to
 				// work
-				gl.glTexSubImage2D(GL10.GL_TEXTURE_2D, 0, 0, 0,
+				GLES20.glTexSubImage2D(GLES20.GL_TEXTURE_2D, 0, 0, 0,
 						previewFrameWidth, previewFrameHeight, mode,
-						GL10.GL_UNSIGNED_BYTE, frameData);
+						GLES20.GL_UNSIGNED_BYTE, frameData);
 			}
 			frameLock.unlock();
-			gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER,
-					GL10.GL_LINEAR);
-			gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER,
-					GL10.GL_LINEAR);
+			GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D,
+					GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR);
+			GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D,
+					GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
 			frameEnqueued = false;
 		}
 
-		gl.glColor4f(1, 1, 1, 1f);
+		// gl.glColor4f(1, 1, 1, 1f);
 		// draw camera preview frame:
-		gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
-		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+		// gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
+		// gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
 
-		gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, textureBuffer);
-		gl.glVertexPointer(3, GL10.GL_FLOAT, 0, squareBuffer);
+		// gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, textureBuffer);
+		// gl.glVertexPointer(3, GL10.GL_FLOAT, 0, squareBuffer);
 
 		// draw camera square
-		gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
+		// gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
 
-		gl.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
-		gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
+		// gl.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
+		// gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
 
 		if (customRenderer != null)
 			customRenderer.setupEnv(gl);
 		else {
-			gl.glEnable(GL10.GL_LIGHTING);
-			gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_AMBIENT, ambientLightBuffer);
-			gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_DIFFUSE, diffuseLightBuffer);
-			gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_SPECULAR, specularLightBuffer);
-			gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_POSITION, lightPositionBuffer);
-			gl.glEnable(GL10.GL_LIGHT0);
+			GLES20.glEnable(GL10.GL_LIGHTING);
+			/*
+			 * gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_AMBIENT,
+			 * ambientLightBuffer); gl.glLightfv(GL10.GL_LIGHT0,
+			 * GL10.GL_DIFFUSE, diffuseLightBuffer);
+			 * gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_SPECULAR,
+			 * specularLightBuffer); gl.glLightfv(GL10.GL_LIGHT0,
+			 * GL10.GL_POSITION, lightPositionBuffer);
+			 */
+			GLES20.glEnable(GL10.GL_LIGHT0);
 		}
 
 		markerInfo.draw(gl);
@@ -225,7 +229,7 @@ public class AndARRenderer implements Renderer, PreviewFrameSink {
 	@Override
 	public void onSurfaceChanged(GL10 gl, int width, int height) {
 		// TODO handle landscape view
-		gl.glViewport(0, 0, width, height);
+		GLES20.glViewport(0, 0, width, height);
 		aspectRatio = (float) width / (float) height;
 		setupDraw2D(gl);
 		square = new float[] { -100f * aspectRatio, -100.0f, -1f,
@@ -242,13 +246,13 @@ public class AndARRenderer implements Renderer, PreviewFrameSink {
 	 * Setup OpenGL to draw in 2D.
 	 */
 	private void setupDraw2D(GL10 gl) {
-		gl.glMatrixMode(GL10.GL_PROJECTION);
-		gl.glLoadIdentity();
-		gl.glOrthof(-100.0f * aspectRatio, 100.0f * aspectRatio, -100.0f,
-				100.0f, 1.0f, -1.0f);
-
-		gl.glMatrixMode(GL10.GL_MODELVIEW);
-		gl.glLoadIdentity();
+		/*
+		 * gl.glMatrixMode(GL10.GL_PROJECTION); gl.glLoadIdentity();
+		 * gl.glOrthof(-100.0f * aspectRatio, 100.0f * aspectRatio, -100.0f,
+		 * 100.0f, 1.0f, -1.0f);
+		 * 
+		 * gl.glMatrixMode(GL10.GL_MODELVIEW); gl.glLoadIdentity();
+		 */
 	}
 
 	/*
@@ -260,14 +264,14 @@ public class AndARRenderer implements Renderer, PreviewFrameSink {
 	 */
 	@Override
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-		gl.glClearColor(0, 0, 0, 0);
-		gl.glClearDepthf(1.0f);
+		GLES20.glClearColor(0, 0, 0, 0);
+		GLES20.glClearDepthf(1.0f);
 		// enable textures:
-		gl.glEnable(GL10.GL_TEXTURE_2D);
+		GLES20.glEnable(GL10.GL_TEXTURE_2D);
 
 		int[] textureNames = new int[1];
 		// generate texture names:
-		gl.glGenTextures(1, textureNames, 0);
+		GLES20.glGenTextures(1, textureNames, 0);
 		textureName = textureNames[0];
 
 		textureBuffer = makeFloatBuffer(textureCoords);
@@ -347,16 +351,17 @@ public class AndARRenderer implements Renderer, PreviewFrameSink {
 		byte[] frame;
 		switch (mode) {
 		default:
-			mode = GL10.GL_RGB;
-		case GL10.GL_RGB:
+			mode = GLES20.GL_RGB;
+		case GLES20.GL_RGB:
 			frame = new byte[textureSize * textureSize * 3];
 			break;
-		case GL10.GL_LUMINANCE:
+		case GLES20.GL_LUMINANCE:
 			frame = new byte[textureSize * textureSize];
 			break;
 		}
-		gl.glTexImage2D(GL10.GL_TEXTURE_2D, 0, mode, textureSize, textureSize,
-				0, mode, GL10.GL_UNSIGNED_BYTE, ByteBuffer.wrap(frame));
+		GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, mode, textureSize,
+				textureSize, 0, mode, GLES20.GL_UNSIGNED_BYTE,
+				ByteBuffer.wrap(frame));
 		isTextureInitialized = true;
 	}
 
@@ -367,12 +372,12 @@ public class AndARRenderer implements Renderer, PreviewFrameSink {
 	 */
 	public void setMode(int pMode) {
 		switch (pMode) {
-		case GL10.GL_RGB:
-		case GL10.GL_LUMINANCE:
+		case GLES20.GL_RGB:
+		case GLES20.GL_LUMINANCE:
 			this.mode = pMode;
 			break;
 		default:
-			this.mode = GL10.GL_RGB;
+			this.mode = GLES20.GL_RGB;
 			break;
 		}
 		if (pMode != this.mode)
