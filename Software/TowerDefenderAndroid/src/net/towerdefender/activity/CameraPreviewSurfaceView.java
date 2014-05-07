@@ -3,8 +3,8 @@ package net.towerdefender.activity;
 import java.io.IOException;
 import java.util.List;
 
-
 import org.andengine.util.debuging.Debuging;
+
 import android.content.Context;
 import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
@@ -58,7 +58,7 @@ public class CameraPreviewSurfaceView extends SurfaceView implements
 		try {
 			this.mCamera.setPreviewDisplay(pSurfaceHolder);
 		} catch (IOException e) {
-			//Debug.e("Error in Camera.setPreviewDisplay", e);
+			Debuging.e("Error in Camera.setPreviewDisplay", e);
 		}
 	}
 
