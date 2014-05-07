@@ -1,7 +1,7 @@
 package org.andengine.opengl.texture.atlas.bitmap.source;
 
 import org.andengine.opengl.texture.atlas.source.BaseTextureAtlasSource;
-import org.andengine.util.debug.Debug;
+import org.andengine.util.debuging.Debuging;
 
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
@@ -63,7 +63,7 @@ public abstract class PictureBitmapTextureAtlasSource extends BaseTextureAtlasSo
 	public Bitmap onLoadBitmap(final Config pBitmapConfig) {
 		final Picture picture = this.mPicture;
 		if(picture == null) {
-			Debug.e("Failed loading Bitmap in " + this.getClass().getSimpleName() + ".");
+			Debuging.e("Failed loading Bitmap in " + this.getClass().getSimpleName() + ".");
 			return null;
 		}
 

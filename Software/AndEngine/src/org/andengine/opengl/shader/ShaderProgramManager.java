@@ -2,7 +2,7 @@ package org.andengine.opengl.shader;
 
 import java.util.ArrayList;
 
-import org.andengine.util.debug.Debug;
+import org.andengine.util.debuging.Debuging;
 
 
 /**
@@ -62,13 +62,13 @@ public class ShaderProgramManager {
 		}
 
 		if(pShaderProgram.isCompiled()) {
-			Debug.w("Loading an already compiled " + ShaderProgram.class.getSimpleName() + ": '" + pShaderProgram.getClass().getSimpleName() + "'. '" + pShaderProgram.getClass().getSimpleName() + "' will be recompiled.");
+			Debuging.w("Loading an already compiled " + ShaderProgram.class.getSimpleName() + ": '" + pShaderProgram.getClass().getSimpleName() + "'. '" + pShaderProgram.getClass().getSimpleName() + "' will be recompiled.");
 
 			pShaderProgram.setCompiled(false);
 		}
 
 		if(this.mShaderProgramsManaged.contains(pShaderProgram)) {
-			Debug.w("Loading an already loaded " + ShaderProgram.class.getSimpleName() + ": '" + pShaderProgram.getClass().getSimpleName() + "'.");
+			Debuging.w("Loading an already loaded " + ShaderProgram.class.getSimpleName() + ": '" + pShaderProgram.getClass().getSimpleName() + "'.");
 		} else {
 			this.mShaderProgramsManaged.add(pShaderProgram);
 		}

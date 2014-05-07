@@ -7,7 +7,7 @@ import java.io.InputStreamReader;
 
 import org.andengine.util.StreamUtils;
 import org.andengine.util.TextUtils;
-import org.andengine.util.debug.Debug;
+import org.andengine.util.debuging.Debuging;
 
 /**
  * (c) Zynga 2011
@@ -75,7 +75,7 @@ public class CPUUsage {
 			this.mTotal = total;
 			this.mIdle = idle;
 		} catch (final IOException e) {
-			Debug.e(e);
+			Debuging.e(e);
 		} finally {
 			StreamUtils.close(reader);
 		}

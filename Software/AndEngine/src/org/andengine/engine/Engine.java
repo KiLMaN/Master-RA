@@ -39,7 +39,7 @@ import org.andengine.opengl.texture.TextureManager;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.opengl.util.GLState;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
-import org.andengine.util.debug.Debug;
+import org.andengine.util.debuging.Debuging;
 import org.andengine.util.time.TimeConstants;
 
 import android.content.Context;
@@ -412,7 +412,7 @@ public class Engine implements SensorEventListener, OnTouchListener, ITouchEvent
 				/* Because a human cannot interact 1000x per second, we pause the UI-Thread for a little. */
 				Thread.sleep(this.mEngineOptions.getTouchOptions().getTouchEventIntervalMilliseconds());
 			} catch (final InterruptedException e) {
-				Debug.e(e);
+				Debuging.e(e);
 			}
 			return true;
 		} else {
@@ -503,8 +503,8 @@ public class Engine implements SensorEventListener, OnTouchListener, ITouchEvent
 		try {
 			this.mUpdateThread.join();
 		} catch (final InterruptedException e) {
-			Debug.e("Could not join UpdateThread.", e);
-			Debug.w("Trying to manually interrupt UpdateThread.");
+			Debuging.e("Could not join UpdateThread.", e);
+			Debuging.w("Trying to manually interrupt UpdateThread.");
 			this.mUpdateThread.interrupt();
 		}
 
@@ -821,7 +821,7 @@ public class Engine implements SensorEventListener, OnTouchListener, ITouchEvent
 				}
 			} catch (final InterruptedException e) {
 				if(BuildConfig.DEBUG) {
-					Debug.d(this.getClass().getSimpleName() + " interrupted. Don't worry - this " + e.getClass().getSimpleName() + " is most likely expected!", e);
+					Debuging.d(this.getClass().getSimpleName() + " interrupted. Don't worry - this " + e.getClass().getSimpleName() + " is most likely expected!", e);
 				}
 				this.interrupt();
 			}

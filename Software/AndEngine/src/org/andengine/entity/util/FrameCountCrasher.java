@@ -2,7 +2,7 @@ package org.andengine.entity.util;
 
 import org.andengine.BuildConfig;
 import org.andengine.engine.handler.IUpdateHandler;
-import org.andengine.util.debug.Debug;
+import org.andengine.util.debuging.Debuging;
 
 /**
  * (c) 2010 Nicolas Gramlich 
@@ -51,7 +51,7 @@ public class FrameCountCrasher implements IUpdateHandler {
 		} else {
 			if(BuildConfig.DEBUG) {
 				for(int i = frameLengths.length - 1; i >= 0; i--) {
-					Debug.d("Elapsed: " + frameLengths[i]);
+					Debuging.d("Elapsed: " + frameLengths[i]);
 				}
 			}
 

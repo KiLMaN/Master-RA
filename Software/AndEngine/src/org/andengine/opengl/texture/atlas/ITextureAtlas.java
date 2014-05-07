@@ -4,7 +4,7 @@ import org.andengine.BuildConfig;
 import org.andengine.opengl.texture.ITexture;
 import org.andengine.opengl.texture.ITextureStateListener;
 import org.andengine.opengl.texture.atlas.source.ITextureAtlasSource;
-import org.andengine.util.debug.Debug;
+import org.andengine.util.debuging.Debuging;
 
 /**
  * (c) 2010 Nicolas Gramlich
@@ -81,24 +81,24 @@ public interface ITextureAtlas<T extends ITextureAtlasSource> extends ITexture {
 			@Override
 			public void onLoadedToHardware(final ITexture pTexture) {
 				if(BuildConfig.DEBUG) {
-					Debug.d("Texture loaded: " + pTexture.toString());
+					Debuging.d("Texture loaded: " + pTexture.toString());
 				}
 			}
 
 			@Override
 			public void onTextureAtlasSourceLoaded(final ITextureAtlas<T> pTextureAtlas, final T pTextureAtlasSource) {
-				Debug.e("Loaded TextureAtlasSource. TextureAtlas: " + pTextureAtlas.toString() + " TextureAtlasSource: " + pTextureAtlasSource.toString());
+				Debuging.e("Loaded TextureAtlasSource. TextureAtlas: " + pTextureAtlas.toString() + " TextureAtlasSource: " + pTextureAtlasSource.toString());
 			}
 
 			@Override
 			public void onTextureAtlasSourceLoadExeption(final ITextureAtlas<T> pTextureAtlas, final T pTextureAtlasSource, final Throwable pThrowable) {
-				Debug.e("Exception loading TextureAtlasSource. TextureAtlas: " + pTextureAtlas.toString() + " TextureAtlasSource: " + pTextureAtlasSource.toString(), pThrowable);
+				Debuging.e("Exception loading TextureAtlasSource. TextureAtlas: " + pTextureAtlas.toString() + " TextureAtlasSource: " + pTextureAtlasSource.toString(), pThrowable);
 			}
 
 			@Override
 			public void onUnloadedFromHardware(final ITexture pTexture) {
 				if(BuildConfig.DEBUG) {
-					Debug.d("Texture unloaded: " + pTexture.toString());
+					Debuging.d("Texture unloaded: " + pTexture.toString());
 				}
 			}
 		}

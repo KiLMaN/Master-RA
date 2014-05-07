@@ -8,7 +8,7 @@ import org.andengine.entity.Entity;
 import org.andengine.entity.util.ScreenGrabber.IScreenGrabberCallback;
 import org.andengine.opengl.util.GLState;
 import org.andengine.util.StreamUtils;
-import org.andengine.util.debug.Debug;
+import org.andengine.util.debuging.Debuging;
 
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
@@ -98,7 +98,7 @@ public class ScreenCapture extends Entity implements IScreenGrabberCallback {
 			pBitmap.compress(CompressFormat.PNG, 100, out);
 		} catch (final FileNotFoundException e) {
 			StreamUtils.flushCloseStream(out);
-			Debug.e("Error saving file to: " + pFilePath, e);
+			Debuging.e("Error saving file to: " + pFilePath, e);
 			throw e;
 		}
 	}

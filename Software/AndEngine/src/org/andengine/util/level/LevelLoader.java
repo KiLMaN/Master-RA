@@ -10,7 +10,7 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.andengine.util.StreamUtils;
-import org.andengine.util.debug.Debug;
+import org.andengine.util.debuging.Debuging;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
@@ -130,10 +130,10 @@ public class LevelLoader {
 
 			this.onAfterLoadLevel();
 		} catch (final SAXException se) {
-			Debug.e(se);
+			Debuging.e(se);
 			/* Doesn't happen. */
 		} catch (final ParserConfigurationException pe) {
-			Debug.e(pe);
+			Debuging.e(pe);
 			/* Doesn't happen. */
 		} finally {
 			StreamUtils.close(pInputStream);

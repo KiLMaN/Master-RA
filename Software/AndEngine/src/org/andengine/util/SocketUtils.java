@@ -5,7 +5,7 @@ import java.net.DatagramSocket;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import org.andengine.util.debug.Debug;
+import org.andengine.util.debuging.Debuging;
 
 /**
  * (c) 2010 Nicolas Gramlich 
@@ -50,7 +50,7 @@ public final class SocketUtils {
 			try {
 				pSocket.close();
 			} catch (final IOException e) {
-				Debug.e(e);
+				Debuging.e(e);
 			}
 		}
 	}
@@ -60,7 +60,7 @@ public final class SocketUtils {
 			try {
 				pServerSocket.close();
 			} catch (final IOException e) {
-				Debug.e(e);
+				Debuging.e(e);
 			}
 		}
 	}

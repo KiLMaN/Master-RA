@@ -55,6 +55,7 @@ public class Game {
 					.getEnemiesLeftToSpawn();
 			ArrayList<Enemie> enemiesAlive = currentWave.getEnemiesAlive();
 
+			// Apparition des ennemies
 			if (enemiesToSpawn.size() > 0) {
 				currentWave.decreaseSpawnCooldown();
 				if (currentWave.getSpawnCooldown() == 0) {

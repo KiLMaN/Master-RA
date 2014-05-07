@@ -2,7 +2,7 @@ package org.andengine.opengl.texture.atlas.bitmap.source.decorator;
 
 import org.andengine.opengl.texture.atlas.bitmap.source.IBitmapTextureAtlasSource;
 import org.andengine.opengl.texture.atlas.source.BaseTextureAtlasSource;
-import org.andengine.util.debug.Debug;
+import org.andengine.util.debuging.Debuging;
 
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
@@ -92,7 +92,7 @@ public abstract class BaseBitmapTextureAtlasSourceDecorator extends BaseTextureA
 		try {
 			this.onDecorateBitmap(canvas);
 		} catch (final Exception e) {
-			Debug.e(e);
+			Debuging.e(e);
 		}
 		return bitmap;
 	}

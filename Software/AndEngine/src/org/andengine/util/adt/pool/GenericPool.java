@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import org.andengine.BuildConfig;
-import org.andengine.util.debug.Debug;
+import org.andengine.util.debuging.Debuging;
 
 /**
  * (c) 2010 Nicolas Gramlich
@@ -133,7 +133,7 @@ public abstract class GenericPool<T> {
 				item = this.mAvailableItems.remove(this.mAvailableItems.size() - 1);
 			}
 			if(BuildConfig.DEBUG) {
-				Debug.v(this.getClass().getName() + "<" + item.getClass().getSimpleName() +"> was exhausted, with " + this.mUnrecycledItemCount + " item not yet recycled. Allocated " + this.mGrowth + " more.");
+				Debuging.v(this.getClass().getName() + "<" + item.getClass().getSimpleName() +"> was exhausted, with " + this.mUnrecycledItemCount + " item not yet recycled. Allocated " + this.mGrowth + " more.");
 			}
 		}
 		this.onHandleObtainItem(item);
@@ -156,7 +156,7 @@ public abstract class GenericPool<T> {
 		this.mUnrecycledItemCount--;
 
 		if(this.mUnrecycledItemCount < 0) {
-			Debug.e("More items recycled than obtained!");
+			Debuging.e("More items recycled than obtained!");
 		}
 	}
 

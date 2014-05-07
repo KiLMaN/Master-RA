@@ -7,7 +7,7 @@ import java.util.Scanner;
 import java.util.regex.MatchResult;
 
 import org.andengine.util.StreamUtils;
-import org.andengine.util.debug.Debug;
+import org.andengine.util.debuging.Debuging;
 
 import android.content.Context;
 import android.content.pm.PackageInfo;
@@ -82,7 +82,7 @@ public class SystemUtils {
 		try {
 			return pContext.getPackageManager().getPackageInfo(pContext.getPackageName(), 0);
 		} catch (final NameNotFoundException e) {
-			Debug.e(e);
+			Debuging.e(e);
 			return null;
 		}
 	}

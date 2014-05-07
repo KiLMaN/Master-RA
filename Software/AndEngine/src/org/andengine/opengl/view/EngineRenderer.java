@@ -6,7 +6,7 @@ import javax.microedition.khronos.opengles.GL10;
 import org.andengine.engine.Engine;
 import org.andengine.engine.options.RenderOptions;
 import org.andengine.opengl.util.GLState;
-import org.andengine.util.debug.Debug;
+import org.andengine.util.debuging.Debuging;
 
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
@@ -122,7 +122,7 @@ public class EngineRenderer implements GLSurfaceView.Renderer {
 			try {
 				this.mEngine.onDrawFrame(this.mGLState);
 			} catch (final InterruptedException e) {
-				Debug.e("GLThread interrupted!", e);
+				Debuging.e("GLThread interrupted!", e);
 			}
 		}
 

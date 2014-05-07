@@ -8,7 +8,7 @@ import java.io.InputStream;
 import org.andengine.opengl.texture.atlas.source.BaseTextureAtlasSource;
 import org.andengine.util.FileUtils;
 import org.andengine.util.StreamUtils;
-import org.andengine.util.debug.Debug;
+import org.andengine.util.debuging.Debuging;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -51,7 +51,7 @@ public class FileBitmapTextureAtlasSource extends BaseTextureAtlasSource impleme
 			in = new FileInputStream(pFile);
 			BitmapFactory.decodeStream(in, null, decodeOptions);
 		} catch (final IOException e) {
-			Debug.e("Failed loading Bitmap in " + FileBitmapTextureAtlasSource.class.getSimpleName() + ". File: " + pFile, e);
+			Debuging.e("Failed loading Bitmap in " + FileBitmapTextureAtlasSource.class.getSimpleName() + ". File: " + pFile, e);
 		} finally {
 			StreamUtils.close(in);
 		}
@@ -96,7 +96,7 @@ public class FileBitmapTextureAtlasSource extends BaseTextureAtlasSource impleme
 			in = new FileInputStream(this.mFile);
 			return BitmapFactory.decodeStream(in, null, decodeOptions);
 		} catch (final IOException e) {
-			Debug.e("Failed loading Bitmap in " + this.getClass().getSimpleName() + ". File: " + this.mFile, e);
+			Debuging.e("Failed loading Bitmap in " + this.getClass().getSimpleName() + ". File: " + this.mFile, e);
 			return null;
 		} finally {
 			StreamUtils.close(in);

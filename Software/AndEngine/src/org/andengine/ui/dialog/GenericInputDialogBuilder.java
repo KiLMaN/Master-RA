@@ -1,7 +1,7 @@
 package org.andengine.ui.dialog;
 
 import org.andengine.util.call.Callback;
-import org.andengine.util.debug.Debug;
+import org.andengine.util.debuging.Debuging;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -94,7 +94,7 @@ public abstract class GenericInputDialogBuilder<T> {
 				try{
 					result = GenericInputDialogBuilder.this.generateResult(etInput.getText().toString());
 				} catch (final IllegalArgumentException e) {
-					Debug.e("Error in GenericInputDialogBuilder.generateResult()", e);
+					Debuging.e("Error in GenericInputDialogBuilder.generateResult()", e);
 					Toast.makeText(GenericInputDialogBuilder.this.mContext, GenericInputDialogBuilder.this.mErrorResID, Toast.LENGTH_SHORT).show();
 					return;
 				}

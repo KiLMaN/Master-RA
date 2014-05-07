@@ -19,7 +19,7 @@ import org.andengine.util.StreamUtils;
 import org.andengine.util.adt.DataConstants;
 import org.andengine.util.adt.array.ArrayUtils;
 import org.andengine.util.adt.io.out.ByteBufferOutputStream;
-import org.andengine.util.debug.Debug;
+import org.andengine.util.debuging.Debuging;
 import org.andengine.util.math.MathUtils;
 
 import android.opengl.GLES20;
@@ -114,7 +114,7 @@ public abstract class PVRTexture extends Texture {
 					break;
 				default:
 					if(BuildConfig.DEBUG) {
-						Debug.w("This '" + this.getClass().getSimpleName() + "' contains mipmaps, but the provided '" + pTextureOptions.getClass().getSimpleName() + "' don't have MipMaps enabled on the MinFilter!");
+						Debuging.w("This '" + this.getClass().getSimpleName() + "' contains mipmaps, but the provided '" + pTextureOptions.getClass().getSimpleName() + "' don't have MipMaps enabled on the MinFilter!");
 					}
 			}
 		}
@@ -172,7 +172,7 @@ public abstract class PVRTexture extends Texture {
 		int currentPixelDataOffset = 0;
 		while (currentPixelDataOffset < dataLength) {
 			if (currentLevel > 0 && (width != height || MathUtils.nextPowerOfTwo(width) != width)) {
-				Debug.w("Mipmap level '" + currentLevel + "' is not squared. Width: '" + width + "', height: '" + height + "'. Texture won't render correctly.");
+				Debuging.w("Mipmap level '" + currentLevel + "' is not squared. Width: '" + width + "', height: '" + height + "'. Texture won't render correctly.");
 			}
 
 			final int currentPixelDataSize = height * width * bytesPerPixel;

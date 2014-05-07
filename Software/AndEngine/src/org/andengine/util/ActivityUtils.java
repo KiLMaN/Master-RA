@@ -3,7 +3,7 @@ package org.andengine.util;
 import org.andengine.util.call.AsyncCallable;
 import org.andengine.util.call.Callable;
 import org.andengine.util.call.Callback;
-import org.andengine.util.debug.Debug;
+import org.andengine.util.debuging.Debuging;
 import org.andengine.util.exception.CancelledException;
 import org.andengine.util.progress.IProgressListener;
 import org.andengine.util.progress.ProgressCallable;
@@ -134,7 +134,7 @@ public class ActivityUtils {
 				try {
 					this.mPD.dismiss();
 				} catch (final Exception e) {
-					Debug.e("Error", e);
+					Debuging.e("Error", e);
 				}
 
 				if(this.isCancelled()) {
@@ -145,7 +145,7 @@ public class ActivityUtils {
 					pCallback.onCallback(result);
 				} else {
 					if(pExceptionCallback == null) {
-						Debug.e("Error", this.mException);
+						Debuging.e("Error", this.mException);
 					} else {
 						pExceptionCallback.onCallback(this.mException);
 					}
@@ -209,7 +209,7 @@ public class ActivityUtils {
 				try {
 					this.mPD.dismiss();
 				} catch (final Exception e) {
-					Debug.e("Error", e);
+					Debuging.e("Error", e);
 					/* Nothing. */
 				}
 
@@ -221,7 +221,7 @@ public class ActivityUtils {
 					pCallback.onCallback(result);
 				} else {
 					if(pExceptionCallback == null) {
-						Debug.e("Error", this.mException);
+						Debuging.e("Error", this.mException);
 					} else {
 						pExceptionCallback.onCallback(this.mException);
 					}
@@ -244,7 +244,7 @@ public class ActivityUtils {
 				try {
 					pd.dismiss();
 				} catch (final Exception e) {
-					Debug.e("Error", e);
+					Debuging.e("Error", e);
 					/* Nothing. */
 				}
 

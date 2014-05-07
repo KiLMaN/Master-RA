@@ -7,7 +7,7 @@ import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.opengl.texture.region.ITiledTextureRegion;
 import org.andengine.opengl.texture.region.TiledTextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
-import org.andengine.util.debug.Debug;
+import org.andengine.util.debuging.Debuging;
 
 /**
  * Note: {@link ButtonSprite} needs to be registered as a {@link ITouchArea} to the {@link Scene} via {@link Scene#registerTouchArea(ITouchArea)}, otherwise it won't be clickable.
@@ -74,9 +74,9 @@ public class ButtonSprite extends TiledSprite {
 
 		switch(this.mStateCount) {
 			case 1:
-				Debug.w("No " + ITextureRegion.class.getSimpleName() + " supplied for " + State.class.getSimpleName() + "." + State.PRESSED + ".");
+				Debuging.w("No " + ITextureRegion.class.getSimpleName() + " supplied for " + State.class.getSimpleName() + "." + State.PRESSED + ".");
 			case 2:
-				Debug.w("No " + ITextureRegion.class.getSimpleName() + " supplied for " + State.class.getSimpleName() + "." + State.DISABLED + ".");
+				Debuging.w("No " + ITextureRegion.class.getSimpleName() + " supplied for " + State.class.getSimpleName() + "." + State.DISABLED + ".");
 				break;
 			case 3:
 				break;
@@ -163,7 +163,7 @@ public class ButtonSprite extends TiledSprite {
 		final int stateTiledTextureRegionIndex = this.mState.getTiledTextureRegionIndex();
 		if(stateTiledTextureRegionIndex >= this.mStateCount) {
 			this.setCurrentTileIndex(0);
-			Debug.w(this.getClass().getSimpleName() + " changed its " + State.class.getSimpleName() + " to " + pState.toString() + ", which doesn't have a " + ITextureRegion.class.getSimpleName() + " supplied. Applying default " + ITextureRegion.class.getSimpleName() + ".");
+			Debuging.w(this.getClass().getSimpleName() + " changed its " + State.class.getSimpleName() + " to " + pState.toString() + ", which doesn't have a " + ITextureRegion.class.getSimpleName() + " supplied. Applying default " + ITextureRegion.class.getSimpleName() + ".");
 		} else {
 			this.setCurrentTileIndex(stateTiledTextureRegionIndex);
 		}

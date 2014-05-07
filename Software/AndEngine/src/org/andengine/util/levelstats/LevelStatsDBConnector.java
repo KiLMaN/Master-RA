@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.andengine.util.StreamUtils;
 import org.andengine.util.call.Callback;
-import org.andengine.util.debug.Debug;
+import org.andengine.util.debuging.Debuging;
 import org.andengine.util.math.MathUtils;
 import org.andengine.util.preferences.SimplePreferences;
 import org.apache.http.HttpResponse;
@@ -115,7 +115,7 @@ public class LevelStatsDBConnector {
 						}
 					}
 				}catch(final IOException e) {
-					Debug.e(e);
+					Debuging.e(e);
 					if(pCallback != null) {
 						pCallback.onCallback(false);
 					}

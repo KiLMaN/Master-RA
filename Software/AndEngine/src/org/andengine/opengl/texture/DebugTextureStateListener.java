@@ -2,7 +2,7 @@ package org.andengine.opengl.texture;
 
 import org.andengine.BuildConfig;
 import org.andengine.opengl.texture.atlas.source.ITextureAtlasSource;
-import org.andengine.util.debug.Debug;
+import org.andengine.util.debuging.Debuging;
 
 /**
  * (c) Zynga 2012
@@ -34,14 +34,14 @@ public class DebugTextureStateListener<T extends ITextureAtlasSource> implements
 	@Override
 	public void onLoadedToHardware(final ITexture pTexture) {
 		if(BuildConfig.DEBUG) {
-			Debug.d("Texture loaded: " + pTexture.toString());
+			Debuging.d("Texture loaded: " + pTexture.toString());
 		}
 	}
 
 	@Override
 	public void onUnloadedFromHardware(final ITexture pTexture) {
 		if(BuildConfig.DEBUG) {
-			Debug.d("Texture unloaded: " + pTexture.toString());
+			Debuging.d("Texture unloaded: " + pTexture.toString());
 		}
 	}
 

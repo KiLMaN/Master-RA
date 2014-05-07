@@ -11,7 +11,7 @@ import org.andengine.util.adt.bounds.BoundsSplit.BoundsSplitException;
 import org.andengine.util.adt.bounds.IBounds;
 import org.andengine.util.adt.spatial.ISpatialItem;
 import org.andengine.util.call.ParameterCallable;
-import org.andengine.util.debug.Debug;
+import org.andengine.util.debuging.Debuging;
 import org.andengine.util.exception.AndEngineRuntimeException;
 
 /**
@@ -129,7 +129,7 @@ public abstract class QuadTree<B extends IBounds, T extends ISpatialItem<B>>
 	@Deprecated
 	public synchronized void add(final T pItem, final B pBounds) {
 		if (!this.mRoot.contains(pBounds)) {
-			Debug.w("pBounds are out of the bounds of this "
+			Debuging.w("pBounds are out of the bounds of this "
 					+ this.getClass().getSimpleName() + ".");
 			this.mRoot.addItemSafe(pItem);
 			return;

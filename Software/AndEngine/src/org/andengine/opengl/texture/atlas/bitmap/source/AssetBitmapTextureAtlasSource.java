@@ -5,7 +5,7 @@ import java.io.InputStream;
 
 import org.andengine.opengl.texture.atlas.source.BaseTextureAtlasSource;
 import org.andengine.util.StreamUtils;
-import org.andengine.util.debug.Debug;
+import org.andengine.util.debuging.Debuging;
 
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
@@ -52,7 +52,7 @@ public class AssetBitmapTextureAtlasSource extends BaseTextureAtlasSource
 			in = pAssetManager.open(pAssetPath);
 			BitmapFactory.decodeStream(in, null, decodeOptions);
 		} catch (final IOException e) {
-			Debug.e("Failed loading Bitmap in AssetBitmapTextureAtlasSource. AssetPath: "
+			Debuging.e("Failed loading Bitmap in AssetBitmapTextureAtlasSource. AssetPath: "
 					+ pAssetPath, e);
 		} finally {
 			StreamUtils.close(in);
@@ -97,7 +97,7 @@ public class AssetBitmapTextureAtlasSource extends BaseTextureAtlasSource
 			in = this.mAssetManager.open(this.mAssetPath);
 			return BitmapFactory.decodeStream(in, null, decodeOptions);
 		} catch (final IOException e) {
-			Debug.e("Failed loading Bitmap in "
+			Debuging.e("Failed loading Bitmap in "
 					+ this.getClass().getSimpleName() + ". AssetPath: "
 					+ this.mAssetPath, e);
 			return null;

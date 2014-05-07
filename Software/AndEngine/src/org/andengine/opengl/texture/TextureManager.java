@@ -10,7 +10,7 @@ import org.andengine.opengl.texture.bitmap.BitmapTextureFormat;
 import org.andengine.opengl.util.GLState;
 import org.andengine.util.adt.io.in.AssetInputStreamOpener;
 import org.andengine.util.adt.io.in.IInputStreamOpener;
-import org.andengine.util.debug.Debug;
+import org.andengine.util.debuging.Debuging;
 
 import android.content.res.AssetManager;
 
@@ -238,7 +238,7 @@ public class TextureManager {
 				try {
 					textureToBeReloaded.reloadToHardware(pGLState);
 				} catch (final IOException e) {
-					Debug.e(e);
+					Debuging.e(e);
 				}
 			}
 		}
@@ -256,7 +256,7 @@ public class TextureManager {
 						/* Execute the warm-up to ensure the texture data is actually moved to the GPU. */
 						this.mTextureWarmUpVertexBufferObject.warmup(pGLState, textureToBeLoaded);
 					} catch (final IOException e) {
-						Debug.e(e);
+						Debuging.e(e);
 					}
 				}
 				texturesLoaded.add(textureToBeLoaded);

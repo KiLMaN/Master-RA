@@ -2,7 +2,7 @@ package org.andengine.opengl.util;
 
 import java.nio.ByteBuffer;
 
-import org.andengine.util.debug.Debug;
+import org.andengine.util.debuging.Debuging;
 import org.andengine.util.system.SystemUtils;
 
 import android.os.Build;
@@ -52,7 +52,7 @@ public class BufferUtils {
 		} else {
 			WORKAROUND_BYTEBUFFER_ALLOCATE_DIRECT = false;
 			if(SystemUtils.isAndroidVersion(Build.VERSION_CODES.HONEYCOMB, Build.VERSION_CODES.HONEYCOMB_MR2)) {
-				Debug.w("Creating a " + ByteBuffer.class.getSimpleName() + " will actually allocate 4x the memory than requested!");
+				Debuging.w("Creating a " + ByteBuffer.class.getSimpleName() + " will actually allocate 4x the memory than requested!");
 			}
 
 			WORKAROUND_BYTEBUFFER_PUT_FLOATARRAY = false;

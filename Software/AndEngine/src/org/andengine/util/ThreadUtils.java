@@ -1,7 +1,7 @@
 package org.andengine.util;
 
-import org.andengine.util.debug.Debug;
-import org.andengine.util.debug.Debug.DebugLevel;
+import org.andengine.util.debuging.Debuging;
+import org.andengine.util.debuging.Debuging.DebugLevel;
 
 /**
  * (c) Zynga 2012
@@ -45,7 +45,7 @@ public class ThreadUtils {
 	}
 
 	private static void dumpCurrentThreadInfo(final DebugLevel pDebugLevel, final StackTraceElement pCaller) {
-		Debug.log(pDebugLevel, pCaller.getClassName() + "." + pCaller.getMethodName() + "(" + pCaller.getFileName() + ".java:" + pCaller.getLineNumber() + ") @(Thread: '" + Thread.currentThread().getName() + "')");
+		Debuging.log(pDebugLevel, pCaller.getClassName() + "." + pCaller.getMethodName() + "(" + pCaller.getFileName() + ".java:" + pCaller.getLineNumber() + ") @(Thread: '" + Thread.currentThread().getName() + "')");
 	}
 
 	// ===========================================================
