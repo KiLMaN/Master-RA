@@ -50,7 +50,7 @@ public class MainMenuScene extends BaseScene implements
 		menuChildScene.addMenuItem(optionsMenuItem);
 
 		menuChildScene.buildAnimations();
-		menuChildScene.setBackgroundEnabled(false);
+		menuChildScene.setBackgroundEnabled(true);
 
 		playMenuItem.setPosition(playMenuItem.getX(), playMenuItem.getY() + 10);
 		optionsMenuItem.setPosition(optionsMenuItem.getX(),
