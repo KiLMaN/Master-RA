@@ -93,7 +93,7 @@ public class GameActivity extends BaseGameActivity {
 	}
 
 	public EngineOptions onCreateEngineOptions() {
-		/* Récupération de la taille de l'ecran */
+		/* Rï¿½cupï¿½ration de la taille de l'ecran */
 		DisplayMetrics metrics = new DisplayMetrics();
 		getWindowManager().getDefaultDisplay().getMetrics(metrics);
 		_HEIGHT = metrics.heightPixels;

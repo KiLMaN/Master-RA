@@ -1,5 +1,8 @@
 package net.towerdefender.scenes;
 
+import gameplay.Position;
+import gameplay.Tower;
+
 import javax.microedition.khronos.opengles.GL10;
 
 import net.towerdefender.activity.GameActivity;
@@ -26,13 +29,17 @@ public class GameScene extends BaseScene {
 	private Text scoreText;
 	private Text fpsText;
 	private int score = 0;
+	private static Tower currentControlTower = null;
 
 	@Override
 	public void createScene() {
 		createBackground();
 		createHUD();
 		createController();
-
+		
+		currentControlTower = new Tower(new Position());
+		currentControlTower.setIp("192.168.1.9");
+		currentControlTower.startCommunication();
 	}
 
 	@Override
@@ -102,6 +109,14 @@ public class GameScene extends BaseScene {
 							final float pValueX, final float pValueY) {
 						// Log.i("OnScreenControll", "Position :x " + pValueX
 						// + "y" + pValueY);
+						if ( currentControlTower != null && currentControlTower.isConnected() ) {
+							if ( pValueY != 0)
+								currentControlTower.moveVOffset( (int) ( pValueY*5) );
+						
+							if ( pValueX != 0 )
+								currentControlTower.moveH( (int) (pValueX * 10) );  
+						}
+						
 					}
 
 					@Override
@@ -110,6 +125,9 @@ public class GameScene extends BaseScene {
 						addToScore(1);
 						GameActivity.getInstance().getCameraPreviewSurface()
 								.autoFocusCamera();
+						if ( currentControlTower != null )
+							if ( ! currentControlTower.isConnected() )
+								currentControlTower.connect();
 					}
 				});
 
