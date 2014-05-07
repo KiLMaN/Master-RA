@@ -4,7 +4,9 @@ import java.util.ArrayList;
 
 import simulation.SimulationPC;
 
-public class Tower {
+import communication.CommunicationTower;
+
+public class Tower extends CommunicationTower {
 
 	/*
 	 * private int idTower; private String nameTower; private int levelTower;
@@ -74,7 +76,7 @@ public class Tower {
 
 	// calcul l'ennemile plus proche de la Tour et le cible
 	public void targetClosestEnemi(ArrayList<Enemie> enemiesAlive) {
-		if (enemieEngaged) // Si on a déjà attaqué un enemie, on se verouille
+		if (enemieEngaged) // Si on a dï¿½jï¿½ attaquï¿½ un enemie, on se verouille
 							// dessus
 			return;
 
@@ -118,7 +120,7 @@ public class Tower {
 	}
 
 	/*
-	 * Tirer avec l'arme la plus puissante sur l'enemie selectionné , retourne
+	 * Tirer avec l'arme la plus puissante sur l'enemie selectionnï¿½ , retourne
 	 * true si l'enemie est mort
 	 */
 	public boolean shootTargetedEnemie() {
@@ -139,7 +141,7 @@ public class Tower {
 		}
 		if (best != null) {
 			boolean dead = target.hitBy(best.Weapon, this);
-			// incrémenter points du joueur
+			// incrï¿½menter points du joueur
 			if (dead == true) {
 				int pointsPlayer = SimulationPC.game.getCurrentPlayer()
 						.getPointsPlayer();

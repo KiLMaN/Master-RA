@@ -18,6 +18,7 @@ import org.andengine.entity.scene.Scene;
 import org.andengine.opengl.view.RenderSurfaceView;
 import org.andengine.ui.activity.BaseGameActivity;
 
+import android.content.res.Resources;
 import android.graphics.PixelFormat;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
@@ -25,6 +26,10 @@ import android.util.DisplayMetrics;
 import android.view.KeyEvent;
 import android.view.WindowManager.LayoutParams;
 import android.widget.Toast;
+import edu.dhbw.andar.ARToolkit;
+import edu.dhbw.andar.AndARRenderer;
+import edu.dhbw.andar.CameraPreviewHandler;
+import edu.dhbw.andar.CameraStatus;
 
 public class GameActivity extends BaseGameActivity {
 
@@ -34,10 +39,18 @@ public class GameActivity extends BaseGameActivity {
 	private static int _HEIGHT = 720;
 
 	private Camera camera;
+
+	private Resources androidRessources;
+	private ARToolkit mARToolkit;
+	private AndARRenderer mAndARRenderer;
+	private CameraPreviewHandler mCameraPreviewHandler;
+
+	private CameraStatus mCameraStatus = new CameraStatus();
 	@SuppressWarnings("unused")
 	private ResourcesManager resourcesManager;
 
 	private CameraPreviewSurfaceView mCameraPreviewSurfaceView;
+	private GLSurfaceView mAndarRAView;
 
 	public GameActivity() {
 		INSTANCE = this;
@@ -80,7 +93,7 @@ public class GameActivity extends BaseGameActivity {
 	}
 
 	public EngineOptions onCreateEngineOptions() {
-		/* Récupération de la taille de l'ecran */
+		/* Rï¿½cupï¿½ration de la taille de l'ecran */
 		DisplayMetrics metrics = new DisplayMetrics();
 		getWindowManager().getDefaultDisplay().getMetrics(metrics);
 		_HEIGHT = metrics.heightPixels;
@@ -131,16 +144,32 @@ public class GameActivity extends BaseGameActivity {
 		// this.mRenderSurfaceView.setZOrderMediaOverlay(true);
 		this.mRenderSurfaceView.setRenderer(this.mEngine, this);
 
+		androidRessources = getResources();
+
+		mARToolkit = new ARToolkit(androidRessources, getFilesDir());
+
+		mAndarRAView = new GLSurfaceView(this);
+		mAndARRenderer = new AndARRenderer(androidRessources, mARToolkit);
+		mCameraPreviewHandler = new CameraPreviewHandler(mAndarRAView,
+				mAndARRenderer, androidRessources, mARToolkit, mCameraStatus);
+		mAndarRAView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
+		mAndarRAView.getHolder().setFormat(PixelFormat.TRANSLUCENT);
+		mAndarRAView.setEGLContextClientVersion(2);
+		// mAndarRAView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+		mAndarRAView.setRenderer(mAndARRenderer);
+
+		// mAndarRAView.getHolder().addCallback(this);
+
 		// Now let's create an OpenGL surface.
-		GLSurfaceView glView = new GLSurfaceView(this);
+		// GLSurfaceView glView = new GLSurfaceView(this);
 		// To see the camera preview, the OpenGL surface has to be created
 		// translucently.
 		// See link above.
-		glView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
-		glView.getHolder().setFormat(PixelFormat.TRANSLUCENT);
+		// glView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
+		// glView.getHolder().setFormat(PixelFormat.TRANSLUCENT);
 		// The renderer will be implemented in a separate class, GLView, which
 		// I'll show next.
-		glView.setRenderer(new GLClearRenderer());
+		// glView.setRenderer(new GLClearRenderer());
 		// Now set this as the main view.
 
 		// Now also create a view which contains the camera preview...
@@ -148,8 +177,8 @@ public class GameActivity extends BaseGameActivity {
 		// ...and add it, wrapping the full screen size.
 		setContentView(mRenderSurfaceView, new LayoutParams(
 				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-		addContentView(glView, new LayoutParams(LayoutParams.WRAP_CONTENT,
-				LayoutParams.WRAP_CONTENT));
+		addContentView(mAndarRAView, new LayoutParams(
+				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 		addContentView(mCameraPreviewSurfaceView, new LayoutParams(
 				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 

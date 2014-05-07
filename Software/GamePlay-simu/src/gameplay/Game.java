@@ -141,9 +141,10 @@ public class Game {
 					// d'enemies a faire apparaitre
 					// setPaused(true);
 					/* System.out.println("Wave ended"); */
-					if (listWaves.size() > currentWaveId + 1)
+					if (listWaves.size() > currentWaveId + 1) {
 						currentWaveId++;
-					else
+						setPaused(true);
+					} else
 						stop();
 				}
 			}
