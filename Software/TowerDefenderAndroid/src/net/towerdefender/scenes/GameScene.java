@@ -29,15 +29,9 @@ public class GameScene extends BaseScene {
 	private HUD gameHUD;
 	private Sprite pictureSettings;
 	private Text scoreText;
-<<<<<<< HEAD
-	private Text fpsText;
-	private int score = 0, lastUpdate = 0;
-=======
 	private Text lifeText;
-	private int score = 0;
->>>>>>> refs/remotes/origin/master
+	private int score = 0, lastUpdate = 0;
 	private static Tower currentControlTower = null;
-	
 
 	@Override
 	public void createScene() {
@@ -151,35 +145,22 @@ public class GameScene extends BaseScene {
 					public void onControlChange(
 							final BaseOnScreenControl pBaseOnScreenControl,
 							final float pValueX, final float pValueY) {
-<<<<<<< HEAD
-						if ( lastUpdate == 0 ){
-							if ( currentControlTower != null && currentControlTower.isConnected() ) {
-								if ( pValueY != 0)
-									currentControlTower.moveVOffset( (int) ( pValueY*5) );
-							
-								if ( pValueX != 0 )
-									currentControlTower.moveH( (int) (pValueX * 10) );  
+
+						if (lastUpdate == 0) {
+							if (currentControlTower != null
+									&& currentControlTower.isConnected()) {
+								if (pValueY != 0)
+									currentControlTower
+											.moveVOffset((int) (pValueY * 5));
+
+								if (pValueX != 0)
+									currentControlTower
+											.moveH((int) (pValueX * 10));
 							}
 							lastUpdate = 10;
-=======
-						// Log.i("OnScreenControll", "Position :x " + pValueX
-						// + "y" + pValueY);
-						if (currentControlTower != null
-								&& currentControlTower.isConnected()) {
-							if (pValueY != 0)
-								currentControlTower
-										.moveVOffset((int) (pValueY * 5));
+						} else
+							lastUpdate--;
 
-							if (pValueX != 0)
-								currentControlTower.moveH((int) (pValueX * 10));
->>>>>>> refs/remotes/origin/master
-						}
-<<<<<<< HEAD
-						else lastUpdate--;
-							
-=======
-
->>>>>>> refs/remotes/origin/master
 					}
 
 					@Override
@@ -192,7 +173,7 @@ public class GameScene extends BaseScene {
 							if (!currentControlTower.isConnected())
 								currentControlTower.connect();
 							else {
-								
+
 							}
 					}
 				});

@@ -1,5 +1,7 @@
 package net.towerdefender.activity;
 
+import gstreamer.GStreamerSurfaceView;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 
@@ -34,20 +36,14 @@ import android.opengl.GLSurfaceView;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.SurfaceHolder;
 import android.view.WindowManager.LayoutParams;
 import android.view.animation.LinearInterpolator;
 import android.widget.Toast;
-<<<<<<< HEAD
-import edu.dhbw.andar.ARToolkit;
-import edu.dhbw.andar.AndARRenderer;
-import edu.dhbw.andar.CameraPreviewHandler;
-import edu.dhbw.andar.CameraStatus;
-import gstreamer.GStreamerSurfaceView;
-=======
->>>>>>> refs/remotes/origin/master
 
-public class GameActivity extends BaseGameActivity implements SurfaceHolder.Callback {
+public class GameActivity extends BaseGameActivity /*
+													 * implements
+													 * SurfaceHolder.Callback
+													 */{
 
 	private static GameActivity INSTANCE;
 	private static int _LimitFPS = 30;
@@ -56,25 +52,37 @@ public class GameActivity extends BaseGameActivity implements SurfaceHolder.Call
 
 	private Camera camera;
 	private RajawaliRenderer ARrenderer;
-	@SuppressWarnings("unused")
 	private ResourcesManager resourcesManager;
 
 	private CameraPreviewSurfaceView mCameraPreviewSurfaceView;
 	private GLSurfaceView mAndarRAView;
-	
+
 	// Gstreamer
 	private GStreamerSurfaceView mGstreamerView;
-	private native void nativeInit();     // Initialize native code, build pipeline, etc
-    private native void nativeFinalize(); // Destroy pipeline and shutdown native code
-    private native void nativePlay();     // Set pipeline to PLAYING
-    private native void nativePause();    // Set pipeline to PAUSED
-    private static native boolean nativeClassInit(); // Initialize native class: cache Method IDs for callbacks
-    private native void nativeSurfaceInit(Object surface);
-    private native void nativeSurfaceFinalize();
-    private long native_custom_data;      // Native code will use this to keep private data
 
-    private boolean is_playing_desired = true;   // Whether the user asked to go to PLAYING
-	    
+	private native void nativeInit(); // Initialize native code, build pipeline,
+										// etc
+
+	private native void nativeFinalize(); // Destroy pipeline and shutdown
+											// native code
+
+	private native void nativePlay(); // Set pipeline to PLAYING
+
+	private native void nativePause(); // Set pipeline to PAUSED
+
+	private static native boolean nativeClassInit(); // Initialize native class:
+														// cache Method IDs for
+														// callbacks
+
+	private native void nativeSurfaceInit(Object surface);
+
+	private native void nativeSurfaceFinalize();
+
+	private long native_custom_data; // Native code will use this to keep
+										// private data
+
+	private boolean is_playing_desired = true; // Whether the user asked to go
+												// to PLAYING
 
 	public GameActivity() {
 		INSTANCE = this;
@@ -169,7 +177,7 @@ public class GameActivity extends BaseGameActivity implements SurfaceHolder.Call
 		this.mRenderSurfaceView.getHolder().setFormat(PixelFormat.TRANSLUCENT);
 		this.mRenderSurfaceView.setEGLContextClientVersion(2);
 		this.mRenderSurfaceView.setRenderer(this.mEngine, this);
-		this.mGstreamerView = new GStreamerSurfaceView(this);
+		// this.mGstreamerView = new GStreamerSurfaceView(this);
 
 		ARrenderer = new RajawaliRenderer(this) {
 			@Override
@@ -253,8 +261,8 @@ public class GameActivity extends BaseGameActivity implements SurfaceHolder.Call
 
 		addContentView(mCameraPreviewSurfaceView, new LayoutParams(
 				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-		addContentView(this.mGstreamerView, new LayoutParams(
-				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+		// addContentView(this.mGstreamerView, new LayoutParams(
+		// LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 
 	}
 
@@ -262,35 +270,29 @@ public class GameActivity extends BaseGameActivity implements SurfaceHolder.Call
 		return mCameraPreviewSurfaceView;
 	}
 
-<<<<<<< HEAD
 	// Gstreamer
-	private void onGStreamerInitialized () {
-        Log.i ("GStreamer", "Gst initialized" );
-        // Restore previous playing state
-        nativePlay();
+	private void onGStreamerInitialized() {
+		Log.i("GStreamer", "Gst initialized");
+		// Restore previous playing state
+		// nativePlay();
 	}
-    static {
-        System.loadLibrary("gstreamer_android");
-        System.loadLibrary("TowerDefender");
-        nativeClassInit();
-    }
 
-    public void surfaceChanged(SurfaceHolder holder, int format, int width,
-            int height) {
-        Log.d("GStreamer", "Surface changed to format " + format + " width "
-                + width + " height " + height);
-        nativeSurfaceInit (holder.getSurface());
-    }
+	static {
+		// System.loadLibrary("gstreamer_android");
+		// System.loadLibrary("TowerDefender");
+		// nativeClassInit();
+	}
 
-    public void surfaceCreated(SurfaceHolder holder) {
-        Log.d("GStreamer", "Surface created: " + holder.getSurface());
-    }
-
-    public void surfaceDestroyed(SurfaceHolder holder) {
-        Log.d("GStreamer", "Surface destroyed");
-        nativeSurfaceFinalize ();
-    }
+	/*
+	 * public void surfaceChanged(SurfaceHolder holder, int format, int width,
+	 * int height) { Log.d("GStreamer", "Surface changed to format " + format +
+	 * " width " + width + " height " + height);
+	 * nativeSurfaceInit(holder.getSurface()); }
+	 * 
+	 * public void surfaceCreated(SurfaceHolder holder) { Log.d("GStreamer",
+	 * "Surface created: " + holder.getSurface()); }
+	 * 
+	 * public void surfaceDestroyed(SurfaceHolder holder) { Log.d("GStreamer",
+	 * "Surface destroyed"); nativeSurfaceFinalize(); }
+	 */
 }
-=======
-}
->>>>>>> refs/remotes/origin/master
