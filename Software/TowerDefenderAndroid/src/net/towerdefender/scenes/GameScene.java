@@ -1,6 +1,5 @@
 package net.towerdefender.scenes;
 
-import gameplay.Position;
 import gameplay.Tower;
 
 import javax.microedition.khronos.opengles.GL10;
@@ -19,7 +18,6 @@ import org.andengine.entity.scene.background.Background;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.text.Text;
 import org.andengine.entity.text.TextOptions;
-import org.andengine.input.touch.TouchEvent;
 import org.andengine.opengl.util.GLState;
 import org.andengine.util.HorizontalAlign;
 import org.andengine.util.color.Color;
@@ -40,10 +38,12 @@ public class GameScene extends BaseScene {
 		createBackground();
 		createHUD();
 		createController();
-		
-		currentControlTower = new Tower(new Position());
-		currentControlTower.setIp("192.168.1.9");
-		currentControlTower.startCommunication();
+
+		/*
+		 * currentControlTower = new Tower(new Position());
+		 * currentControlTower.setIp("192.168.1.9");
+		 * currentControlTower.startCommunication();
+		 */
 	}
 
 	@Override
@@ -60,16 +60,16 @@ public class GameScene extends BaseScene {
 	public void disposeScene() {
 		gameHUD.detachSelf();
 		gameHUD.dispose();
-		
+
 		pictureSettings.detachSelf();
 		pictureSettings.dispose();
-		
+
 		scoreText.detachSelf();
 		scoreText.dispose();
-		
+
 		lifeText.detachSelf();
 		lifeText.dispose();
-		
+
 		this.detachSelf();
 		this.dispose();
 	}
@@ -89,20 +89,20 @@ public class GameScene extends BaseScene {
 
 	private void createHUD() {
 		gameHUD = new HUD();
-		
+
 		// CREATE SPRITE SETTINGS
-		pictureSettings = new Sprite(0, 0, resourcesManager.buttonOptionSettings_region, vbom) {
+		pictureSettings = new Sprite(0, 0,
+				resourcesManager.buttonOptionSettings_region, vbom) {
 			@Override
 			protected void preDraw(GLState pGLState, Camera pCamera) {
 				super.preDraw(pGLState, pCamera);
 				pGLState.enableDither();
 			}
 			/*
-		     public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
-   	          //Insert Code Here
-   	          return true;
-		     }
-		     */
+			 * public boolean onAreaTouched(final TouchEvent pSceneTouchEvent,
+			 * final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
+			 * //Insert Code Here return true; }
+			 */
 
 		};
 		pictureSettings.setHeight(100);
@@ -115,11 +115,11 @@ public class GameScene extends BaseScene {
 				vbom);
 		scoreText.setPosition(0, 100);
 		scoreText.setText("Score: 0");
-		gameHUD.attachChild(scoreText);	
-		
+		gameHUD.attachChild(scoreText);
+
 		// CREATE LIFE TEXT
-		lifeText = new Text(0, 0, resourcesManager.Coolvetica, "Life : 987654321",
-				new TextOptions(HorizontalAlign.LEFT), vbom);
+		lifeText = new Text(0, 0, resourcesManager.Coolvetica,
+				"Life : 987654321", new TextOptions(HorizontalAlign.LEFT), vbom);
 		lifeText.setPosition(0, 200);
 		lifeText.setText("Life : 0");
 		gameHUD.attachChild(lifeText);
@@ -147,14 +147,16 @@ public class GameScene extends BaseScene {
 							final float pValueX, final float pValueY) {
 						// Log.i("OnScreenControll", "Position :x " + pValueX
 						// + "y" + pValueY);
-						if ( currentControlTower != null && currentControlTower.isConnected() ) {
-							if ( pValueY != 0)
-								currentControlTower.moveVOffset( (int) ( pValueY*5) );
-						
-							if ( pValueX != 0 )
-								currentControlTower.moveH( (int) (pValueX * 10) );  
+						if (currentControlTower != null
+								&& currentControlTower.isConnected()) {
+							if (pValueY != 0)
+								currentControlTower
+										.moveVOffset((int) (pValueY * 5));
+
+							if (pValueX != 0)
+								currentControlTower.moveH((int) (pValueX * 10));
 						}
-						
+
 					}
 
 					@Override
@@ -163,8 +165,8 @@ public class GameScene extends BaseScene {
 						addToScore(1);
 						GameActivity.getInstance().getCameraPreviewSurface()
 								.autoFocusCamera();
-						if ( currentControlTower != null )
-							if ( ! currentControlTower.isConnected() )
+						if (currentControlTower != null)
+							if (!currentControlTower.isConnected())
 								currentControlTower.connect();
 					}
 				});

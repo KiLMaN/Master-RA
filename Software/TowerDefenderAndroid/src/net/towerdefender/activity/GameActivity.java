@@ -1,7 +1,9 @@
 package net.towerdefender.activity;
 
 import java.io.IOException;
+import java.io.ObjectInputStream;
 
+import net.towerdefender.R;
 import net.towerdefender.manager.ResourcesManager;
 import net.towerdefender.manager.SceneManager;
 
@@ -18,18 +20,23 @@ import org.andengine.entity.scene.Scene;
 import org.andengine.opengl.view.RenderSurfaceView;
 import org.andengine.ui.activity.BaseGameActivity;
 
-import android.content.res.Resources;
+import rajawali.Object3D;
+import rajawali.SerializedObject3D;
+import rajawali.animation.Animation.RepeatMode;
+import rajawali.animation.RotateOnAxisAnimation;
+import rajawali.lights.DirectionalLight;
+import rajawali.materials.Material;
+import rajawali.materials.methods.DiffuseMethod;
+import rajawali.math.vector.Vector3.Axis;
+import rajawali.renderer.RajawaliRenderer;
 import android.graphics.PixelFormat;
 import android.opengl.GLSurfaceView;
-import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.WindowManager.LayoutParams;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.Toast;
-import edu.dhbw.andar.ARToolkit;
-import edu.dhbw.andar.AndARRenderer;
-import edu.dhbw.andar.CameraPreviewHandler;
-import edu.dhbw.andar.CameraStatus;
 
 public class GameActivity extends BaseGameActivity {
 
@@ -39,13 +46,7 @@ public class GameActivity extends BaseGameActivity {
 	private static int _HEIGHT = 720;
 
 	private Camera camera;
-
-	private Resources androidRessources;
-	private ARToolkit mARToolkit;
-	private AndARRenderer mAndARRenderer;
-	private CameraPreviewHandler mCameraPreviewHandler;
-
-	private CameraStatus mCameraStatus = new CameraStatus();
+	private RajawaliRenderer ARrenderer;
 	@SuppressWarnings("unused")
 	private ResourcesManager resourcesManager;
 
@@ -84,6 +85,8 @@ public class GameActivity extends BaseGameActivity {
 						SceneManager.getInstance().createMenuScene();
 					}
 				}));
+
+		// startARTest();
 		pOnPopulateSceneCallback.onPopulateSceneFinished();
 	}
 
@@ -93,7 +96,7 @@ public class GameActivity extends BaseGameActivity {
 	}
 
 	public EngineOptions onCreateEngineOptions() {
-		/* R�cup�ration de la taille de l'ecran */
+		/* Recuperation de la taille de l'ecran */
 		DisplayMetrics metrics = new DisplayMetrics();
 		getWindowManager().getDefaultDisplay().getMetrics(metrics);
 		_HEIGHT = metrics.heightPixels;
@@ -137,26 +140,68 @@ public class GameActivity extends BaseGameActivity {
 		 */
 		// setContentView(mTestSurfaceView);
 		this.mCameraPreviewSurfaceView = new CameraPreviewSurfaceView(this);
+
 		this.mRenderSurfaceView = new RenderSurfaceView(this);
-		// this.mRenderSurfaceView.setEGLContextClientVersion(2);
 		this.mRenderSurfaceView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
 		this.mRenderSurfaceView.getHolder().setFormat(PixelFormat.TRANSLUCENT);
-		// this.mRenderSurfaceView.setZOrderMediaOverlay(true);
+		this.mRenderSurfaceView.setEGLContextClientVersion(2);
 		this.mRenderSurfaceView.setRenderer(this.mEngine, this);
 
-		androidRessources = getResources();
+		ARrenderer = new RajawaliRenderer(this) {
+			@Override
+			protected void initScene() {
+				super.initScene();
 
-		mARToolkit = new ARToolkit(androidRessources, getFilesDir());
+				DirectionalLight light = new DirectionalLight(0, 0, -1);
+				light.setPower(1);
 
+				getCurrentScene().addLight(light);
+				getCurrentCamera().setPosition(0, 0, 16);
+
+				try {
+					ObjectInputStream ois = new ObjectInputStream(mContext
+							.getResources().openRawResource(R.raw.monkey_ser));
+					SerializedObject3D serializedMonkey = (SerializedObject3D) ois
+							.readObject();
+					ois.close();
+
+					Object3D monkey = new Object3D(serializedMonkey);
+					Material material = new Material();
+					material.enableLighting(true);
+					material.setDiffuseMethod(new DiffuseMethod.Lambert());
+					monkey.setMaterial(material);
+					monkey.setColor(0xffff8C00);
+					monkey.setScale(2);
+					getCurrentScene().addChild(monkey);
+
+					RotateOnAxisAnimation anim = new RotateOnAxisAnimation(
+							Axis.Y, 360);
+					anim.setDurationMilliseconds(6000);
+					anim.setRepeatMode(RepeatMode.INFINITE);
+					anim.setInterpolator(new AccelerateDecelerateInterpolator());
+					anim.setTransformable3D(monkey);
+					getCurrentScene().registerAnimation(anim);
+					anim.play();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+
+				// -- set the background color to be transparent
+				// you need to have called setGLBackgroundTransparent(true); in
+				// the activity
+				// for this to work.
+				getCurrentScene().setBackgroundColor(0);
+
+			}
+		};
 		mAndarRAView = new GLSurfaceView(this);
-		mAndARRenderer = new AndARRenderer(androidRessources, mARToolkit);
-		mCameraPreviewHandler = new CameraPreviewHandler(mAndarRAView,
-				mAndARRenderer, androidRessources, mARToolkit, mCameraStatus);
+		ARrenderer.setFrameRate(60);
+		ARrenderer.setSurfaceView(mAndarRAView);
+
 		mAndarRAView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
 		mAndarRAView.getHolder().setFormat(PixelFormat.TRANSLUCENT);
 		mAndarRAView.setEGLContextClientVersion(2);
-		// mAndarRAView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
-		mAndarRAView.setRenderer(mAndARRenderer);
+		mAndarRAView.setRenderer(ARrenderer);
 
 		// mAndarRAView.getHolder().addCallback(this);
 
@@ -175,30 +220,56 @@ public class GameActivity extends BaseGameActivity {
 		// Now also create a view which contains the camera preview...
 		// TestSurfaceView cameraView = new TestSurfaceView(this);
 		// ...and add it, wrapping the full screen size.
+
 		setContentView(mRenderSurfaceView, new LayoutParams(
 				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+
 		addContentView(mAndarRAView, new LayoutParams(
 				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+
 		addContentView(mCameraPreviewSurfaceView, new LayoutParams(
 				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 
 	}
 
-	@Override
-	protected void onCreate(final Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+	private void startARTest() {
+		DirectionalLight light = new DirectionalLight(0, 0, -1);
+		light.setPower(1);
+		ARrenderer.getCurrentScene().addLight(light);
+		ARrenderer.getCurrentCamera().setPosition(0, 0, 16);
 
-		// this.mCameraPreviewSurfaceView = new CameraPreviewSurfaceView(this);
-		/*
-		 * this.addContentView(this.mCameraPreviewSurfaceView,
-		 * BaseGameActivity.createSurfaceViewLayoutParams());
-		 * this.addContentView(this.mRenderSurfaceView,
-		 * BaseGameActivity.createSurfaceViewLayoutParams());
-		 */
+		try {
+			ObjectInputStream ois = new ObjectInputStream(ARrenderer
+					.getContext().getResources()
+					.openRawResource(R.raw.monkey_ser));
+			SerializedObject3D serializedMonkey = (SerializedObject3D) ois
+					.readObject();
+			ois.close();
 
-		// this.mCameraPreviewSurfaceView.bringToFront();
-		// this.mRenderSurfaceView.setZOrderMediaOverlay(true);
-		// this.mRenderSurfaceView.bringToFront();
+			Object3D monkey = new Object3D(serializedMonkey);
+			Material material = new Material();
+			material.enableLighting(true);
+			material.setDiffuseMethod(new DiffuseMethod.Lambert());
+			monkey.setMaterial(material);
+			monkey.setColor(0xffff8C00);
+			monkey.setScale(2);
+
+			ARrenderer.getCurrentScene().addChild(monkey);
+
+			RotateOnAxisAnimation anim = new RotateOnAxisAnimation(Axis.Y, 360);
+			anim.setDurationMilliseconds(6000);
+			anim.setRepeatMode(RepeatMode.INFINITE);
+			anim.setInterpolator(new AccelerateDecelerateInterpolator());
+			anim.setTransformable3D(monkey);
+			ARrenderer.getCurrentScene().registerAnimation(anim);
+			anim.play();
+			Log.i("DEBUG", "Monkey loaded");
+
+		} catch (Exception e) {
+			e.printStackTrace();
+
+		}
+		ARrenderer.getCurrentScene().setBackgroundColor(0);
 	}
 
 	public CameraPreviewSurfaceView getCameraPreviewSurface() {

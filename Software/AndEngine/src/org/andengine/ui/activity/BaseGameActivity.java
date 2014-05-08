@@ -27,8 +27,10 @@ import org.andengine.util.Constants;
 import org.andengine.util.debuging.Debuging;
 import org.andengine.util.system.SystemUtils;
 
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
+import android.content.pm.ConfigurationInfo;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.PowerManager;
@@ -37,13 +39,13 @@ import android.view.Gravity;
 import android.widget.FrameLayout.LayoutParams;
 
 /**
- * (c) 2010 Nicolas Gramlich
- * (c) 2011 Zynga Inc.
+ * (c) 2010 Nicolas Gramlich (c) 2011 Zynga Inc.
  * 
  * @author Nicolas Gramlich
  * @since 11:27:06 - 08.03.2010
  */
-public abstract class BaseGameActivity extends BaseActivity implements IGameInterface, IRendererListener {
+public abstract class BaseGameActivity extends BaseActivity implements
+		IGameInterface, IRendererListener {
 	// ===========================================================
 	// Constants
 	// ===========================================================
@@ -69,11 +71,17 @@ public abstract class BaseGameActivity extends BaseActivity implements IGameInte
 
 	@Override
 	protected void onCreate(final Bundle pSavedInstanceState) {
-		if(BuildConfig.DEBUG) {
-			Debuging.d(this.getClass().getSimpleName() + ".onCreate" + " @(Thread: '" + Thread.currentThread().getName() + "')");
+		if (BuildConfig.DEBUG) {
+			Debuging.d(this.getClass().getSimpleName() + ".onCreate"
+					+ " @(Thread: '" + Thread.currentThread().getName() + "')");
 		}
 
 		super.onCreate(pSavedInstanceState);
+
+		ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+		ConfigurationInfo info = am.getDeviceConfigurationInfo();
+		if (info.reqGlEsVersion < 0x20000)
+			throw new Error("OpenGL ES 2.0 is not supported by this device");
 
 		this.mGamePaused = true;
 
@@ -92,18 +100,19 @@ public abstract class BaseGameActivity extends BaseActivity implements IGameInte
 
 	@Override
 	public synchronized void onSurfaceCreated(final GLState pGLState) {
-		if(BuildConfig.DEBUG) {
-			Debuging.d(this.getClass().getSimpleName() + ".onSurfaceCreated" + " @(Thread: '" + Thread.currentThread().getName() + "')");
+		if (BuildConfig.DEBUG) {
+			Debuging.d(this.getClass().getSimpleName() + ".onSurfaceCreated"
+					+ " @(Thread: '" + Thread.currentThread().getName() + "')");
 		}
 
-		if(this.mGameCreated) {
+		if (this.mGameCreated) {
 			this.onReloadResources();
 
-			if(this.mGamePaused && this.mGameCreated) {
+			if (this.mGamePaused && this.mGameCreated) {
 				this.onResumeGame();
 			}
 		} else {
-			if(this.mCreateGameCalled) {
+			if (this.mCreateGameCalled) {
 				this.mOnReloadResourcesScheduled = true;
 			} else {
 				this.mCreateGameCalled = true;
@@ -113,28 +122,40 @@ public abstract class BaseGameActivity extends BaseActivity implements IGameInte
 	}
 
 	@Override
-	public synchronized void onSurfaceChanged(final GLState pGLState, final int pWidth, final int pHeight) {
-		if(BuildConfig.DEBUG) {
-			Debuging.d(this.getClass().getSimpleName() + ".onSurfaceChanged(Width=" + pWidth + ",  Height=" + pHeight + ")" + " @(Thread: '" + Thread.currentThread().getName() + "')");
+	public synchronized void onSurfaceChanged(final GLState pGLState,
+			final int pWidth, final int pHeight) {
+		if (BuildConfig.DEBUG) {
+			Debuging.d(this.getClass().getSimpleName()
+					+ ".onSurfaceChanged(Width=" + pWidth + ",  Height="
+					+ pHeight + ")" + " @(Thread: '"
+					+ Thread.currentThread().getName() + "')");
 		}
 	}
 
 	protected synchronized void onCreateGame() {
-		if(BuildConfig.DEBUG) {
-			Debuging.d(this.getClass().getSimpleName() + ".onCreateGame" + " @(Thread: '" + Thread.currentThread().getName() + "')");
+		if (BuildConfig.DEBUG) {
+			Debuging.d(this.getClass().getSimpleName() + ".onCreateGame"
+					+ " @(Thread: '" + Thread.currentThread().getName() + "')");
 		}
 
 		final OnPopulateSceneCallback onPopulateSceneCallback = new OnPopulateSceneCallback() {
 			@Override
 			public void onPopulateSceneFinished() {
 				try {
-					if(BuildConfig.DEBUG) {
-						Debuging.d(BaseGameActivity.this.getClass().getSimpleName() + ".onGameCreated" + " @(Thread: '" + Thread.currentThread().getName() + "')");
+					if (BuildConfig.DEBUG) {
+						Debuging.d(BaseGameActivity.this.getClass()
+								.getSimpleName()
+								+ ".onGameCreated"
+								+ " @(Thread: '"
+								+ Thread.currentThread().getName() + "')");
 					}
 
 					BaseGameActivity.this.onGameCreated();
-				} catch(final Throwable pThrowable) {
-					Debuging.e(BaseGameActivity.this.getClass().getSimpleName() + ".onGameCreated failed." + " @(Thread: '" + Thread.currentThread().getName() + "')", pThrowable);
+				} catch (final Throwable pThrowable) {
+					Debuging.e(BaseGameActivity.this.getClass().getSimpleName()
+							+ ".onGameCreated failed." + " @(Thread: '"
+							+ Thread.currentThread().getName() + "')",
+							pThrowable);
 				}
 
 				BaseGameActivity.this.callGameResumedOnUIThread();
@@ -147,13 +168,21 @@ public abstract class BaseGameActivity extends BaseActivity implements IGameInte
 				BaseGameActivity.this.mEngine.setScene(pScene);
 
 				try {
-					if(BuildConfig.DEBUG) {
-						Debuging.d(BaseGameActivity.this.getClass().getSimpleName() + ".onPopulateScene" + " @(Thread: '" + Thread.currentThread().getName() + "')");
+					if (BuildConfig.DEBUG) {
+						Debuging.d(BaseGameActivity.this.getClass()
+								.getSimpleName()
+								+ ".onPopulateScene"
+								+ " @(Thread: '"
+								+ Thread.currentThread().getName() + "')");
 					}
 
-					BaseGameActivity.this.onPopulateScene(pScene, onPopulateSceneCallback);
-				} catch(final Throwable pThrowable) {
-					Debuging.e(BaseGameActivity.this.getClass().getSimpleName() + ".onPopulateScene failed." + " @(Thread: '" + Thread.currentThread().getName() + "')", pThrowable);
+					BaseGameActivity.this.onPopulateScene(pScene,
+							onPopulateSceneCallback);
+				} catch (final Throwable pThrowable) {
+					Debuging.e(BaseGameActivity.this.getClass().getSimpleName()
+							+ ".onPopulateScene failed." + " @(Thread: '"
+							+ Thread.currentThread().getName() + "')",
+							pThrowable);
 				}
 			}
 		};
@@ -162,25 +191,36 @@ public abstract class BaseGameActivity extends BaseActivity implements IGameInte
 			@Override
 			public void onCreateResourcesFinished() {
 				try {
-					if(BuildConfig.DEBUG) {
-						Debuging.d(BaseGameActivity.this.getClass().getSimpleName() + ".onCreateScene" + " @(Thread: '" + Thread.currentThread().getName() + "')");
+					if (BuildConfig.DEBUG) {
+						Debuging.d(BaseGameActivity.this.getClass()
+								.getSimpleName()
+								+ ".onCreateScene"
+								+ " @(Thread: '"
+								+ Thread.currentThread().getName() + "')");
 					}
 
 					BaseGameActivity.this.onCreateScene(onCreateSceneCallback);
-				} catch(final Throwable pThrowable) {
-					Debuging.e(BaseGameActivity.this.getClass().getSimpleName() + ".onCreateScene failed." + " @(Thread: '" + Thread.currentThread().getName() + "')", pThrowable);
+				} catch (final Throwable pThrowable) {
+					Debuging.e(BaseGameActivity.this.getClass().getSimpleName()
+							+ ".onCreateScene failed." + " @(Thread: '"
+							+ Thread.currentThread().getName() + "')",
+							pThrowable);
 				}
 			}
 		};
 
 		try {
-			if(BuildConfig.DEBUG) {
-				Debuging.d(this.getClass().getSimpleName() + ".onCreateResources" + " @(Thread: '" + Thread.currentThread().getName() + "')");
+			if (BuildConfig.DEBUG) {
+				Debuging.d(this.getClass().getSimpleName()
+						+ ".onCreateResources" + " @(Thread: '"
+						+ Thread.currentThread().getName() + "')");
 			}
 
 			this.onCreateResources(onCreateResourcesCallback);
-		} catch(final Throwable pThrowable) {
-			Debuging.e(this.getClass().getSimpleName() + ".onCreateGame failed." + " @(Thread: '" + Thread.currentThread().getName() + "')", pThrowable);
+		} catch (final Throwable pThrowable) {
+			Debuging.e(this.getClass().getSimpleName()
+					+ ".onCreateGame failed." + " @(Thread: '"
+					+ Thread.currentThread().getName() + "')", pThrowable);
 		}
 	}
 
@@ -188,23 +228,27 @@ public abstract class BaseGameActivity extends BaseActivity implements IGameInte
 	public synchronized void onGameCreated() {
 		this.mGameCreated = true;
 
-		/* Since the potential asynchronous resource creation,
-		 * the surface might already be invalid
-		 * and a resource reloading might be necessary. */
-		if(this.mOnReloadResourcesScheduled) {
+		/*
+		 * Since the potential asynchronous resource creation, the surface might
+		 * already be invalid and a resource reloading might be necessary.
+		 */
+		if (this.mOnReloadResourcesScheduled) {
 			this.mOnReloadResourcesScheduled = false;
 			try {
 				this.onReloadResources();
-			} catch(final Throwable pThrowable) {
-				Debuging.e(this.getClass().getSimpleName() + ".onReloadResources failed." + " @(Thread: '" + Thread.currentThread().getName() + "')", pThrowable);
+			} catch (final Throwable pThrowable) {
+				Debuging.e(this.getClass().getSimpleName()
+						+ ".onReloadResources failed." + " @(Thread: '"
+						+ Thread.currentThread().getName() + "')", pThrowable);
 			}
 		}
 	}
 
 	@Override
 	protected synchronized void onResume() {
-		if(BuildConfig.DEBUG) {
-			Debuging.d(this.getClass().getSimpleName() + ".onResume" + " @(Thread: '" + Thread.currentThread().getName() + "')");
+		if (BuildConfig.DEBUG) {
+			Debuging.d(this.getClass().getSimpleName() + ".onResume"
+					+ " @(Thread: '" + Thread.currentThread().getName() + "')");
 		}
 
 		super.onResume();
@@ -215,8 +259,9 @@ public abstract class BaseGameActivity extends BaseActivity implements IGameInte
 
 	@Override
 	public synchronized void onResumeGame() {
-		if(BuildConfig.DEBUG) {
-			Debuging.d(this.getClass().getSimpleName() + ".onResumeGame" + " @(Thread: '" + Thread.currentThread().getName() + "')");
+		if (BuildConfig.DEBUG) {
+			Debuging.d(this.getClass().getSimpleName() + ".onResumeGame"
+					+ " @(Thread: '" + Thread.currentThread().getName() + "')");
 		}
 
 		this.mEngine.start();
@@ -228,15 +273,16 @@ public abstract class BaseGameActivity extends BaseActivity implements IGameInte
 	public synchronized void onWindowFocusChanged(final boolean pHasWindowFocus) {
 		super.onWindowFocusChanged(pHasWindowFocus);
 
-		if(pHasWindowFocus && this.mGamePaused && this.mGameCreated) {
+		if (pHasWindowFocus && this.mGamePaused && this.mGameCreated) {
 			this.onResumeGame();
 		}
 	}
 
 	@Override
 	public void onReloadResources() {
-		if(BuildConfig.DEBUG) {
-			Debuging.d(this.getClass().getSimpleName() + ".onReloadResources" + " @(Thread: '" + Thread.currentThread().getName() + "')");
+		if (BuildConfig.DEBUG) {
+			Debuging.d(this.getClass().getSimpleName() + ".onReloadResources"
+					+ " @(Thread: '" + Thread.currentThread().getName() + "')");
 		}
 
 		this.mEngine.onReloadResources();
@@ -244,8 +290,9 @@ public abstract class BaseGameActivity extends BaseActivity implements IGameInte
 
 	@Override
 	protected void onPause() {
-		if(BuildConfig.DEBUG) {
-			Debuging.d(this.getClass().getSimpleName() + ".onPause" + " @(Thread: '" + Thread.currentThread().getName() + "')");
+		if (BuildConfig.DEBUG) {
+			Debuging.d(this.getClass().getSimpleName() + ".onPause"
+					+ " @(Thread: '" + Thread.currentThread().getName() + "')");
 		}
 
 		super.onPause();
@@ -253,15 +300,16 @@ public abstract class BaseGameActivity extends BaseActivity implements IGameInte
 		this.mRenderSurfaceView.onPause();
 		this.releaseWakeLock();
 
-		if(!this.mGamePaused) {
+		if (!this.mGamePaused) {
 			this.onPauseGame();
 		}
 	}
 
 	@Override
 	public synchronized void onPauseGame() {
-		if(BuildConfig.DEBUG) {
-			Debuging.d(this.getClass().getSimpleName() + ".onPauseGame" + " @(Thread: '" + Thread.currentThread().getName() + "')");
+		if (BuildConfig.DEBUG) {
+			Debuging.d(this.getClass().getSimpleName() + ".onPauseGame"
+					+ " @(Thread: '" + Thread.currentThread().getName() + "')");
 		}
 
 		this.mGamePaused = true;
@@ -271,8 +319,9 @@ public abstract class BaseGameActivity extends BaseActivity implements IGameInte
 
 	@Override
 	protected void onDestroy() {
-		if(BuildConfig.DEBUG) {
-			Debuging.d(this.getClass().getSimpleName() + ".onDestroy" + " @(Thread: '" + Thread.currentThread().getName() + "')");
+		if (BuildConfig.DEBUG) {
+			Debuging.d(this.getClass().getSimpleName() + ".onDestroy"
+					+ " @(Thread: '" + Thread.currentThread().getName() + "')");
 		}
 
 		super.onDestroy();
@@ -282,7 +331,9 @@ public abstract class BaseGameActivity extends BaseActivity implements IGameInte
 		try {
 			this.onDestroyResources();
 		} catch (final Throwable pThrowable) {
-			Debuging.e(this.getClass().getSimpleName() + ".onDestroyResources failed." + " @(Thread: '" + Thread.currentThread().getName() + "')", pThrowable);
+			Debuging.e(this.getClass().getSimpleName()
+					+ ".onDestroyResources failed." + " @(Thread: '"
+					+ Thread.currentThread().getName() + "')", pThrowable);
 		}
 
 		this.onGameDestroyed();
@@ -292,23 +343,25 @@ public abstract class BaseGameActivity extends BaseActivity implements IGameInte
 
 	@Override
 	public void onDestroyResources() throws Exception {
-		if(BuildConfig.DEBUG) {
-			Debuging.d(this.getClass().getSimpleName() + ".onDestroyResources" + " @(Thread: '" + Thread.currentThread().getName() + "')");
+		if (BuildConfig.DEBUG) {
+			Debuging.d(this.getClass().getSimpleName() + ".onDestroyResources"
+					+ " @(Thread: '" + Thread.currentThread().getName() + "')");
 		}
 
-		if(this.mEngine.getEngineOptions().getAudioOptions().needsMusic()) {
+		if (this.mEngine.getEngineOptions().getAudioOptions().needsMusic()) {
 			this.getMusicManager().releaseAll();
 		}
 
-		if(this.mEngine.getEngineOptions().getAudioOptions().needsSound()) {
+		if (this.mEngine.getEngineOptions().getAudioOptions().needsSound()) {
 			this.getSoundManager().releaseAll();
 		}
 	}
 
 	@Override
 	public synchronized void onGameDestroyed() {
-		if(BuildConfig.DEBUG) {
-			Debuging.d(this.getClass().getSimpleName() + ".onGameDestroyed" + " @(Thread: '" + Thread.currentThread().getName() + "')");
+		if (BuildConfig.DEBUG) {
+			Debuging.d(this.getClass().getSimpleName() + ".onGameDestroyed"
+					+ " @(Thread: '" + Thread.currentThread().getName() + "')");
 		}
 
 		this.mGameCreated = false;
@@ -379,7 +432,8 @@ public abstract class BaseGameActivity extends BaseActivity implements IGameInte
 		this.mRenderSurfaceView = new RenderSurfaceView(this);
 		this.mRenderSurfaceView.setRenderer(this.mEngine, this);
 
-		this.setContentView(this.mRenderSurfaceView, BaseGameActivity.createSurfaceViewLayoutParams());
+		this.setContentView(this.mRenderSurfaceView,
+				BaseGameActivity.createSurfaceViewLayoutParams());
 	}
 
 	/**
@@ -392,30 +446,36 @@ public abstract class BaseGameActivity extends BaseActivity implements IGameInte
 	/**
 	 * @see Engine#runOnUpdateThread(Runnable, boolean)
 	 */
-	public void runOnUpdateThread(final Runnable pRunnable, final boolean pOnlyWhenEngineRunning) {
+	public void runOnUpdateThread(final Runnable pRunnable,
+			final boolean pOnlyWhenEngineRunning) {
 		this.mEngine.runOnUpdateThread(pRunnable, pOnlyWhenEngineRunning);
 	}
 
 	private void acquireWakeLock() {
-		this.acquireWakeLock(this.mEngine.getEngineOptions().getWakeLockOptions());
+		this.acquireWakeLock(this.mEngine.getEngineOptions()
+				.getWakeLockOptions());
 	}
 
 	private void acquireWakeLock(final WakeLockOptions pWakeLockOptions) {
-		if(pWakeLockOptions == WakeLockOptions.SCREEN_ON) {
+		if (pWakeLockOptions == WakeLockOptions.SCREEN_ON) {
 			ActivityUtils.keepScreenOn(this);
 		} else {
-			final PowerManager pm = (PowerManager) this.getSystemService(Context.POWER_SERVICE);
-			this.mWakeLock = pm.newWakeLock(pWakeLockOptions.getFlag() | PowerManager.ON_AFTER_RELEASE, Constants.DEBUGTAG);
+			final PowerManager pm = (PowerManager) this
+					.getSystemService(Context.POWER_SERVICE);
+			this.mWakeLock = pm.newWakeLock(pWakeLockOptions.getFlag()
+					| PowerManager.ON_AFTER_RELEASE, Constants.DEBUGTAG);
 			try {
 				this.mWakeLock.acquire();
 			} catch (final SecurityException pSecurityException) {
-				Debuging.e("You have to add\n\t<uses-permission android:name=\"android.permission.WAKE_LOCK\"/>\nto your AndroidManifest.xml !", pSecurityException);
+				Debuging.e(
+						"You have to add\n\t<uses-permission android:name=\"android.permission.WAKE_LOCK\"/>\nto your AndroidManifest.xml !",
+						pSecurityException);
 			}
 		}
 	}
 
 	private void releaseWakeLock() {
-		if(this.mWakeLock != null && this.mWakeLock.isHeld()) {
+		if (this.mWakeLock != null && this.mWakeLock.isHeld()) {
 			this.mWakeLock.release();
 		}
 	}
@@ -423,42 +483,53 @@ public abstract class BaseGameActivity extends BaseActivity implements IGameInte
 	private void applyEngineOptions() {
 		final EngineOptions engineOptions = this.mEngine.getEngineOptions();
 
-		if(engineOptions.isFullscreen()) {
+		if (engineOptions.isFullscreen()) {
 			ActivityUtils.requestFullscreen(this);
 		}
 
-		if(engineOptions.getAudioOptions().needsMusic() || engineOptions.getAudioOptions().needsSound()) {
+		if (engineOptions.getAudioOptions().needsMusic()
+				|| engineOptions.getAudioOptions().needsSound()) {
 			this.setVolumeControlStream(AudioManager.STREAM_MUSIC);
 		}
 
-		switch(engineOptions.getScreenOrientation()) {
-			case LANDSCAPE_FIXED:
+		switch (engineOptions.getScreenOrientation()) {
+		case LANDSCAPE_FIXED:
+			this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+			break;
+		case LANDSCAPE_SENSOR:
+			if (SystemUtils.SDK_VERSION_GINGERBREAD_OR_LATER) {
+				this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+			} else {
+				Debuging.w(ScreenOrientation.class.getSimpleName() + "."
+						+ ScreenOrientation.LANDSCAPE_SENSOR
+						+ " is not supported on this device. Falling back to "
+						+ ScreenOrientation.class.getSimpleName() + "."
+						+ ScreenOrientation.LANDSCAPE_FIXED);
 				this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-				break;
-			case LANDSCAPE_SENSOR:
-				if(SystemUtils.SDK_VERSION_GINGERBREAD_OR_LATER) {
-					this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
-				} else {
-					Debuging.w(ScreenOrientation.class.getSimpleName() + "." + ScreenOrientation.LANDSCAPE_SENSOR + " is not supported on this device. Falling back to " + ScreenOrientation.class.getSimpleName() + "." + ScreenOrientation.LANDSCAPE_FIXED);
-					this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-				}
-				break;
-			case PORTRAIT_FIXED:
+			}
+			break;
+		case PORTRAIT_FIXED:
+			this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+			break;
+		case PORTRAIT_SENSOR:
+			if (SystemUtils.SDK_VERSION_GINGERBREAD_OR_LATER) {
+				this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
+			} else {
+				Debuging.w(ScreenOrientation.class.getSimpleName() + "."
+						+ ScreenOrientation.PORTRAIT_SENSOR
+						+ " is not supported on this device. Falling back to "
+						+ ScreenOrientation.class.getSimpleName() + "."
+						+ ScreenOrientation.PORTRAIT_FIXED);
 				this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-				break;
-			case PORTRAIT_SENSOR:
-				if(SystemUtils.SDK_VERSION_GINGERBREAD_OR_LATER) {
-					this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
-				} else {
-					Debuging.w(ScreenOrientation.class.getSimpleName() + "." + ScreenOrientation.PORTRAIT_SENSOR + " is not supported on this device. Falling back to " + ScreenOrientation.class.getSimpleName() + "." + ScreenOrientation.PORTRAIT_FIXED);
-					this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-				}
-				break;
+			}
+			break;
 		}
 	}
 
 	protected static LayoutParams createSurfaceViewLayoutParams() {
-		final LayoutParams layoutParams = new LayoutParams(android.view.ViewGroup.LayoutParams.MATCH_PARENT, android.view.ViewGroup.LayoutParams.MATCH_PARENT);
+		final LayoutParams layoutParams = new LayoutParams(
+				android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+				android.view.ViewGroup.LayoutParams.MATCH_PARENT);
 		layoutParams.gravity = Gravity.CENTER;
 		return layoutParams;
 	}
@@ -470,8 +541,11 @@ public abstract class BaseGameActivity extends BaseActivity implements IGameInte
 	/**
 	 * @see {@link Engine#enableLocationSensor(Context, ILocationListener, LocationSensorOptions)}
 	 */
-	protected void enableLocationSensor(final ILocationListener pLocationListener, final LocationSensorOptions pLocationSensorOptions) {
-		this.mEngine.enableLocationSensor(this, pLocationListener, pLocationSensorOptions);
+	protected void enableLocationSensor(
+			final ILocationListener pLocationListener,
+			final LocationSensorOptions pLocationSensorOptions) {
+		this.mEngine.enableLocationSensor(this, pLocationListener,
+				pLocationSensorOptions);
 	}
 
 	/**
@@ -484,15 +558,20 @@ public abstract class BaseGameActivity extends BaseActivity implements IGameInte
 	/**
 	 * @see {@link Engine#enableAccelerationSensor(Context, IAccelerationListener)}
 	 */
-	protected boolean enableAccelerationSensor(final IAccelerationListener pAccelerationListener) {
-		return this.mEngine.enableAccelerationSensor(this, pAccelerationListener);
+	protected boolean enableAccelerationSensor(
+			final IAccelerationListener pAccelerationListener) {
+		return this.mEngine.enableAccelerationSensor(this,
+				pAccelerationListener);
 	}
 
 	/**
 	 * @see {@link Engine#enableAccelerationSensor(Context, IAccelerationListener, AccelerationSensorOptions)}
 	 */
-	protected boolean enableAccelerationSensor(final IAccelerationListener pAccelerationListener, final AccelerationSensorOptions pAccelerationSensorOptions) {
-		return this.mEngine.enableAccelerationSensor(this, pAccelerationListener, pAccelerationSensorOptions);
+	protected boolean enableAccelerationSensor(
+			final IAccelerationListener pAccelerationListener,
+			final AccelerationSensorOptions pAccelerationSensorOptions) {
+		return this.mEngine.enableAccelerationSensor(this,
+				pAccelerationListener, pAccelerationSensorOptions);
 	}
 
 	/**
@@ -505,15 +584,19 @@ public abstract class BaseGameActivity extends BaseActivity implements IGameInte
 	/**
 	 * @see {@link Engine#enableOrientationSensor(Context, IOrientationListener)}
 	 */
-	protected boolean enableOrientationSensor(final IOrientationListener pOrientationListener) {
+	protected boolean enableOrientationSensor(
+			final IOrientationListener pOrientationListener) {
 		return this.mEngine.enableOrientationSensor(this, pOrientationListener);
 	}
 
 	/**
 	 * @see {@link Engine#enableOrientationSensor(Context, IOrientationListener, OrientationSensorOptions)}
 	 */
-	protected boolean enableOrientationSensor(final IOrientationListener pOrientationListener, final OrientationSensorOptions pLocationSensorOptions) {
-		return this.mEngine.enableOrientationSensor(this, pOrientationListener, pLocationSensorOptions);
+	protected boolean enableOrientationSensor(
+			final IOrientationListener pOrientationListener,
+			final OrientationSensorOptions pLocationSensorOptions) {
+		return this.mEngine.enableOrientationSensor(this, pOrientationListener,
+				pLocationSensorOptions);
 	}
 
 	/**
