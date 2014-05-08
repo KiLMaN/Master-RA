@@ -3,11 +3,16 @@ package net.towerdefender.activity;
 import java.io.IOException;
 import java.util.List;
 
+import net.towerdefender.TowerDefender;
+
 import org.andengine.util.debuging.Debuging;
 
 import android.content.Context;
 import android.hardware.Camera;
+import android.hardware.Camera.CameraInfo;
 import android.hardware.Camera.Parameters;
+import android.hardware.Camera.PreviewCallback;
+import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.widget.Toast;
@@ -19,7 +24,7 @@ import android.widget.Toast;
  * @since 21:38:21 - 24.05.2010
  */
 public class CameraPreviewSurfaceView extends SurfaceView implements
-		SurfaceHolder.Callback {
+		SurfaceHolder.Callback, PreviewCallback {
 	// ===========================================================
 	// Constants
 	// ===========================================================
@@ -53,8 +58,23 @@ public class CameraPreviewSurfaceView extends SurfaceView implements
 	// ===========================================================
 
 	public void surfaceCreated(final SurfaceHolder pSurfaceHolder) {
-		this.mCamera = Camera.open();
+		int cameraCount = 0;
+		CameraInfo cameraInfo = new Camera.CameraInfo();
+		cameraCount = Camera.getNumberOfCameras();
+		for (int camIdx = 0; camIdx < cameraCount; camIdx++) {
+			Camera.getCameraInfo(camIdx, cameraInfo);
+			if (cameraInfo.facing == TowerDefender.CameraSelection) {
+				try {
+					mCamera = Camera.open(camIdx);
+					break;
+				} catch (RuntimeException e) {
+					Log.e("CamSelect",
+							"Camera failed to open: " + e.getLocalizedMessage());
+				}
+			}
+		}
 
+		// this.mCamera.setPreviewCallback(this);
 		try {
 			this.mCamera.setPreviewDisplay(pSurfaceHolder);
 		} catch (IOException e) {
@@ -71,7 +91,7 @@ public class CameraPreviewSurfaceView extends SurfaceView implements
 	public void surfaceChanged(final SurfaceHolder pSurfaceHolder,
 			final int pPixelFormat, final int pWidth, final int pHeight) {
 		final Camera.Parameters parameters = this.mCamera.getParameters();
-		parameters.setPreviewSize(pWidth, pHeight);
+		// parameters.setPreviewSize(pWidth, pHeight);
 		List<String> focusModes = parameters.getSupportedFocusModes();
 		if (focusModes.contains(Parameters.FOCUS_MODE_CONTINUOUS_VIDEO))
 			parameters.setFocusMode(Parameters.FOCUS_MODE_CONTINUOUS_VIDEO);
@@ -83,9 +103,10 @@ public class CameraPreviewSurfaceView extends SurfaceView implements
 				"AutoFocus : " + parameters.getFocusMode() + " Lenght :"
 						+ parameters.getFocalLength(), Toast.LENGTH_LONG)
 				.show();
+		parameters.setPreviewSize(720, 480);
 		this.mCamera.setParameters(parameters);
-		this.mCamera.startPreview();
-
+		// this.mCamera.startPreview();
+		GameActivity.getInstance().setHardwareCamera(mCamera);
 	}
 
 	// ===========================================================
@@ -95,8 +116,13 @@ public class CameraPreviewSurfaceView extends SurfaceView implements
 	public void autoFocusCamera() {
 		mCamera.autoFocus(null);
 	}
+
 	// ===========================================================
 	// Inner and Anonymous Classes
 	// ===========================================================
 
+	@Override
+	public void onPreviewFrame(byte[] data, Camera camera) {
+		// Not USed for the moment
+	}
 }

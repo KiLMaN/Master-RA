@@ -2,6 +2,9 @@ package net.towerdefender.activity;
 
 import java.io.IOException;
 
+import jp.co.cyberagent.android.gpuimage.GPUImage;
+import jp.co.cyberagent.android.gpuimage.GPUImageSobelEdgeDetection;
+import net.towerdefender.TowerDefender;
 import net.towerdefender.manager.ResourcesManager;
 import net.towerdefender.manager.SceneManager;
 
@@ -18,9 +21,9 @@ import org.andengine.opengl.view.RenderSurfaceView;
 import org.andengine.ui.activity.BaseGameActivity;
 
 import android.graphics.PixelFormat;
+import android.hardware.Camera.CameraInfo;
 import android.opengl.GLSurfaceView;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.WindowManager.LayoutParams;
 import android.widget.Toast;
@@ -32,13 +35,17 @@ public class GameActivity extends BaseGameActivity /*
 
 	private static GameActivity INSTANCE;
 
+	@SuppressWarnings("unused")
 	private static int _LimitFPS = 60;
 	private static int _WIDTH = 1280;
 	private static int _HEIGHT = 720;
 
 	private Camera mEngineCamera;
 	private ARRajawaliRender mARRajawaliRender;
+	@SuppressWarnings("unused")
 	private ResourcesManager resourcesManager;
+
+	public GPUImage mGPUImage;
 
 	private CameraPreviewSurfaceView mCameraPreviewSurfaceView;
 	private GLSurfaceView mRAView;
@@ -162,6 +169,13 @@ public class GameActivity extends BaseGameActivity /*
 		// setContentView(mTestSurfaceView);
 		this.mCameraPreviewSurfaceView = new CameraPreviewSurfaceView(this);
 
+		GLSurfaceView mGLSurfaceView = new GLSurfaceView(this);
+		mGLSurfaceView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
+		mGLSurfaceView.getHolder().setFormat(PixelFormat.TRANSLUCENT);
+		mGLSurfaceView.setEGLContextClientVersion(2);
+		mGPUImage = new GPUImage(this);
+		mGPUImage.setGLSurfaceView(mGLSurfaceView);
+
 		this.mRenderSurfaceView = new RenderSurfaceView(this);
 		this.mRenderSurfaceView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
 		this.mRenderSurfaceView.getHolder().setFormat(PixelFormat.TRANSLUCENT);
@@ -183,6 +197,9 @@ public class GameActivity extends BaseGameActivity /*
 		addContentView(mRAView, new LayoutParams(LayoutParams.WRAP_CONTENT,
 				LayoutParams.WRAP_CONTENT));
 
+		addContentView(mGLSurfaceView, new LayoutParams(
+				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+
 		addContentView(mCameraPreviewSurfaceView, new LayoutParams(
 				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 		// addContentView(this.mGstreamerView, new LayoutParams(
@@ -190,16 +207,29 @@ public class GameActivity extends BaseGameActivity /*
 
 	}
 
+	public void setHardwareCamera(android.hardware.Camera cam) {
+
+		mGPUImage
+				.setUpCamera(
+						cam,
+						TowerDefender.CameraSelection == CameraInfo.CAMERA_FACING_FRONT ? 180
+								: 0,
+						TowerDefender.CameraSelection == CameraInfo.CAMERA_FACING_FRONT,
+						false);
+
+		// mGPUImage.setUpCamera(cam);
+		mGPUImage.setFilter(new GPUImageSobelEdgeDetection());
+	}
+
 	public CameraPreviewSurfaceView getCameraPreviewSurface() {
 		return mCameraPreviewSurfaceView;
 	}
 
 	// Gstreamer
-	private void onGStreamerInitialized() {
-		Log.i("GStreamer", "Gst initialized");
-		// Restore previous playing state
-		// nativePlay();
-	}
+	/*
+	 * private void onGStreamerInitialized() { Log.i("GStreamer",
+	 * "Gst initialized"); // Restore previous playing state // nativePlay(); }
+	 */
 
 	static {
 		// System.loadLibrary("gstreamer_android");
