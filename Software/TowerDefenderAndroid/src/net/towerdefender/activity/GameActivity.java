@@ -23,15 +23,18 @@ import android.graphics.PixelFormat;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.KeyEvent;
+import android.view.SurfaceHolder;
 import android.view.WindowManager.LayoutParams;
 import android.widget.Toast;
 import edu.dhbw.andar.ARToolkit;
 import edu.dhbw.andar.AndARRenderer;
 import edu.dhbw.andar.CameraPreviewHandler;
 import edu.dhbw.andar.CameraStatus;
+import gstreamer.GStreamerSurfaceView;
 
-public class GameActivity extends BaseGameActivity {
+public class GameActivity extends BaseGameActivity implements SurfaceHolder.Callback {
 
 	private static GameActivity INSTANCE;
 	private static int _LimitFPS = 30;
@@ -51,6 +54,20 @@ public class GameActivity extends BaseGameActivity {
 
 	private CameraPreviewSurfaceView mCameraPreviewSurfaceView;
 	private GLSurfaceView mAndarRAView;
+	
+	// Gstreamer
+	private GStreamerSurfaceView mGstreamerView;
+	private native void nativeInit();     // Initialize native code, build pipeline, etc
+    private native void nativeFinalize(); // Destroy pipeline and shutdown native code
+    private native void nativePlay();     // Set pipeline to PLAYING
+    private native void nativePause();    // Set pipeline to PAUSED
+    private static native boolean nativeClassInit(); // Initialize native class: cache Method IDs for callbacks
+    private native void nativeSurfaceInit(Object surface);
+    private native void nativeSurfaceFinalize();
+    private long native_custom_data;      // Native code will use this to keep private data
+
+    private boolean is_playing_desired = true;   // Whether the user asked to go to PLAYING
+	    
 
 	public GameActivity() {
 		INSTANCE = this;
@@ -143,6 +160,7 @@ public class GameActivity extends BaseGameActivity {
 		this.mRenderSurfaceView.getHolder().setFormat(PixelFormat.TRANSLUCENT);
 		// this.mRenderSurfaceView.setZOrderMediaOverlay(true);
 		this.mRenderSurfaceView.setRenderer(this.mEngine, this);
+		this.mGstreamerView = new GStreamerSurfaceView(this);
 
 		androidRessources = getResources();
 
@@ -181,6 +199,8 @@ public class GameActivity extends BaseGameActivity {
 				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 		addContentView(mCameraPreviewSurfaceView, new LayoutParams(
 				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+		addContentView(this.mGstreamerView, new LayoutParams(
+				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 
 	}
 
@@ -205,4 +225,31 @@ public class GameActivity extends BaseGameActivity {
 		return mCameraPreviewSurfaceView;
 	}
 
+	// Gstreamer
+	private void onGStreamerInitialized () {
+        Log.i ("GStreamer", "Gst initialized" );
+        // Restore previous playing state
+        nativePlay();
+	}
+    static {
+        System.loadLibrary("gstreamer_android");
+        System.loadLibrary("TowerDefender");
+        nativeClassInit();
+    }
+
+    public void surfaceChanged(SurfaceHolder holder, int format, int width,
+            int height) {
+        Log.d("GStreamer", "Surface changed to format " + format + " width "
+                + width + " height " + height);
+        nativeSurfaceInit (holder.getSurface());
+    }
+
+    public void surfaceCreated(SurfaceHolder holder) {
+        Log.d("GStreamer", "Surface created: " + holder.getSurface());
+    }
+
+    public void surfaceDestroyed(SurfaceHolder holder) {
+        Log.d("GStreamer", "Surface destroyed");
+        nativeSurfaceFinalize ();
+    }
 }

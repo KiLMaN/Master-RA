@@ -28,8 +28,9 @@ public class GameScene extends BaseScene {
 	private HUD gameHUD;
 	private Text scoreText;
 	private Text fpsText;
-	private int score = 0;
+	private int score = 0, lastUpdate = 0;
 	private static Tower currentControlTower = null;
+	
 
 	@Override
 	public void createScene() {
@@ -107,16 +108,18 @@ public class GameScene extends BaseScene {
 					public void onControlChange(
 							final BaseOnScreenControl pBaseOnScreenControl,
 							final float pValueX, final float pValueY) {
-						// Log.i("OnScreenControll", "Position :x " + pValueX
-						// + "y" + pValueY);
-						if ( currentControlTower != null && currentControlTower.isConnected() ) {
-							if ( pValueY != 0)
-								currentControlTower.moveVOffset( (int) ( pValueY*5) );
-						
-							if ( pValueX != 0 )
-								currentControlTower.moveH( (int) (pValueX * 10) );  
+						if ( lastUpdate == 0 ){
+							if ( currentControlTower != null && currentControlTower.isConnected() ) {
+								if ( pValueY != 0)
+									currentControlTower.moveVOffset( (int) ( pValueY*5) );
+							
+								if ( pValueX != 0 )
+									currentControlTower.moveH( (int) (pValueX * 10) );  
+							}
+							lastUpdate = 10;
 						}
-						
+						else lastUpdate--;
+							
 					}
 
 					@Override
@@ -128,6 +131,9 @@ public class GameScene extends BaseScene {
 						if ( currentControlTower != null )
 							if ( ! currentControlTower.isConnected() )
 								currentControlTower.connect();
+							else {
+								
+							}
 					}
 				});
 
