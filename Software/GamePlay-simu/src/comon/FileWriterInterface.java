@@ -2,16 +2,32 @@ package comon;
 
 import java.io.OutputStream;
 
-/* The file Writing ONLY */
+/**
+ * A standard file writer interface that can be used on Android and Windows
+ * 
+ * @author Brice
+ * 
+ */
 public interface FileWriterInterface {
 
-	/* Set the fileName to open */
+	/**
+	 * Set the name of the file to open the stream from
+	 * 
+	 * @param fileName
+	 *            : name of the file ex : "folder/file.ext"
+	 */
 	public void setFile(String fileName);
 
-	/* Get The Output Stream */
+	/**
+	 * Get the output stream, the file must be set first
+	 * 
+	 * @return A standard inputstream
+	 */
 	public OutputStream getStream();
 
-	/* Close the file */
+	/**
+	 * Close the input stream
+	 */
 	public void close();
 
 }
