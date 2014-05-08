@@ -32,10 +32,9 @@ import rajawali.renderer.RajawaliRenderer;
 import android.graphics.PixelFormat;
 import android.opengl.GLSurfaceView;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.WindowManager.LayoutParams;
-import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.LinearInterpolator;
 import android.widget.Toast;
 
 public class GameActivity extends BaseGameActivity {
@@ -178,7 +177,7 @@ public class GameActivity extends BaseGameActivity {
 							Axis.Y, 360);
 					anim.setDurationMilliseconds(6000);
 					anim.setRepeatMode(RepeatMode.INFINITE);
-					anim.setInterpolator(new AccelerateDecelerateInterpolator());
+					anim.setInterpolator(new LinearInterpolator());
 					anim.setTransformable3D(monkey);
 					getCurrentScene().registerAnimation(anim);
 					anim.play();
@@ -230,46 +229,6 @@ public class GameActivity extends BaseGameActivity {
 		addContentView(mCameraPreviewSurfaceView, new LayoutParams(
 				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 
-	}
-
-	private void startARTest() {
-		DirectionalLight light = new DirectionalLight(0, 0, -1);
-		light.setPower(1);
-		ARrenderer.getCurrentScene().addLight(light);
-		ARrenderer.getCurrentCamera().setPosition(0, 0, 16);
-
-		try {
-			ObjectInputStream ois = new ObjectInputStream(ARrenderer
-					.getContext().getResources()
-					.openRawResource(R.raw.monkey_ser));
-			SerializedObject3D serializedMonkey = (SerializedObject3D) ois
-					.readObject();
-			ois.close();
-
-			Object3D monkey = new Object3D(serializedMonkey);
-			Material material = new Material();
-			material.enableLighting(true);
-			material.setDiffuseMethod(new DiffuseMethod.Lambert());
-			monkey.setMaterial(material);
-			monkey.setColor(0xffff8C00);
-			monkey.setScale(2);
-
-			ARrenderer.getCurrentScene().addChild(monkey);
-
-			RotateOnAxisAnimation anim = new RotateOnAxisAnimation(Axis.Y, 360);
-			anim.setDurationMilliseconds(6000);
-			anim.setRepeatMode(RepeatMode.INFINITE);
-			anim.setInterpolator(new AccelerateDecelerateInterpolator());
-			anim.setTransformable3D(monkey);
-			ARrenderer.getCurrentScene().registerAnimation(anim);
-			anim.play();
-			Log.i("DEBUG", "Monkey loaded");
-
-		} catch (Exception e) {
-			e.printStackTrace();
-
-		}
-		ARrenderer.getCurrentScene().setBackgroundColor(0);
 	}
 
 	public CameraPreviewSurfaceView getCameraPreviewSurface() {
