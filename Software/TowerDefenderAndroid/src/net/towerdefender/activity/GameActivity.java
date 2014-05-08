@@ -38,16 +38,11 @@ import android.view.SurfaceHolder;
 import android.view.WindowManager.LayoutParams;
 import android.view.animation.LinearInterpolator;
 import android.widget.Toast;
-<<<<<<< HEAD
-import edu.dhbw.andar.ARToolkit;
-import edu.dhbw.andar.AndARRenderer;
-import edu.dhbw.andar.CameraPreviewHandler;
-import edu.dhbw.andar.CameraStatus;
-import gstreamer.GStreamerSurfaceView;
-=======
->>>>>>> refs/remotes/origin/master
 
-public class GameActivity extends BaseGameActivity implements SurfaceHolder.Callback {
+import gstreamer.GStreamerSurfaceView;
+
+
+public class GameActivity extends BaseGameActivity /*implements SurfaceHolder.Callback*/ {
 
 	private static GameActivity INSTANCE;
 	private static int _LimitFPS = 30;
@@ -157,11 +152,10 @@ public class GameActivity extends BaseGameActivity implements SurfaceHolder.Call
 
 	@Override
 	protected void onSetContentView() {
-		/*
-		 * // // mFrame.addView(this.mCameraPreviewSurfaceView); FrameLayout
-		 * mFrame = new FrameLayout(this);
-		 */
-		// setContentView(mTestSurfaceView);
+		
+		//this.mGstreamerView = new GStreamerSurfaceView(this);
+		
+		
 		this.mCameraPreviewSurfaceView = new CameraPreviewSurfaceView(this);
 
 		this.mRenderSurfaceView = new RenderSurfaceView(this);
@@ -169,7 +163,7 @@ public class GameActivity extends BaseGameActivity implements SurfaceHolder.Call
 		this.mRenderSurfaceView.getHolder().setFormat(PixelFormat.TRANSLUCENT);
 		this.mRenderSurfaceView.setEGLContextClientVersion(2);
 		this.mRenderSurfaceView.setRenderer(this.mEngine, this);
-		this.mGstreamerView = new GStreamerSurfaceView(this);
+		
 
 		ARrenderer = new RajawaliRenderer(this) {
 			@Override
@@ -253,8 +247,8 @@ public class GameActivity extends BaseGameActivity implements SurfaceHolder.Call
 
 		addContentView(mCameraPreviewSurfaceView, new LayoutParams(
 				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-		addContentView(this.mGstreamerView, new LayoutParams(
-				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+		//addContentView(this.mGstreamerView, new LayoutParams(
+		//		LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 
 	}
 
@@ -262,7 +256,7 @@ public class GameActivity extends BaseGameActivity implements SurfaceHolder.Call
 		return mCameraPreviewSurfaceView;
 	}
 
-<<<<<<< HEAD
+	/*
 	// Gstreamer
 	private void onGStreamerInitialized () {
         Log.i ("GStreamer", "Gst initialized" );
@@ -290,7 +284,5 @@ public class GameActivity extends BaseGameActivity implements SurfaceHolder.Call
         Log.d("GStreamer", "Surface destroyed");
         nativeSurfaceFinalize ();
     }
+    */
 }
-=======
-}
->>>>>>> refs/remotes/origin/master
