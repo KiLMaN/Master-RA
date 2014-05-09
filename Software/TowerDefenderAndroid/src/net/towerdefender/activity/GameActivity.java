@@ -3,8 +3,8 @@ package net.towerdefender.activity;
 import java.io.IOException;
 
 import jp.co.cyberagent.android.gpuimage.GPUImage;
-import jp.co.cyberagent.android.gpuimage.GPUImageSobelEdgeDetection;
 import net.towerdefender.TowerDefender;
+import net.towerdefender.image.GPUImageGlyphFilter;
 import net.towerdefender.manager.ResourcesManager;
 import net.towerdefender.manager.SceneManager;
 
@@ -189,13 +189,13 @@ public class GameActivity extends BaseGameActivity /*
 		mRAView.setEGLContextClientVersion(2);
 		mRAView.setRenderer(mARRajawaliRender);
 
-		setContentView(mRenderSurfaceView, new LayoutParams(
-				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+		// setContentView(mRenderSurfaceView, new LayoutParams(
+		// LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 
-		addContentView(mRAView, new LayoutParams(LayoutParams.WRAP_CONTENT,
-				LayoutParams.WRAP_CONTENT));
+		// addContentView(mRAView, new LayoutParams(LayoutParams.WRAP_CONTENT,
+		// LayoutParams.WRAP_CONTENT));
 
-		addContentView(mGLSurfaceView, new LayoutParams(
+		setContentView(mGLSurfaceView, new LayoutParams(
 				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 
 		addContentView(mCameraPreviewSurfaceView, new LayoutParams(
@@ -207,16 +207,14 @@ public class GameActivity extends BaseGameActivity /*
 
 	public void setHardwareCamera(android.hardware.Camera cam) {
 
-		mGPUImage
-				.setUpCamera(
-						cam,
-						TowerDefender.CameraSelection == CameraInfo.CAMERA_FACING_FRONT ? 180
-								: 0,
-						TowerDefender.CameraSelection == CameraInfo.CAMERA_FACING_FRONT,
-						false);
+		int rotate = (TowerDefender.CameraSelection == CameraInfo.CAMERA_FACING_FRONT) ? 180
+				: 0;
+		boolean flipImage = TowerDefender.CameraSelection == CameraInfo.CAMERA_FACING_FRONT;
+
+		mGPUImage.setUpCamera(cam, rotate, flipImage, false);
 
 		// mGPUImage.setUpCamera(cam);
-		mGPUImage.setFilter(new GPUImageSobelEdgeDetection());
+		mGPUImage.setFilter(new GPUImageGlyphFilter());
 	}
 
 	public CameraPreviewSurfaceView getCameraPreviewSurface() {
