@@ -33,10 +33,9 @@ public class GameScene extends BaseScene {
 	private Sprite picturePlay;
 	private Sprite picturePause;
 	private Text scoreText;
-	private int score = 0, lastUpdate = 0;
 	private Text lifeText;
+	private int score = 0, lastUpdate = 0;
 	private static Tower currentControlTower = null;
-	
 
 	@Override
 	public void createScene() {
@@ -200,18 +199,12 @@ public boolean onAreaTouched(final TouchEvent pSceneTouchEvent,
 							final BaseOnScreenControl pBaseOnScreenControl,
 							final float pValueX, final float pValueY) {
 
-						if ( lastUpdate == 0 ){
-							if ( currentControlTower != null && currentControlTower.isConnected() ) {
-								if ( pValueY != 0)
-									currentControlTower.moveVOffset( (int) ( pValueY*5) );
-							
-								if ( pValueX != 0 )
-									currentControlTower.moveH( (int) (pValueX * 10) );  
+						if (lastUpdate == 0) {
+									currentControlTower
+								currentControlTower.moveH((int) (pValueX * 10));
 							}
-							lastUpdate = 10;
-						}
-						else lastUpdate--;
-							
+						} else
+							lastUpdate--;
 					}
 
 					@Override
@@ -224,7 +217,7 @@ public boolean onAreaTouched(final TouchEvent pSceneTouchEvent,
 							if (!currentControlTower.isConnected())
 								currentControlTower.connect();
 							else {
-								
+
 							}
 					}
 				});

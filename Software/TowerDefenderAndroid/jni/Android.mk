@@ -1,3 +1,4 @@
+ifdef BUILD_PROJECT
 LOCAL_PATH := $(call my-dir)
 
 include $(CLEAR_VARS)
@@ -14,8 +15,8 @@ endif
 GSTREAMER_SDK_ROOT        := $(GSTREAMER_SDK_ROOT_ANDROID)
 endif
 
-ifndef NDK-PATH
-$(error NDK-PATH is not defined!)
+ifndef NDK_PATH_ROOT
+$(error NDK_PATH_ROOT is not defined!)
 endif
 
 GSTREAMER_NDK_BUILD_PATH  := $(GSTREAMER_SDK_ROOT)/share/gst-android/ndk-build
@@ -24,3 +25,4 @@ GSTREAMER_PLUGINS         := $(GSTREAMER_PLUGINS_CORE) $(GSTREAMER_PLUGINS_PLAYB
 GSTREAMER_EXTRA_DEPS      := gstreamer-interfaces-0.10 gstreamer-video-0.10
 include $(GSTREAMER_NDK_BUILD_PATH)/gstreamer.mk
 
+endif
