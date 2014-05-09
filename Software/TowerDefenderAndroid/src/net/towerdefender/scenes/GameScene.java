@@ -1,6 +1,5 @@
 package net.towerdefender.scenes;
 
-import gameplay.Position;
 import gameplay.Tower;
 
 import javax.microedition.khronos.opengles.GL10;
@@ -62,12 +61,12 @@ public class GameScene extends BaseScene {
 
 	@Override
 	public void disposeScene() {
-pictureSettings.detachSelf();
+		pictureSettings.detachSelf();
 		pictureSettings.dispose();
 
-		//TODO: à décommenter une fois que la condition aura été implémentée
-	//	picturePause.detachSelf();
-	//	picturePause.dispose();
+		// TODO: à décommenter une fois que la condition aura été implémentée
+		// picturePause.detachSelf();
+		// picturePause.dispose();
 
 		picturePlay.detachSelf();
 		picturePlay.dispose();
@@ -77,7 +76,7 @@ pictureSettings.detachSelf();
 
 		lifeText.detachSelf();
 		lifeText.dispose();
-		
+
 		gameHUD.detachSelf();
 		gameHUD.dispose();
 
@@ -109,7 +108,8 @@ pictureSettings.detachSelf();
 				super.preDraw(pGLState, pCamera);
 				pGLState.enableDither();
 			}
-public boolean onAreaTouched(final TouchEvent pSceneTouchEvent,
+
+			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent,
 					final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
 				addToScore(1);
 				return true;
@@ -121,7 +121,7 @@ public boolean onAreaTouched(final TouchEvent pSceneTouchEvent,
 		gameHUD.registerTouchArea(pictureSettings);
 		gameHUD.setTouchAreaBindingOnActionDownEnabled(true);
 		gameHUD.attachChild(pictureSettings);
-// CREATE SPRITE PAUSE
+		// CREATE SPRITE PAUSE
 
 		// TODO: mettre l'affichage en true si le jeu est en route
 
@@ -136,28 +136,27 @@ public boolean onAreaTouched(final TouchEvent pSceneTouchEvent,
 		 * gameHUD.attachChild(picturePause);
 		 */
 		// TODO: mettre l'affichage en true si le jeu est en pause
-		
+
 		picturePlay = new Sprite(0, 0,
-		resourcesManager.buttonOptionPlay_region, vbom) {
+				resourcesManager.buttonOptionPlay_region, vbom) {
 
 			@Override
 			protected void preDraw(GLState pGLState, Camera pCamera) {
 				super.preDraw(pGLState, pCamera);
 				pGLState.enableDither();
 			}
-			
+
 			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent,
 					final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
 				addToScore(1);
 				return true;
 			}
 		};
-		
-		
+
 		picturePlay.setPosition(camera.getWidth() - 100, 0);
 		picturePlay.setHeight(100);
 		picturePlay.setWidth(100);
-		
+
 		gameHUD.registerTouchArea(picturePlay);
 		gameHUD.setTouchAreaBindingOnActionDownEnabled(true);
 		gameHUD.attachChild(picturePlay);
@@ -200,11 +199,12 @@ public boolean onAreaTouched(final TouchEvent pSceneTouchEvent,
 							final float pValueX, final float pValueY) {
 
 						if (lastUpdate == 0) {
-									currentControlTower
+							if (currentControlTower != null) {
 								currentControlTower.moveH((int) (pValueX * 10));
 							}
-						} else
+						} else {
 							lastUpdate--;
+						}
 					}
 
 					@Override
@@ -213,12 +213,13 @@ public boolean onAreaTouched(final TouchEvent pSceneTouchEvent,
 						addToScore(1);
 						GameActivity.getInstance().getCameraPreviewSurface()
 								.autoFocusCamera();
-						if (currentControlTower != null)
+						if (currentControlTower != null) {
 							if (!currentControlTower.isConnected())
 								currentControlTower.connect();
 							else {
 
 							}
+						}
 					}
 				});
 

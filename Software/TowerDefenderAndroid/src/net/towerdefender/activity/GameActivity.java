@@ -1,11 +1,6 @@
 package net.towerdefender.activity;
 
 import java.io.IOException;
-import java.io.ObjectInputStream;
-
-import net.towerdefender.R;
-import net.towerdefender.manager.ResourcesManager;
-import net.towerdefender.manager.SceneManager;
 
 import jp.co.cyberagent.android.gpuimage.GPUImage;
 import jp.co.cyberagent.android.gpuimage.GPUImageSobelEdgeDetection;
@@ -25,16 +20,6 @@ import org.andengine.entity.scene.Scene;
 import org.andengine.opengl.view.RenderSurfaceView;
 import org.andengine.ui.activity.BaseGameActivity;
 
-import rajawali.Object3D;
-import rajawali.SerializedObject3D;
-import rajawali.animation.Animation.RepeatMode;
-import rajawali.animation.RotateOnAxisAnimation;
-import rajawali.lights.DirectionalLight;
-import rajawali.materials.Material;
-import rajawali.materials.methods.DiffuseMethod;
-import rajawali.math.vector.Vector3.Axis;
-import rajawali.renderer.RajawaliRenderer;
-
 import android.graphics.PixelFormat;
 import android.hardware.Camera.CameraInfo;
 import android.opengl.GLSurfaceView;
@@ -43,8 +28,10 @@ import android.view.KeyEvent;
 import android.view.WindowManager.LayoutParams;
 import android.widget.Toast;
 
-public class GameActivity extends BaseGameActivity /*implements SurfaceHolder.Callback*/ {
-												
+public class GameActivity extends BaseGameActivity /*
+													 * implements
+													 * SurfaceHolder.Callback
+													 */{
 
 	private static GameActivity INSTANCE;
 
@@ -175,10 +162,9 @@ public class GameActivity extends BaseGameActivity /*implements SurfaceHolder.Ca
 
 	@Override
 	protected void onSetContentView() {
-		
-		//this.mGstreamerView = new GStreamerSurfaceView(this);
-		
-		
+
+		// this.mGstreamerView = new GStreamerSurfaceView(this);
+
 		this.mCameraPreviewSurfaceView = new CameraPreviewSurfaceView(this);
 
 		GLSurfaceView mGLSurfaceView = new GLSurfaceView(this);
@@ -239,15 +225,15 @@ public class GameActivity extends BaseGameActivity /*implements SurfaceHolder.Ca
 
 	// Gstreamer
 	/*
-	 * private void onGStreamerInitialized() { Log.i("GStreamer",
-        // Restore previous playing state
+	 * private void onGStreamerInitialized() { Log.i("GStreamer", // Restore
+	 * previous playing state
 	 */
 
-    static {
+	static {
 		// System.loadLibrary("gstreamer_android");
 		// System.loadLibrary("TowerDefender");
 		// nativeClassInit();
-    }
+	}
 
 	/*
 	 * public void surfaceChanged(SurfaceHolder holder, int format, int width,
@@ -261,4 +247,4 @@ public class GameActivity extends BaseGameActivity /*implements SurfaceHolder.Ca
 	 * public void surfaceDestroyed(SurfaceHolder holder) { Log.d("GStreamer",
 	 * "Surface destroyed"); nativeSurfaceFinalize(); }
 	 */
-    */
+}
