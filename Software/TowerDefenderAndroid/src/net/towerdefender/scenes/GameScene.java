@@ -1,5 +1,6 @@
 package net.towerdefender.scenes;
 
+import gameplay.Position;
 import gameplay.Tower;
 
 import javax.microedition.khronos.opengles.GL10;
@@ -18,6 +19,7 @@ import org.andengine.entity.scene.background.Background;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.text.Text;
 import org.andengine.entity.text.TextOptions;
+import org.andengine.input.touch.TouchEvent;
 import org.andengine.opengl.util.GLState;
 import org.andengine.util.HorizontalAlign;
 import org.andengine.util.color.Color;
@@ -28,6 +30,8 @@ public class GameScene extends BaseScene {
 
 	private HUD gameHUD;
 	private Sprite pictureSettings;
+	private Sprite picturePlay;
+	private Sprite picturePause;
 	private Text scoreText;
 	private Text lifeText;
 	private int score = 0, lastUpdate = 0;
@@ -58,17 +62,24 @@ public class GameScene extends BaseScene {
 
 	@Override
 	public void disposeScene() {
-		gameHUD.detachSelf();
-		gameHUD.dispose();
-
-		pictureSettings.detachSelf();
+pictureSettings.detachSelf();
 		pictureSettings.dispose();
+
+		//TODO: à décommenter une fois que la condition aura été implémentée
+	//	picturePause.detachSelf();
+	//	picturePause.dispose();
+
+		picturePlay.detachSelf();
+		picturePlay.dispose();
 
 		scoreText.detachSelf();
 		scoreText.dispose();
 
 		lifeText.detachSelf();
 		lifeText.dispose();
+		
+		gameHUD.detachSelf();
+		gameHUD.dispose();
 
 		this.detachSelf();
 		this.dispose();
@@ -98,16 +109,58 @@ public class GameScene extends BaseScene {
 				super.preDraw(pGLState, pCamera);
 				pGLState.enableDither();
 			}
-			/*
-			 * public boolean onAreaTouched(final TouchEvent pSceneTouchEvent,
-			 * final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
-			 * //Insert Code Here return true; }
-			 */
+public boolean onAreaTouched(final TouchEvent pSceneTouchEvent,
+					final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
+				addToScore(1);
+				return true;
+			}
 
 		};
 		pictureSettings.setHeight(100);
 		pictureSettings.setWidth(100);
+		gameHUD.registerTouchArea(pictureSettings);
+		gameHUD.setTouchAreaBindingOnActionDownEnabled(true);
 		gameHUD.attachChild(pictureSettings);
+// CREATE SPRITE PAUSE
+
+		// TODO: mettre l'affichage en true si le jeu est en route
+
+		/*
+		 * picturePause = new Sprite(0, 0,
+		 * resourcesManager.buttonOptionPause_region, vbom) {
+		 * 
+		 * @Override protected void preDraw(GLState pGLState, Camera pCamera) {
+		 * super.preDraw(pGLState, pCamera); pGLState.enableDither(); } };
+		 * picturePause.setPosition(camera.getWidth() - 100, 0);
+		 * picturePause.setHeight(100); picturePause.setWidth(100);
+		 * gameHUD.attachChild(picturePause);
+		 */
+		// TODO: mettre l'affichage en true si le jeu est en pause
+		
+		picturePlay = new Sprite(0, 0,
+		resourcesManager.buttonOptionPlay_region, vbom) {
+
+			@Override
+			protected void preDraw(GLState pGLState, Camera pCamera) {
+				super.preDraw(pGLState, pCamera);
+				pGLState.enableDither();
+			}
+			
+			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent,
+					final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
+				addToScore(1);
+				return true;
+			}
+		};
+		
+		
+		picturePlay.setPosition(camera.getWidth() - 100, 0);
+		picturePlay.setHeight(100);
+		picturePlay.setWidth(100);
+		
+		gameHUD.registerTouchArea(picturePlay);
+		gameHUD.setTouchAreaBindingOnActionDownEnabled(true);
+		gameHUD.attachChild(picturePlay);
 
 		// CREATE SCORE TEXT
 		scoreText = new Text(0, 0, resourcesManager.Coolvetica,
@@ -147,20 +200,11 @@ public class GameScene extends BaseScene {
 							final float pValueX, final float pValueY) {
 
 						if (lastUpdate == 0) {
-							if (currentControlTower != null
-									&& currentControlTower.isConnected()) {
-								if (pValueY != 0)
 									currentControlTower
-											.moveVOffset((int) (pValueY * 5));
-
-								if (pValueX != 0)
-									currentControlTower
-											.moveH((int) (pValueX * 10));
+								currentControlTower.moveH((int) (pValueX * 10));
 							}
-							lastUpdate = 10;
 						} else
 							lastUpdate--;
-
 					}
 
 					@Override

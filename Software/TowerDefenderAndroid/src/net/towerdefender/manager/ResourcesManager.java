@@ -55,6 +55,10 @@ public class ResourcesManager {
 	private BuildableBitmapTextureAtlas onScreenControlTextureAtlas;
 	public ITextureRegion buttonOptionSettings_region;
 	private BuildableBitmapTextureAtlas gameTextureAtlas;
+	public ITextureRegion buttonOptionPlay_region;
+	private BuildableBitmapTextureAtlas playTextureAtlas;
+	public ITextureRegion buttonOptionPause_region;
+	private BuildableBitmapTextureAtlas pauseTextureAtlas;
 
 	// ---------------------------------------------
 	// TEXTURES & TEXTURE REGIONS
@@ -145,6 +149,42 @@ public class ResourcesManager {
 			this.gameTextureAtlas.load();
 		} catch (final TextureAtlasBuilderException e) {
 			Log.e("TD2", e.toString());
+		}
+
+		BitmapTextureAtlasTextureRegionFactory
+				.setAssetBasePath("gfx/TowerDefender/game/");
+
+		playTextureAtlas = new BuildableBitmapTextureAtlas(
+				activity.getTextureManager(), 256, 256, TextureOptions.BILINEAR);
+
+		buttonOptionPlay_region = BitmapTextureAtlasTextureRegionFactory
+				.createFromAsset(playTextureAtlas, activity, "play.png");
+
+		try {
+			this.playTextureAtlas
+					.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(
+							0, 1, 0));
+			this.playTextureAtlas.load();
+		} catch (final TextureAtlasBuilderException e) {
+			Log.e("TD3", e.toString());
+		}
+
+		BitmapTextureAtlasTextureRegionFactory
+				.setAssetBasePath("gfx/TowerDefender/game/");
+
+		pauseTextureAtlas = new BuildableBitmapTextureAtlas(
+				activity.getTextureManager(), 800, 800, TextureOptions.BILINEAR);
+
+		buttonOptionPause_region = BitmapTextureAtlasTextureRegionFactory
+				.createFromAsset(pauseTextureAtlas, activity, "pause.png");
+
+		try {
+			this.pauseTextureAtlas
+					.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(
+							0, 1, 0));
+			this.pauseTextureAtlas.load();
+		} catch (final TextureAtlasBuilderException e) {
+			Log.e("TD4", e.toString());
 		}
 
 	}
