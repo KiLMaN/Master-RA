@@ -33,6 +33,8 @@ public class GamePanel extends JPanel {
 														// controled or not
 	private boolean printWeaponUnblocked = false; // juste pour affichage
 	private Pweapon pweapon; // juste pour affichage
+	private int circleTowerRadius = 50;
+	private int circleEnemieRadius = 20;
 
 	public GamePanel() {
 
@@ -41,10 +43,12 @@ public class GamePanel extends JPanel {
 				if (SimulationPC.game.isPaused())
 					for (Tower tower : SimulationPC.game.getTowers()) {
 						if ((tower.getPosition().getPositionX() <= e.getX() && tower
-								.getPosition().getPositionX() + 50 >= e.getX())
+								.getPosition().getPositionX()
+								+ circleTowerRadius >= e.getX())
 								&& (tower.getPosition().getPositionY() <= e
 										.getY() && tower.getPosition()
-										.getPositionY() + 50 >= e.getY())) {
+										.getPositionY() + circleTowerRadius >= e
+											.getY())) {
 							index = SimulationPC.game.getTowers()
 									.indexOf(tower);
 							moveVertex(e.getX(), e.getY());
@@ -54,15 +58,15 @@ public class GamePanel extends JPanel {
 					}
 
 				else {
-					// ArrayList<Tower> Towers = SimulationPC.game.getTowers();
 					for (Tower tower : SimulationPC.game.getTowers()) {
 						if ((tower.getPosition().getPositionX() <= e.getX() && tower
-								.getPosition().getPositionX() + 50 >= e.getX())
+								.getPosition().getPositionX()
+								+ circleTowerRadius >= e.getX())
 								&& (tower.getPosition().getPositionY() <= e
 										.getY() && tower.getPosition()
-										.getPositionY() + 50 >= e.getY())) {
-							controledByPlayer = !tower.isControledByPlayer(); // à
-																				// revoir
+										.getPositionY() + circleTowerRadius >= e
+											.getY())) {
+							controledByPlayer = !tower.isControledByPlayer();
 							tower.setControledByPlayer(!tower
 									.isControledByPlayer());
 
@@ -75,8 +79,6 @@ public class GamePanel extends JPanel {
 							} else {
 								controledByPlayer = true;
 							}
-
-							// SimulationPC.game.getTowers().get(indexOfLastTower[0]).setControledByPlayer(controledByPlayer);
 
 							System.out.println("tower n°" + tower.getIdTower()
 									+ "  controled:"
@@ -97,27 +99,19 @@ public class GamePanel extends JPanel {
 					for (Enemie enemie : SimulationPC.game.getCurrentWave()
 							.getEnemiesAlive()) {
 						if ((enemie.getPosition().getPositionX() <= e.getX() && enemie
-								.getPosition().getPositionX() + 20 >= e.getX())
+								.getPosition().getPositionX()
+								+ circleEnemieRadius >= e.getX())
 								&& (enemie.getPosition().getPositionY() <= e
 										.getY() && enemie.getPosition()
-										.getPositionY() + 20 >= e.getY())) {
+										.getPositionY() + circleEnemieRadius >= e
+											.getY())) {
 							indexEnemie = SimulationPC.game.getCurrentWave()
 									.getEnemiesAlive().indexOf(enemie);
-							// moveVertex(e.getX(), e.getY());
+
 							holdedInsideCircleEnemie = true;
 							break;
 						}
 					}
-
-					// for (Enemie enemie : SimulationPC.game.getCurrentWave()
-					// .getEnemiesAlive()) {
-					// g.drawOval((int) enemie.getPosition().getPositionX()
-					// - 3,
-					// (int) enemie.getPosition().getPositionY() - 3, 6, 6);
-					// g.drawOval((int) enemie.getPosition().getPositionX(),
-					// (int) enemie.getPosition().getPositionY(), 20,
-					// 20);
-					// }
 				}
 			}
 
@@ -133,18 +127,7 @@ public class GamePanel extends JPanel {
 																// joueur a
 																// cliqué sur un
 																// ennemi
-					// TODO: analyser distance entre la tour et l'ennemi et agir
-					// en conséquence
 
-					// tower.tickReloadTimers();
-
-					// Enemie target = tower.getTarget();
-					// if (target == null || !target.isAlive()) {
-					// System.out.println("recherche d'un enemie");
-					// tower.targetClosestEnemi(enemiesAlive);
-					// target = tower.getTarget();
-					// }
-					// si la cible ennemie est à portée
 					Enemie enemie = SimulationPC.game.getCurrentWave()
 							.getEnemiesAlive().get(indexEnemie);
 
@@ -152,25 +135,12 @@ public class GamePanel extends JPanel {
 							indexOfLastTower[0]);
 					tower.setTarget(enemie);
 					if (tower.targetedEnemieInRange()) {
-
-						/*
-						 * System.out.println("tir d'une tour @ " +
-						 * tower.getPosition().toString() + " sur enemie @ " +
-						 * target.getPosition().toString());
-						 */
-						// renvoie false si l'ennemi n'est pas touché right
-						// sinon
 						if (tower.shootTargetedEnemie()) {
 							/* System.out.println("Ennemi Mort !"); */
 							SimulationPC.game.getCurrentWave().enemieKilled(
 									enemie);
 						}
 					}
-					// Tirer avec la tour
-
-					// SimulationPC.game.getCurrentWave().enemieKilled(
-					// SimulationPC.game.getCurrentWave()
-					// .getEnemiesAlive().get(indexEnemie));
 
 					holdedInsideCircleEnemie = false;
 				}
@@ -193,13 +163,15 @@ public class GamePanel extends JPanel {
 				|| (tower.getPosition().getPositionY() != y)) {
 
 			repaint((int) tower.getPosition().getPositionX(), (int) tower
-					.getPosition().getPositionY(), 40 + OFFSET, 40 + OFFSET);
+					.getPosition().getPositionY(), circleTowerRadius + OFFSET,
+					circleTowerRadius + OFFSET);
 
 			tower.getPosition().setPositionX(x - 10);
 			tower.getPosition().setPositionY(y - 10);
 
 			repaint((int) tower.getPosition().getPositionX(), (int) tower
-					.getPosition().getPositionY(), 40 + OFFSET, 40 + OFFSET);
+					.getPosition().getPositionY(), circleTowerRadius + OFFSET,
+					circleTowerRadius + OFFSET);
 
 			repaint();
 		}
@@ -263,9 +235,11 @@ public class GamePanel extends JPanel {
 		for (Tower tower : SimulationPC.game.getTowers()) {
 			g.setColor(Color.BLUE);
 			g.drawOval((int) tower.getPosition().getPositionX(), (int) tower
-					.getPosition().getPositionY(), 50, 50);
+					.getPosition().getPositionY(), circleTowerRadius,
+					circleTowerRadius);
 			g.fillOval((int) tower.getPosition().getPositionX(), (int) tower
-					.getPosition().getPositionY(), 50, 50);
+					.getPosition().getPositionY(), circleTowerRadius,
+					circleTowerRadius);
 
 			if (tower.targetedEnemieInRange())
 				g.setColor(Color.MAGENTA);
@@ -279,8 +253,10 @@ public class GamePanel extends JPanel {
 					g2.drawLine((int) tower.getTarget().getPosition()
 							.getPositionX(), (int) tower.getTarget()
 							.getPosition().getPositionY(), (int) tower
-							.getPosition().getPositionX() + 25, (int) tower
-							.getPosition().getPositionY() + 25);
+							.getPosition().getPositionX()
+							+ circleTowerRadius
+							/ 2, (int) tower.getPosition().getPositionY()
+							+ circleTowerRadius / 2);
 				}
 			}
 			g2.setStroke(new BasicStroke(1));
@@ -291,9 +267,11 @@ public class GamePanel extends JPanel {
 			// g.drawOval((int) enemie.getPosition().getPositionX() - 3,
 			// (int) enemie.getPosition().getPositionY() - 3, 6, 6);
 			g.drawOval((int) enemie.getPosition().getPositionX(), (int) enemie
-					.getPosition().getPositionY(), 20, 20);
+					.getPosition().getPositionY(), circleEnemieRadius,
+					circleEnemieRadius);
 			g.fillOval((int) enemie.getPosition().getPositionX(), (int) enemie
-					.getPosition().getPositionY(), 20, 20);
+					.getPosition().getPositionY(), circleEnemieRadius,
+					circleEnemieRadius);
 		}
 
 		g.setColor(Color.GREEN);
@@ -303,7 +281,7 @@ public class GamePanel extends JPanel {
 		// 10, 10);
 		g.drawOval((int) SimulationPC.game.getObjectiveEnemie().getPositionX(),
 				(int) SimulationPC.game.getObjectiveEnemie().getPositionY(),
-				40, 40);
+				circleTowerRadius, circleTowerRadius);
 
 		g.setColor(Color.BLACK);
 		// g.drawOval(
@@ -313,31 +291,7 @@ public class GamePanel extends JPanel {
 		g.drawOval(
 				(int) SimulationPC.game.getStartPointEnemie().getPositionX(),
 				(int) SimulationPC.game.getStartPointEnemie().getPositionY(),
-				40, 40);
+				circleTowerRadius, circleTowerRadius);
 
 	}
 }
-
-// class KeyboardDetection implements KeyListener {
-//
-// public KeyboardDetection() {
-//
-// }
-//
-// public void keyPressed(KeyEvent e) {
-//
-// if (e.getKeyCode() == 32)
-// SimulationPC.game.setPaused(false);
-//
-// }
-//
-// public void keyReleased(KeyEvent e) {
-// System.out.println("Touche relâchée : " + e.getKeyCode() + " ("
-// + e.getKeyChar() + ")");
-// }
-//
-// public void keyTyped(KeyEvent e) {
-// // on ne fait rien
-// }
-// }
-

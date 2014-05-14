@@ -175,31 +175,29 @@ public class Tower extends CommunicationTower {
 				SimulationPC.game.getCurrentPlayer().setPointsPlayer( // player
 																		// score
 																		// incremented
-						pointsPlayer + 1);
+						pointsPlayer + GameConfig.NUMBER_POINTS_AT_KILL);
 				System.out.println("Points player :"
 						+ SimulationPC.game.getCurrentPlayer()
 								.getPointsPlayer());
 				int numberEnemiesKilled = best.Weapon.getNumberEnemiesKilled();
-				best.Weapon.setNumberEnemiesKilled(numberEnemiesKilled + 1); // number
-																				// of
-																				// enemies
-																				// killed
-																				// with
-																				// weapon
-																				// incremented
-				if ((best.Weapon.getNumberEnemiesKilled() % 10) == 0) { //
-																		// mettre
-																		// maximum
-																		// de
-																		// points
-																		// pour
-																		// débloquer
-																		// prochaine
-																		// arme
-																		// dans
-																		// une
-																		// classe
-																		// static
+				best.Weapon.setNumberEnemiesKilled(numberEnemiesKilled
+						+ GameConfig.NUMBER_POINTS_AT_KILL); // number
+				// of
+				// enemies
+				// killed
+				// with
+				// weapon
+				// incremented
+				if ((best.Weapon.getNumberEnemiesKilled() % GameConfig.NUMBER_KILLED_ENEMIE_TO_UPGRADE) == 0) { // maximum
+																												// de
+																												// points
+																												// pour
+																												// débloquer
+																												// la
+																												// prochaine
+																												// arme
+																												// atteint
+
 					UnlockNextWeapon(best.Weapon.getWeaponType());
 
 				}
