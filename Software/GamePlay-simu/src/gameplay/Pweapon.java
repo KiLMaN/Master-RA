@@ -22,6 +22,10 @@ public class Pweapon {
 		return this.locked;
 	}
 
+	public void setLocked(boolean isLocked) {
+		this.locked = isLocked;
+	}
+
 	public boolean isReloading() {
 		return currentReload != 0;
 	}

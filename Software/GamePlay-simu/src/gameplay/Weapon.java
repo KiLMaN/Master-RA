@@ -16,7 +16,7 @@ public class Weapon {
 
 	private int numberEnemiesKilled;
 
-	public WeaponType WeaponType;
+	public WeaponType weaponType;
 
 	// public Pweapon Pweapon;
 
@@ -32,7 +32,7 @@ public class Weapon {
 		this.reloadgingTime = timeToRecharge;
 		// this.currentReload = 0;
 		this.locked = lockedWeapon;
-		this.WeaponType = WeaponType;
+		this.weaponType = WeaponType;
 		// Pweapon = new Pweapon(this,timeToRecharge,lockedWeapon);
 	}
 
@@ -98,6 +98,10 @@ public class Weapon {
 
 	public int getReloadingTime() {
 		return this.reloadgingTime;
+	}
+
+	public WeaponType getWeaponType() {
+		return this.weaponType;
 	}
 
 }

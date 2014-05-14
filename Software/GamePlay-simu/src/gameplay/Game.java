@@ -32,7 +32,7 @@ public class Game {
 
 	public Game(ArrayList<Tower> towers, ArrayList<Wave> waves) {
 
-		this(towers, waves, new Position(20, 20), new Position(200, 200));
+		this(towers, waves, new Position(20, 20), new Position(700, 700));
 
 		// this.startPointsEnemie.add(new Position(20, 20));
 		// this.objectivesEnemie.add(new Position(200, 200));
@@ -110,30 +110,31 @@ public class Game {
 				for (Tower tower : listTowers) {
 					tower.tickReloadTimers();
 
-					Enemie target = tower.getTarget();
-					if (target == null || !target.isAlive()) {
-						// System.out.println("recherche d'un enemie");
-						tower.targetClosestEnemi(enemiesAlive);
-						target = tower.getTarget();
-					}
-					// si la cible ennemie est à portée
-					if (tower.targetedEnemieInRange()) {
-
-						/*
-						 * System.out.println("tir d'une tour @ " +
-						 * tower.getPosition().toString() + " sur enemie @ " +
-						 * target.getPosition().toString());
-						 */
-						// renvoie false si l'ennemi n'est pas touché right
-						// sinon
-						if (tower.shootTargetedEnemie()) {
-							/* System.out.println("Ennemi Mort !"); */
-							currentWave.enemieKilled(target);
+					if (!tower.isControledByPlayer()) {
+						Enemie target = tower.getTarget();
+						if (target == null || !target.isAlive()) {
+							// System.out.println("recherche d'un enemie");
+							tower.targetClosestEnemi(enemiesAlive);
+							target = tower.getTarget();
 						}
-					} else
-						tower.targetClosestEnemi(enemiesAlive);
-					// Tirer avec la tour
+						// si la cible ennemie est à portée
+						if (tower.targetedEnemieInRange()) {
 
+							/*
+							 * System.out.println("tir d'une tour @ " +
+							 * tower.getPosition().toString() + " sur enemie @ "
+							 * + target.getPosition().toString());
+							 */
+							// renvoie false si l'ennemi n'est pas touché right
+							// sinon
+							if (tower.shootTargetedEnemie()) {
+								/* System.out.println("Ennemi Mort !"); */
+								currentWave.enemieKilled(target);
+							}
+						} else
+							tower.targetClosestEnemi(enemiesAlive);
+						// Tirer avec la tour
+					}
 				}
 			} else {
 				if (enemiesToSpawn.size() == 0) {

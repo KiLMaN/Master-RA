@@ -47,7 +47,11 @@ public class Enemie {
 			return false;
 
 		// System.out.println("Tir avec arme : " + weapon.getNameWeapon());
-		if (decideShootMiss(tower)) {
+		if (!tower.isControledByPlayer()) {
+			if (decideShootMiss(tower)) {
+				this.health -= weapon.getNumberDamage();
+			}
+		} else {
 			this.health -= weapon.getNumberDamage();
 		}
 		if (this.health <= 0) {

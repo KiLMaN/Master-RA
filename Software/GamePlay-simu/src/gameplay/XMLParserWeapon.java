@@ -19,6 +19,8 @@ public class XMLParserWeapon {
 				 */
 				String strNAME = XMLParser.getStringAttribute(list.item(i),
 						"NAME");
+				String strTYPE = XMLParser.getStringAttribute(list.item(i),
+						"TYPE");
 
 				int intDAMAGE = XMLParser.getIntAttribute(list.item(i),
 						"DAMAGE");
@@ -29,9 +31,10 @@ public class XMLParserWeapon {
 
 				boolean bLOCKED = XMLParser.getBooleanAttribute(list.item(i),
 						"LOCKED");
+				WeaponType weaponType = WeaponType.valueOf(strTYPE);
 
 				Weapon weapon = new Weapon(i, strNAME, intDAMAGE, intRANGE, 0,
-						intRELOADTIME, WeaponType.Fire, intCOST, bLOCKED);
+						intRELOADTIME, weaponType, intCOST, bLOCKED);
 				weapons.add(weapon);
 			}
 		}

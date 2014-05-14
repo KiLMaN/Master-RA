@@ -25,7 +25,7 @@ public class XMLParserTower {
 				position.setPositionX(Float.parseFloat(strX));
 				position.setPositionY(Float.parseFloat(strY));
 
-				Tower tower = new Tower(position);
+				Tower tower = new Tower(i, position);
 				towers.add(tower);
 			}
 		}

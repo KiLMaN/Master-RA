@@ -22,10 +22,21 @@ public class Tower extends CommunicationTower {
 	private int killSuccess = 0;
 	private int frequencyShoot = 1; // sur 10
 
+	private boolean controledByPlayer = false;
+	private int idTower;
+
 	public Tower(Position position) {
 		// this.position = position;
 		// this.pweapons = new ArrayList<Pweapon>();
 		this(position, 7);
+	}
+
+	public Tower(int idTower, Position position) {
+		// this.position = position;
+		// this.pweapons = new ArrayList<Pweapon>();
+		this(position, 7);
+		this.idTower = idTower;
+
 	}
 
 	public Tower(Position position, int killSuccessRatio) {
@@ -48,6 +59,10 @@ public class Tower extends CommunicationTower {
 
 	public Enemie getTarget() {
 		return this.target;
+	}
+
+	public void setTarget(Enemie enemie) {
+		this.target = enemie;
 	}
 
 	public Position getPosition() {
@@ -74,9 +89,22 @@ public class Tower extends CommunicationTower {
 		this.frequencyShoot = frequencyShoot;
 	}
 
+	public boolean isControledByPlayer() {
+		return this.controledByPlayer;
+	}
+
+	public void setControledByPlayer(boolean controledByPlayer) {
+		this.controledByPlayer = controledByPlayer;
+	}
+
+	public int getIdTower() {
+		return this.idTower;
+	}
+
 	// calcul l'ennemile plus proche de la Tour et le cible
 	public void targetClosestEnemi(ArrayList<Enemie> enemiesAlive) {
-		if (enemieEngaged) // Si on a dï¿½jï¿½ attaquï¿½ un enemie, on se verouille
+		if (enemieEngaged) // Si on a d j attaqu un enemie, on se
+							// verouille
 							// dessus
 			return;
 
@@ -120,7 +148,7 @@ public class Tower extends CommunicationTower {
 	}
 
 	/*
-	 * Tirer avec l'arme la plus puissante sur l'enemie selectionnï¿½ , retourne
+	 * Tirer avec l'arme la plus puissante sur l'enemie selectionn , retourne
 	 * true si l'enemie est mort
 	 */
 	public boolean shootTargetedEnemie() {
@@ -141,16 +169,42 @@ public class Tower extends CommunicationTower {
 		}
 		if (best != null) {
 			boolean dead = target.hitBy(best.Weapon, this);
-			// incrï¿½menter points du joueur
 			if (dead == true) {
 				int pointsPlayer = SimulationPC.game.getCurrentPlayer()
 						.getPointsPlayer();
-				SimulationPC.game.getCurrentPlayer().setPointsPlayer(
+				SimulationPC.game.getCurrentPlayer().setPointsPlayer( // player
+																		// score
+																		// incremented
 						pointsPlayer + 1);
 				System.out.println("Points player :"
 						+ SimulationPC.game.getCurrentPlayer()
 								.getPointsPlayer());
+				int numberEnemiesKilled = best.Weapon.getNumberEnemiesKilled();
+				best.Weapon.setNumberEnemiesKilled(numberEnemiesKilled + 1); // number
+																				// of
+																				// enemies
+																				// killed
+																				// with
+																				// weapon
+																				// incremented
+				if ((best.Weapon.getNumberEnemiesKilled() % 10) == 0) { //
+																		// mettre
+																		// maximum
+																		// de
+																		// points
+																		// pour
+																		// débloquer
+																		// prochaine
+																		// arme
+																		// dans
+																		// une
+																		// classe
+																		// static
+					UnlockNextWeapon(best.Weapon.getWeaponType());
+
+				}
 			}
+
 			best.startReload();
 			/*
 			 * if (dead) target = null;
@@ -160,6 +214,31 @@ public class Tower extends CommunicationTower {
 		} else {
 			return false;
 		}
+	}
+
+	public void UnlockNextWeapon(WeaponType weaponType) {
+		for (Pweapon pweapon : pweapons) { // TODO: voir s'il n'y a pas moyen de
+											// gagner en rapidité par un système
+											// de type requète
+			if (pweapon.Weapon.getWeaponType() == weaponType) {
+				if (pweapon.isLocked()) {
+					pweapon.setLocked(false);
+					System.out.println("Weapon( NAME= "
+							+ pweapon.Weapon.getNameWeapon() + " TYPE= "
+							+ pweapon.Weapon.getWeaponType() + " DAMAGE= "
+							+ pweapon.Weapon.getNumberDamage() + " Locked= "
+							+ pweapon.isLocked() + " RELOADTIME = "
+							+ pweapon.Weapon.getReloadingTime() + " RANGE = "
+							+ pweapon.Weapon.getRange() + ") unlocked");
+					SimulationPC.gamePanel.setPrintWeaponUnblocked(true);
+					SimulationPC.gamePanel.getWeaponUnlocked(pweapon); // juste
+																		// pour
+																		// affichage
+					return;
+				}
+			}
+		}
+
 	}
 
 	public void tickReloadTimers() {

@@ -1,7 +1,6 @@
 package gameplay;
 
 import java.io.IOException;
-import java.util.regex.Pattern;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -121,13 +120,17 @@ public class XMLParser {
 	}
 
 	public static boolean getBooleanAttribute(Node Parent, String elementName) {
-		final Pattern patternBool = Pattern.compile(Pattern.quote("1|true"),
-				Pattern.CASE_INSENSITIVE);
+		// final Pattern patternBool = Pattern.compile(Pattern.quote("1|true"),
+		// Pattern.CASE_INSENSITIVE);
 
 		Node data = Parent.getAttributes().getNamedItem(elementName);
 		if (data != null) {
 			String str = data.getTextContent();
-			return patternBool.matcher(str).find();
+			if (str.equals("true") || str.equals("1"))
+				return true;
+			else
+				return false;
+			// return patternBool.matcher(str).find();
 		} else
 			return false;
 	}

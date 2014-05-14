@@ -43,9 +43,8 @@ public class Path {
 	public void addPoint(Position position) {
 		this.pathPoints.add(position);
 	}
-	
-	public ArrayList<Position> getPath()
-	{
+
+	public ArrayList<Position> getPath() {
 		return this.pathPoints;
 	}
 }
