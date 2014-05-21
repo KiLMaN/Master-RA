@@ -184,6 +184,9 @@ public class GameScene extends BaseScene {
 		scoreText.setText("Score: " + score);
 	}
 
+	// public float xtest = 0;
+	// public float ytest = 0;
+
 	private void createController() {
 		final AnalogOnScreenControl analogOnScreenControl = new AnalogOnScreenControl(
 				0,
@@ -197,7 +200,16 @@ public class GameScene extends BaseScene {
 					public void onControlChange(
 							final BaseOnScreenControl pBaseOnScreenControl,
 							final float pValueX, final float pValueY) {
+						/*
+						 * xtest += pValueX; ytest -= pValueY;
+						 * GameActivity.getInstance().mARRajawaliRender
+						 * .changePositionTest(xtest, ytest, 0.0f);
+						 */
 
+						/*
+						 * Log.w("test", "test value pos : x :" + xtest +
+						 * " y : " + ytest);
+						 */
 						if (lastUpdate == 0) {
 							if (currentControlTower != null) {
 								currentControlTower.moveH((int) (pValueX * 10));

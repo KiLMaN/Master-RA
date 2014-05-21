@@ -1,4 +1,7 @@
 ifdef BUILD_PROJECT
+$(info makefiles beeing called: $(call all-subdir-makefiles))
+include $(call all-subdir-makefiles)
+
 LOCAL_PATH := $(call my-dir)
 
 include $(CLEAR_VARS)
@@ -25,4 +28,7 @@ GSTREAMER_PLUGINS         := $(GSTREAMER_PLUGINS_CORE) $(GSTREAMER_PLUGINS_PLAYB
 GSTREAMER_EXTRA_DEPS      := gstreamer-interfaces-0.10 gstreamer-video-0.10
 include $(GSTREAMER_NDK_BUILD_PATH)/gstreamer.mk
 
+
+
 endif
+

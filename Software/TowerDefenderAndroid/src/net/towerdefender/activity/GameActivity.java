@@ -2,9 +2,12 @@ package net.towerdefender.activity;
 
 import java.io.IOException;
 
-import jp.co.cyberagent.android.gpuimage.GPUImage;
 import net.towerdefender.TowerDefender;
-import net.towerdefender.image.GPUImageGlyphFilter;
+import net.towerdefender.image.ARObject;
+import net.towerdefender.image.ARToolkit;
+import net.towerdefender.image.CameraPreviewHandler;
+import net.towerdefender.image.CustomObject;
+import net.towerdefender.image.IO;
 import net.towerdefender.manager.ResourcesManager;
 import net.towerdefender.manager.SceneManager;
 
@@ -41,11 +44,12 @@ public class GameActivity extends BaseGameActivity /*
 	private static int _HEIGHT = 720;
 
 	private Camera mEngineCamera;
-	private ARRajawaliRender mARRajawaliRender;
+	public ARRajawaliRender mARRajawaliRender;
 	@SuppressWarnings("unused")
 	private ResourcesManager resourcesManager;
-
-	public GPUImage mGPUImage;
+	CameraPreviewHandler mCameraPreview;
+	ARToolkit markerInfo;
+	// public GPUImage mGPUImage;
 
 	private CameraPreviewSurfaceView mCameraPreviewSurfaceView;
 	private GLSurfaceView mRAView;
@@ -163,16 +167,7 @@ public class GameActivity extends BaseGameActivity /*
 	@Override
 	protected void onSetContentView() {
 
-		// this.mGstreamerView = new GStreamerSurfaceView(this);
-
 		this.mCameraPreviewSurfaceView = new CameraPreviewSurfaceView(this);
-
-		GLSurfaceView mGLSurfaceView = new GLSurfaceView(this);
-		mGLSurfaceView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
-		mGLSurfaceView.getHolder().setFormat(PixelFormat.TRANSLUCENT);
-		mGLSurfaceView.setEGLContextClientVersion(2);
-		mGPUImage = new GPUImage(this);
-		mGPUImage.setGLSurfaceView(mGLSurfaceView);
 
 		this.mRenderSurfaceView = new RenderSurfaceView(this);
 		this.mRenderSurfaceView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
@@ -181,7 +176,6 @@ public class GameActivity extends BaseGameActivity /*
 		this.mRenderSurfaceView.setRenderer(this.mEngine, this);
 
 		this.mARRajawaliRender = new ARRajawaliRender(this);
-
 		mRAView = new GLSurfaceView(this);
 
 		mRAView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
@@ -189,14 +183,22 @@ public class GameActivity extends BaseGameActivity /*
 		mRAView.setEGLContextClientVersion(2);
 		mRAView.setRenderer(mARRajawaliRender);
 
-		// setContentView(mRenderSurfaceView, new LayoutParams(
-		// LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+		markerInfo = new ARToolkit(getResources(), getFilesDir());
+		markerInfo.addVisibilityListener(mARRajawaliRender);
+		mCameraPreview = new CameraPreviewHandler(mRAView, getResources(),
+				markerInfo);
+		try {
+			IO.transferFilesToPrivateFS(getFilesDir(), getResources());
+		} catch (IOException e) {
+			e.printStackTrace();
+			// throw new AndARRuntimeException(e.getMessage());
+		}
 
-		// addContentView(mRAView, new LayoutParams(LayoutParams.WRAP_CONTENT,
-		// LayoutParams.WRAP_CONTENT));
-
-		setContentView(mGLSurfaceView, new LayoutParams(
+		setContentView(mRenderSurfaceView, new LayoutParams(
 				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+
+		addContentView(mRAView, new LayoutParams(LayoutParams.WRAP_CONTENT,
+				LayoutParams.WRAP_CONTENT));
 
 		addContentView(mCameraPreviewSurfaceView, new LayoutParams(
 				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
@@ -211,10 +213,16 @@ public class GameActivity extends BaseGameActivity /*
 				: 0;
 		boolean flipImage = TowerDefender.CameraSelection == CameraInfo.CAMERA_FACING_FRONT;
 
-		mGPUImage.setUpCamera(cam, rotate, flipImage, false);
+		cam.setPreviewCallback(mCameraPreview);
+		mCameraPreview.init(cam);
+		ARObject obj = new CustomObject("test", "patt.hiro", 80.0,
+				new double[] { 0, 0 });
+		markerInfo.registerARObject(obj);
+
+		// mGPUImage.setUpCamera(cam, rotate, flipImage, false);
 
 		// mGPUImage.setUpCamera(cam);
-		mGPUImage.setFilter(new GPUImageGlyphFilter());
+		// mGPUImage.setFilter(new GPUImageGlyphFilter());
 	}
 
 	public CameraPreviewSurfaceView getCameraPreviewSurface() {
