@@ -5,7 +5,6 @@
 			<storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="com.android.toolchain.gcc.370898339" moduleId="org.eclipse.cdt.core.settings" name="Default">
 				<externalSettings/>
 				<extensions>
-					<extension id="org.eclipse.cdt.errorparsers.xlc.XlcErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
 					<extension id="org.eclipse.cdt.core.VCErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
 					<extension id="org.eclipse.cdt.autotools.core.ErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
 					<extension id="org.eclipse.cdt.core.GmakeErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
@@ -22,28 +21,18 @@
 					<folderInfo id="com.android.toolchain.gcc.370898339.60056066" name="/" resourcePath="">
 						<toolChain id="com.android.toolchain.gcc.135700128" name="com.android.toolchain.gcc" superClass="com.android.toolchain.gcc">
 							<targetPlatform binaryParser="org.eclipse.cdt.core.ELF" id="com.android.targetPlatform.445946212" isAbstract="false" superClass="com.android.targetPlatform"/>
-							<builder command="ndk-build" id="com.android.builder.1498694316" keepEnvironmentInBuildfile="false" managedBuildOn="false" name="Android Builder" superClass="com.android.builder">
-								<outputEntries>
-									<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="outputPath" name="obj"/>
-									<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="outputPath" name="libs"/>
-								</outputEntries>
-							</builder>
+							<builder arguments="BUILD_PROJECT=1" command="ndk-build" id="com.android.builder.1498694316" keepEnvironmentInBuildfile="false" managedBuildOn="false" name="Android Builder" superClass="com.android.builder"/>
 							<tool id="com.android.gcc.compiler.562569747" name="Android GCC Compiler" superClass="com.android.gcc.compiler">
-								<option id="com.android.gcc.option.includePath.1508676216" superClass="com.android.gcc.option.includePath" valueType="includePath">
-									<listOptionValue builtIn="false" value="&quot;${GSTREAMER_SDK_ROOT_ANDROID}\include\gstreamer-0.10\&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;../${NDK-PATH}\usr\include\&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${GSTREAMER_SDK_ROOT_ANDROID}\include\glib-2.0\&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${GSTREAMER_SDK_ROOT_ANDROID}\lib/glib-2.0\include/&quot;"/>
-									<listOptionValue builtIn="false" value="/usr/incude/"/>
-									<listOptionValue builtIn="false" value="/usr/bin/"/>
+								<option id="com.android.gcc.option.includePath.2102736536" superClass="com.android.gcc.option.includePath" valueType="includePath">
+									<listOptionValue builtIn="false" value="C:/eclipse/gstreamer-sdk-android-arm/lib/glib-2.0/include/"/>
+									<listOptionValue builtIn="false" value="C:/eclipse/gstreamer-sdk-android-arm/include/glib-2.0/"/>
+									<listOptionValue builtIn="false" value="C:/eclipse/gstreamer-sdk-android-arm/include/gstreamer-0.10/"/>
+									<listOptionValue builtIn="false" value="C:/eclipse/android-ndk-r9c/platforms/android-16/arch-arm/usr/include/"/>
 								</option>
 								<inputType id="com.android.gcc.inputType.1214607553" superClass="com.android.gcc.inputType"/>
 							</tool>
 						</toolChain>
 					</folderInfo>
-					<sourceEntries>
-						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="jni"/>
-					</sourceEntries>
 				</configuration>
 			</storageModule>
 			<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
@@ -53,15 +42,24 @@
 		<project id="TowerDefender.null.1570541687" name="TowerDefender"/>
 	</storageModule>
 	<storageModule moduleId="org.eclipse.cdt.core.LanguageSettingsProviders"/>
-	<storageModule moduleId="scannerConfiguration">
-		<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
-		<scannerConfigBuildInfo instanceId="com.android.toolchain.gcc.370898339;com.android.toolchain.gcc.370898339.60056066;com.android.gcc.compiler.562569747;com.android.gcc.inputType.1214607553">
-			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="com.android.AndroidPerProjectProfile"/>
-		</scannerConfigBuildInfo>
-	</storageModule>
 	<storageModule moduleId="refreshScope" versionNumber="2">
+		<configuration configurationName="Windows">
+			<resource resourceType="PROJECT" workspacePath="/TowerDefender"/>
+		</configuration>
 		<configuration configurationName="Default">
 			<resource resourceType="PROJECT" workspacePath="/TowerDefender"/>
 		</configuration>
+	</storageModule>
+	<storageModule moduleId="scannerConfiguration">
+		<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
+		<scannerConfigBuildInfo instanceId="com.android.toolchain.gcc.370898339.402410225;com.android.toolchain.gcc.370898339.402410225.;com.android.gcc.compiler.18490283;com.android.gcc.inputType.1299632277">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="com.android.AndroidPerProjectProfile"/>
+		</scannerConfigBuildInfo>
+		<scannerConfigBuildInfo instanceId="com.android.toolchain.gcc.370898339.639507605;com.android.toolchain.gcc.370898339.639507605.;com.android.gcc.compiler.698912452;com.android.gcc.inputType.324359856">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="com.android.AndroidPerProjectProfile"/>
+		</scannerConfigBuildInfo>
+		<scannerConfigBuildInfo instanceId="com.android.toolchain.gcc.370898339;com.android.toolchain.gcc.370898339.60056066;com.android.gcc.compiler.562569747;com.android.gcc.inputType.1214607553">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="com.android.AndroidPerProjectProfile"/>
+		</scannerConfigBuildInfo>
 	</storageModule>
 </cproject>

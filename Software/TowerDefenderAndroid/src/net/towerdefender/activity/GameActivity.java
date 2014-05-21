@@ -153,7 +153,7 @@ public class GameActivity extends BaseGameActivity /*implements SurfaceHolder.Ca
 	@Override
 	protected void onSetContentView() {
 		
-		//this.mGstreamerView = new GStreamerSurfaceView(this);
+		this.mGstreamerView = new GStreamerSurfaceView(this);
 		
 		
 		this.mCameraPreviewSurfaceView = new CameraPreviewSurfaceView(this);
@@ -256,33 +256,19 @@ public class GameActivity extends BaseGameActivity /*implements SurfaceHolder.Ca
 		return mCameraPreviewSurfaceView;
 	}
 
+	
+	
+	
 	/*
-	// Gstreamer
-	private void onGStreamerInitialized () {
-        Log.i ("GStreamer", "Gst initialized" );
-        // Restore previous playing state
-        nativePlay();
-	}
-    static {
-        System.loadLibrary("gstreamer_android");
-        System.loadLibrary("TowerDefender");
-        nativeClassInit();
-    }
-
-    public void surfaceChanged(SurfaceHolder holder, int format, int width,
-            int height) {
-        Log.d("GStreamer", "Surface changed to format " + format + " width "
-                + width + " height " + height);
-        nativeSurfaceInit (holder.getSurface());
-    }
-
-    public void surfaceCreated(SurfaceHolder holder) {
-        Log.d("GStreamer", "Surface created: " + holder.getSurface());
-    }
-
-    public void surfaceDestroyed(SurfaceHolder holder) {
-        Log.d("GStreamer", "Surface destroyed");
-        nativeSurfaceFinalize ();
-    }
-    */
+	 * public void surfaceChanged(SurfaceHolder holder, int format, int width,
+	 * int height) { Log.d("GStreamer", "Surface changed to format " + format +
+	 * " width " + width + " height " + height);
+	 * nativeSurfaceInit(holder.getSurface()); }
+	 * 
+	 * public void surfaceCreated(SurfaceHolder holder) { Log.d("GStreamer",
+	 * "Surface created: " + holder.getSurface()); }
+	 * 
+	 * public void surfaceDestroyed(SurfaceHolder holder) { Log.d("GStreamer",
+	 * "Surface destroyed"); nativeSurfaceFinalize(); }
+	 */
 }
