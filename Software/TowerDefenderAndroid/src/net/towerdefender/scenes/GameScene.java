@@ -37,18 +37,19 @@ public class GameScene extends BaseScene {
 	private Text lifeText;
 	private static Tower currentControlTower = null;
 	
-
+    private native void nativePlay();     // Set pipeline to PLAYING
+    private native void nativePause();    // Set pipeline to PAUSED
+    
 	@Override
 	public void createScene() {
 		createBackground();
 		createHUD();
 		createController();
 
-		/*
-		 * currentControlTower = new Tower(new Position());
-		 * currentControlTower.setIp("192.168.1.9");
-		 * currentControlTower.startCommunication();
-		 */
+		  currentControlTower = new Tower(new Position());
+		  currentControlTower.setIp("192.168.1.30");
+		  currentControlTower.startCommunication();
+		 
 	}
 
 	@Override
@@ -185,7 +186,7 @@ public boolean onAreaTouched(final TouchEvent pSceneTouchEvent,
 		score += i;
 		scoreText.setText("Score: " + score);
 	}
-
+	private int enable = 0;
 	private void createController() {
 		final AnalogOnScreenControl analogOnScreenControl = new AnalogOnScreenControl(
 				0,
@@ -208,24 +209,33 @@ public boolean onAreaTouched(final TouchEvent pSceneTouchEvent,
 								if ( pValueX != 0 )
 									currentControlTower.moveH( (int) (pValueX * 10) );  
 							}
-							lastUpdate = 10;
+							lastUpdate = 5;
 						}
 						else lastUpdate--;
 							
 					}
-
+						
 					@Override
 					public void onControlClick(
 							final AnalogOnScreenControl pAnalogOnScreenControl) {
 						addToScore(1);
-						GameActivity.getInstance().getCameraPreviewSurface()
-								.autoFocusCamera();
+						//GameActivity.getInstance().getCameraPreviewSurface()
+						//		.autoFocusCamera();
 						if (currentControlTower != null)
 							if (!currentControlTower.isConnected())
 								currentControlTower.connect();
-							else {
-								
+							else if (enable == 0) {
+								currentControlTower.openVideoFlux();
+								enable = 1;
 							}
+							else if ( enable == 1) {
+								nativePlay();
+								enable++;
+							}
+							else {
+																
+							}
+								
 					}
 				});
 

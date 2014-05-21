@@ -15,8 +15,8 @@ endif
 GSTREAMER_SDK_ROOT        := $(GSTREAMER_SDK_ROOT_ANDROID)
 endif
 
-ifndef NDK-PATH
-$(error NDK-PATH is not defined!)
+ifndef NDK_PATH_ROOT
+$(error NDK_PATH-ROOT is not defined!)
 endif
 
 GSTREAMER_NDK_BUILD_PATH  := $(GSTREAMER_SDK_ROOT)/share/gst-android/ndk-build

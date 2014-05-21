@@ -153,6 +153,11 @@ static void *app_function (void *userdata) {
   CustomData *data = (CustomData *)userdata;
   GSource *bus_source;
   GError *error = NULL;
+ // gchar *IpAddress = "192.168.1.20";
+ // int port = 5000;
+ // gchar *lauchParameters;
+
+ // sprintf(lauchParameters, "tcpclientsrc host=%s port=%i ! gdpdepay ! rtph264depay ! decodebin2  ! autovideosink sync=false",IpAddress, port);
 
   GST_DEBUG ("Creating pipeline in CustomData at %p", data);
 
@@ -163,7 +168,8 @@ static void *app_function (void *userdata) {
   /* Build pipeline */
 //  data->pipeline = gst_parse_launch("videotestsrc ! warptv ! ffmpegcolorspace ! autovideosink", &error);
   //data->pipeline = gst_parse_launch("tcpsrc=192.168.1.23 port=5000  ! ffmpegcolorspace4 ! autovideosink sync=false", &error);
-  data->pipeline = gst_parse_launch(" tcpclientsrc host=192.168.1.23 port=5000 ! gdpdepay ! rtph264depay ! decodebin2  ! autovideosink sync=false", &error);
+  data->pipeline = gst_parse_launch("tcpclientsrc host=192.168.1.20 port=5000 ! gdpdepay ! rtph264depay ! decodebin2  ! autovideosink sync=true" , &error);
+ // data->pipeline = gst_parse_launch("udpsrc port=5000 ! gdpdepay ! rtph264depay ! decodebin2  ! autovideosink sync=false" , &error);
   //data->pipeline = gst_parse_launch(" tcpclientsrc host=192.168.1.23 port=5000 ! gdpdepay ! rtph264depay ! autovideosink sync=false", &error);
 
 
