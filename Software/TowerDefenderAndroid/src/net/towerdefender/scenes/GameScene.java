@@ -111,7 +111,8 @@ public class GameScene extends BaseScene {
 
 			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent,
 					final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
-				addToScore(1);
+				if(pSceneTouchEvent.isActionUp())
+					SceneManager.getInstance().loadToolsScene(engine);
 				return true;
 			}
 

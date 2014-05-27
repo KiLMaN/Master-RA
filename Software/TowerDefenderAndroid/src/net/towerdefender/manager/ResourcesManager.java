@@ -59,6 +59,8 @@ public class ResourcesManager {
 	private BuildableBitmapTextureAtlas playTextureAtlas;
 	public ITextureRegion buttonOptionPause_region;
 	private BuildableBitmapTextureAtlas pauseTextureAtlas;
+	public ITextureRegion buttonOptionBack_region;
+	private BuildableBitmapTextureAtlas backTextureAtlas;
 
 	// ---------------------------------------------
 	// TEXTURES & TEXTURE REGIONS
@@ -78,6 +80,12 @@ public class ResourcesManager {
 		loadGameGraphics();
 		loadGameFonts();
 		loadGameAudio();
+	}
+
+	public void loadToolsResources() {
+		loadToolsGraphics();
+		loadToolsFonts();
+		loadToolsAudio();
 	}
 
 	private void loadMenuGraphics() {
@@ -109,6 +117,27 @@ public class ResourcesManager {
 
 	}
 
+	private void loadToolsGraphics() {
+		BitmapTextureAtlasTextureRegionFactory
+				.setAssetBasePath("gfx/TowerDefender/tools/");
+
+		backTextureAtlas = new BuildableBitmapTextureAtlas(
+				activity.getTextureManager(), 250, 308, TextureOptions.BILINEAR);
+
+		buttonOptionBack_region = BitmapTextureAtlasTextureRegionFactory
+				.createFromAsset(backTextureAtlas, activity, "back.png");
+
+		try {
+			this.backTextureAtlas
+					.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(
+							0, 1, 0));
+			this.backTextureAtlas.load();
+		} catch (final TextureAtlasBuilderException e) {
+			Log.e("TD5", e.toString());
+		}
+
+	}
+
 	private void loadGameGraphics() {
 
 		BitmapTextureAtlasTextureRegionFactory
@@ -137,7 +166,7 @@ public class ResourcesManager {
 				.setAssetBasePath("gfx/TowerDefender/game/");
 
 		gameTextureAtlas = new BuildableBitmapTextureAtlas(
-				activity.getTextureManager(), 512, 512, TextureOptions.BILINEAR);
+				activity.getTextureManager(), 256, 256, TextureOptions.BILINEAR);
 
 		buttonOptionSettings_region = BitmapTextureAtlasTextureRegionFactory
 				.createFromAsset(gameTextureAtlas, activity, "settings.png");
@@ -214,12 +243,20 @@ public class ResourcesManager {
 		Coolvetica = FontFactory.createStrokeFromAsset(
 				activity.getFontManager(), mainFontTexture,
 				activity.getAssets(), "coolvetica.ttf", 50, true, Color.WHITE,
-				2, Color.WHITE, true);
+				2, Color.BLACK, true);
 		Coolvetica.load();
 	}
 
 	public void unloadGameTextures() {
 		// TODO (Since we did not create any textures for game scene yet)
+	}
+
+	private void loadToolsFonts() {
+
+	}
+
+	private void loadToolsAudio() {
+
 	}
 
 	public void loadSplashScreen() {

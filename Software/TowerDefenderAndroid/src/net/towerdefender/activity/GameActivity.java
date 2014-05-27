@@ -216,7 +216,7 @@ public class GameActivity extends BaseGameActivity /*
 						false);
 
 		// mGPUImage.setUpCamera(cam);
-		mGPUImage.setFilter(new GPUImageSobelEdgeDetection());
+	//	mGPUImage.setFilter(new GPUImageSobelEdgeDetection());
 	}
 
 	public CameraPreviewSurfaceView getCameraPreviewSurface() {

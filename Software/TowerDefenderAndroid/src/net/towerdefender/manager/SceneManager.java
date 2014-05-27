@@ -5,6 +5,7 @@ import net.towerdefender.scenes.GameScene;
 import net.towerdefender.scenes.LoadingScene;
 import net.towerdefender.scenes.MainMenuScene;
 import net.towerdefender.scenes.SplashScene;
+import net.towerdefender.scenes.ToolsScene;
 
 import org.andengine.engine.Engine;
 import org.andengine.engine.handler.timer.ITimerCallback;
@@ -24,6 +25,7 @@ public class SceneManager {
 	private BaseScene splashScene;
 	private BaseScene menuScene;
 	private BaseScene gameScene;
+	private BaseScene toolsScene;
 	private BaseScene loadingScene;
 
 	// ---------------------------------------------
@@ -120,6 +122,12 @@ public class SceneManager {
 						setScene(gameScene);
 					}
 				}));
+	}
+
+	public void loadToolsScene(final Engine mEngine) {
+		ResourcesManager.getInstance().loadToolsResources();
+		toolsScene = new ToolsScene();
+		setScene(toolsScene);
 	}
 
 	public void loadMenuScene(final Engine mEngine) {
