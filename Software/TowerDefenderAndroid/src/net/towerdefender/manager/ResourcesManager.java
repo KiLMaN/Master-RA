@@ -48,6 +48,7 @@ public class ResourcesManager {
 	public ITextureRegion play_region;
 	public ITextureRegion options_region;
 	private BuildableBitmapTextureAtlas menuTextureAtlas;
+	
 
 	/* Game */
 	public ITextureRegion onScreenControlBase;
@@ -59,9 +60,15 @@ public class ResourcesManager {
 	private BuildableBitmapTextureAtlas playTextureAtlas;
 	public ITextureRegion buttonOptionPause_region;
 	private BuildableBitmapTextureAtlas pauseTextureAtlas;
+
+	
+	/* Tools*/
 	public ITextureRegion buttonOptionBack_region;
 	private BuildableBitmapTextureAtlas backTextureAtlas;
-
+	public ITextureRegion buttonOptionTower_region;
+	private BuildableBitmapTextureAtlas stoneTextureAtlas;
+	
+	
 	// ---------------------------------------------
 	// TEXTURES & TEXTURE REGIONS
 	// ---------------------------------------------
@@ -135,6 +142,26 @@ public class ResourcesManager {
 		} catch (final TextureAtlasBuilderException e) {
 			Log.e("TD5", e.toString());
 		}
+
+		
+		BitmapTextureAtlasTextureRegionFactory
+				.setAssetBasePath("gfx/TowerDefender/tools/");
+		
+		stoneTextureAtlas = new BuildableBitmapTextureAtlas(
+				activity.getTextureManager(), 1024, 768, TextureOptions.BILINEAR);
+
+		buttonOptionTower_region = BitmapTextureAtlasTextureRegionFactory
+				.createFromAsset(stoneTextureAtlas, activity, "texturePierre.jpg");
+
+		try {
+			this.stoneTextureAtlas
+					.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(
+							0, 1, 0));
+			this.stoneTextureAtlas.load();
+		} catch (final TextureAtlasBuilderException e) {
+			Log.e("TD6", e.toString());
+		}
+		
 
 	}
 
@@ -242,8 +269,8 @@ public class ResourcesManager {
 
 		Coolvetica = FontFactory.createStrokeFromAsset(
 				activity.getFontManager(), mainFontTexture,
-				activity.getAssets(), "coolvetica.ttf", 50, true, Color.WHITE,
-				2, Color.BLACK, true);
+				activity.getAssets(), "coolvetica.ttf", 50, true, Color.BLACK,
+				2, Color.WHITE, true);
 		Coolvetica.load();
 	}
 

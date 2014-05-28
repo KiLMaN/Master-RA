@@ -32,16 +32,16 @@ public class ToolsScene extends BaseScene{
 
 	private HUD gameHUD;
 	private Sprite pictureBack;
-	private Sprite pictureSettings;
+	private Sprite pictureTower;
 	private Text scoreText;
+	private Text towerText;
+	private int numberTower=1;
 	private int score = 0;
 	private ArrayList <Sprite> listSpriteShown;
 	private ArrayList <Tower> listConnected;
 	
 	public ToolsScene() {
-		super();
-
-		
+		super();		
 	}
 
 	@Override
@@ -57,10 +57,10 @@ public class ToolsScene extends BaseScene{
 	}
 
 	private void createTabs() {
-		int i=3;
+		int i=2;
 		for(Tower tower : listConnected){
-			pictureSettings = new Sprite(0, 0,
-					resourcesManager.buttonOptionSettings_region, vbom) {
+			pictureTower = new Sprite(0, 0,
+					resourcesManager.buttonOptionTower_region, vbom) {
 				@Override
 				protected void preDraw(GLState pGLState, Camera pCamera) {
 					super.preDraw(pGLState, pCamera);
@@ -69,26 +69,43 @@ public class ToolsScene extends BaseScene{
 
 				public boolean onAreaTouched(final TouchEvent pSceneTouchEvent,
 						final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
-					if(pSceneTouchEvent.isActionUp())
-						SceneManager.getInstance().loadToolsScene(engine);
+					//if(pSceneTouchEvent.isActionUp())
+						// SceneManager.getInstance().loadToolsScene(engine);
 					return true;
 				}
 
 			};
-			pictureSettings.setPosition(i*300, 200);
-			pictureSettings.setHeight(100);
-			pictureSettings.setWidth(100);
-			gameHUD.registerTouchArea(pictureSettings);
+			
+			towerText = new Text(0, 0, resourcesManager.Coolvetica,
+					" Tour: 0123456789", new TextOptions(HorizontalAlign.CENTER),
+					vbom);
+			towerText.setHeight(100);
+			towerText.setWidth(250);
+			towerText.setText(" Tour n°0");
+			numberTower ++;
+			towerText.setText(" Tour n°" + (tower.getIdTower()+1));
+
+
+			pictureTower.setPosition(i*300, 200);
+			pictureTower.setHeight(80);
+			pictureTower.setWidth(200);
+			pictureTower.attachChild(towerText);
+			gameHUD.registerTouchArea(pictureTower);
 			gameHUD.setTouchAreaBindingOnActionDownEnabled(true);
-			gameHUD.attachChild(pictureSettings);
+			gameHUD.attachChild(pictureTower);
+			
+			listSpriteShown.add(pictureTower);
 			i++;
 		}
+		
+		
+		
 		
 	}
 
 	@Override
 	public void onBackKeyPressed() {
-		SceneManager.getInstance().loadMenuScene(engine);
+		SceneManager.getInstance().loadGameScene(engine);
 	}
 
 	@Override
@@ -99,8 +116,8 @@ public class ToolsScene extends BaseScene{
 	@Override
 	public void disposeScene() {
 		
-		pictureSettings.detachSelf();
-		pictureSettings.dispose();
+		pictureTower.detachSelf();
+		pictureTower.dispose();
 		
 		pictureBack.detachSelf();
 		pictureBack.dispose();
@@ -108,6 +125,8 @@ public class ToolsScene extends BaseScene{
 		scoreText.detachSelf();
 		scoreText.dispose();
 
+		towerText.detachSelf();
+		towerText.dispose();
 
 		gameHUD.detachSelf();
 		gameHUD.dispose();
@@ -117,7 +136,7 @@ public class ToolsScene extends BaseScene{
 	}
 
 	private void createBackground() {
-		Background background = new Background(Color.WHITE);
+		Background background = new Background(Color.TRANSPARENT);
 		setBackground(background);
 	}
 
@@ -157,11 +176,5 @@ public class ToolsScene extends BaseScene{
 		
 		camera.setHUD(gameHUD);
 	}
-
-	private void addToScore(int i) {
-		score += i;
-		scoreText.setText("Score: " + score);
-	}
-
 
 }
