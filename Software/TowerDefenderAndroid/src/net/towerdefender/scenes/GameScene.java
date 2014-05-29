@@ -1,5 +1,6 @@
 package net.towerdefender.scenes;
 
+import gameplay.Position;
 import gameplay.Tower;
 
 import javax.microedition.khronos.opengles.GL10;
@@ -35,6 +36,8 @@ public class GameScene extends BaseScene {
 	private Text lifeText;
 	private int score = 0, lastUpdate = 0;
 	private static Tower currentControlTower = null;
+	private boolean btnPlayTouched[] ={false,false};
+	private int btnPlayTouchedcount=0;
 
 	@Override
 	public void createScene() {
@@ -42,11 +45,11 @@ public class GameScene extends BaseScene {
 		createHUD();
 		createController();
 
-		/*
-		 * currentControlTower = new Tower(new Position());
-		 * currentControlTower.setIp("192.168.1.9");
-		 * currentControlTower.startCommunication();
-		 */
+		
+		  currentControlTower = new Tower(new Position());
+		  currentControlTower.setIp("192.168.1.7");
+		  currentControlTower.startCommunication();
+		 
 	}
 
 	@Override
@@ -149,7 +152,32 @@ public class GameScene extends BaseScene {
 
 			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent,
 					final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
+			    btnPlayTouched[btnPlayTouchedcount]=true;
+				if(btnPlayTouched[0]==true && btnPlayTouched[1]==false){    // bouton play appuyé une fois
 				addToScore(1);
+					
+					picturePlay.detachSelf();
+					picturePlay.dispose();
+					
+					
+					  picturePause = new Sprite(0, 0,
+					  resourcesManager.buttonOptionPause_region, vbom) {
+					  
+					  @Override protected void preDraw(GLState pGLState, Camera pCamera) {
+					 super.preDraw(pGLState, pCamera); pGLState.enableDither(); } };
+					  picturePause.setPosition(camera.getWidth() - 100, 0);
+					  picturePause.setHeight(100); picturePause.setWidth(100);
+					  picturePause.setWidth(100);
+					  gameHUD.registerTouchArea(picturePause);
+					  gameHUD.setTouchAreaBindingOnActionDownEnabled(true);
+					  gameHUD.attachChild(picturePause);
+					 
+					
+				}
+				btnPlayTouchedcount++;
+				if(btnPlayTouchedcount==2)
+					btnPlayTouchedcount=0;
+                
 				return true;
 			}
 		};
