@@ -28,8 +28,8 @@
         android:theme="@style/AppTheme" >
         
        <activity
-            android:name="net.towerdefender.gstreamer.MainActivity"
-            android:label="@string/title_activity_main" >
+            android:name="net.towerdefender.TowerDefender"
+            android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

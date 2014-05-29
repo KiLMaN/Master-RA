@@ -71,10 +71,6 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback {
 
 		nativeInit();
 
-		changeIpConnexion(10, 1, 1, 190);
-		nativePause();
-		nativePlay();
-
 		changeIpConnexion(10, 1, 1, 116);
 		nativePause();
 		nativePlay();

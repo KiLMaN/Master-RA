@@ -34,7 +34,7 @@ public class GameScene extends BaseScene {
 	private Sprite picturePause;
 	private Text scoreText;
 	private Text lifeText;
-	private int score = 0, lastUpdate = 0;
+	private int score = 0, lastUpdate = 0, idCamera = 0;
 	private static Tower currentControlTower = null;
 
 	@Override
@@ -211,15 +211,27 @@ public class GameScene extends BaseScene {
 					public void onControlClick(
 							final AnalogOnScreenControl pAnalogOnScreenControl) {
 						addToScore(1);
-						GameActivity.getInstance().getCameraPreviewSurface()
-								.autoFocusCamera();
-						if (currentControlTower != null) {
-							if (!currentControlTower.isConnected())
-								currentControlTower.connect();
-							else {
 
-							}
+						if (idCamera == 0) {
+							idCamera = 1;
+							GameActivity.getInstance().a(10, 1, 1, 190);
+						} else {
+							GameActivity.getInstance().a(10, 1, 1, 116);
+							idCamera = 0;
+
 						}
+						// GameActivity.getInstance().nativePause();
+						// GameActivity.getInstance().nativePlay();
+
+						/*
+						 * GameActivity.getInstance().getCameraPreviewSurface()
+						 * .autoFocusCamera(); if (currentControlTower != null)
+						 * { if (!currentControlTower.isConnected())
+						 * currentControlTower.connect(); else {
+						 * GameActivity.getInstance().nativePlay();
+						 * 
+						 * } } }
+						 */
 					}
 				});
 
