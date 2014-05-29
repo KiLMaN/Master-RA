@@ -1,5 +1,6 @@
 package net.towerdefender.scenes;
 
+import gameplay.Position;
 import gameplay.Tower;
 
 import javax.microedition.khronos.opengles.GL10;
@@ -42,11 +43,10 @@ public class GameScene extends BaseScene {
 		createHUD();
 		createController();
 
-		/*
-		 * currentControlTower = new Tower(new Position());
-		 * currentControlTower.setIp("192.168.1.9");
-		 * currentControlTower.startCommunication();
-		 */
+		currentControlTower = new Tower(new Position());
+		currentControlTower.setIp("10.1.1.116");
+		currentControlTower.startCommunication();
+
 	}
 
 	@Override

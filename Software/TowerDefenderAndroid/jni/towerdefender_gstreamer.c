@@ -26,6 +26,16 @@ GST_DEBUG_CATEGORY_STATIC (debug_category);
 # define SET_CUSTOM_DATA(env, thiz, fieldID, data) (*env)->SetLongField (env, thiz, fieldID, (jlong)(jint)data)
 #endif
 
+static char commande[200];// = "tcpclientsrc host=192.168.1.7 port=5000 ! gdpdepay ! rtph264depay ! decodebin2  ! autovideosink sync=true";
+static void gst_updateIp( int a,int b,int c, int d ){
+	sprintf(commande, "tcpclientsrc host=%i.%i.%i.%i port=5000 ! gdpdepay ! rtph264depay ! decodebin2  ! autovideosink sync=true",a,b,c,d);
+}
+
+static void gst_changeIpConnexion( JNIEnv *env, jobject thiz, int a,int b,int c, int d ){
+	gst_updateIp(a,b,c,d);
+}
+
+
 /* Structure to contain all our information, so we can pass it to callbacks */
 typedef struct _CustomData {
   jobject app;            /* Application instance, used to call its methods. A global reference is kept. */
@@ -153,14 +163,11 @@ static void *app_function (void *userdata) {
   CustomData *data = (CustomData *)userdata;
   GSource *bus_source;
   GError *error = NULL;
- // gchar *IpAddress = "192.168.1.20";
- // int port = 5000;
- // gchar *lauchParameters;
-
- // sprintf(lauchParameters, "tcpclientsrc host=%s port=%i ! gdpdepay ! rtph264depay ! decodebin2  ! autovideosink sync=false",IpAddress, port);
 
   GST_DEBUG ("Creating pipeline in CustomData at %p", data);
 
+  if( commande == NULL || commande == ""  )
+	  return NULL;
   /* Create our own GLib Main Context and make it the default one */
   data->context = g_main_context_new ();
   g_main_context_push_thread_default(data->context);
@@ -168,7 +175,8 @@ static void *app_function (void *userdata) {
   /* Build pipeline */
 //  data->pipeline = gst_parse_launch("videotestsrc ! warptv ! ffmpegcolorspace ! autovideosink", &error);
   //data->pipeline = gst_parse_launch("tcpsrc=192.168.1.23 port=5000  ! ffmpegcolorspace4 ! autovideosink sync=false", &error);
-  data->pipeline = gst_parse_launch("tcpclientsrc host=192.168.1.7 port=5000 ! gdpdepay ! rtph264depay ! decodebin2  ! autovideosink sync=true" , &error);
+//  data->pipeline = gst_parse_launch("tcpclientsrc host=192.168.1.7 port=5000 ! gdpdepay ! rtph264depay ! decodebin2  ! autovideosink sync=true" , &error);
+  data->pipeline = gst_parse_launch(commande , &error);
  // data->pipeline = gst_parse_launch("udpsrc port=5000 ! gdpdepay ! rtph264depay ! decodebin2  ! autovideosink sync=false" , &error);
   //data->pipeline = gst_parse_launch(" tcpclientsrc host=192.168.1.23 port=5000 ! gdpdepay ! rtph264depay ! autovideosink sync=false", &error);
 
@@ -226,6 +234,7 @@ static void *app_function (void *userdata) {
 /* Instruct the native code to create its internal data structure, pipeline and thread */
 static void gst_native_init (JNIEnv* env, jobject thiz) {
   CustomData *data = g_new0 (CustomData, 1);
+// gst_updateIp(10,1,1,190);
   SET_CUSTOM_DATA (env, thiz, custom_data_field_id, data);
   //GST_DEBUG_CATEGORY_INIT (debug_category, "tutorial-3", 0, "Android tutorial 3");
   gst_debug_set_threshold_for_name("tutorial-3", GST_LEVEL_DEBUG);
@@ -255,6 +264,7 @@ static void gst_native_finalize (JNIEnv* env, jobject thiz) {
 static void gst_native_play (JNIEnv* env, jobject thiz) {
   CustomData *data = GET_CUSTOM_DATA (env, thiz, custom_data_field_id);
   if (!data) return;
+
   GST_DEBUG ("Setting state to PLAYING");
   gst_element_set_state (data->pipeline, GST_STATE_PLAYING);
 }
@@ -326,6 +336,7 @@ static void gst_native_surface_finalize (JNIEnv *env, jobject thiz) {
 /* List of implemented native methods */
 static JNINativeMethod native_methods[] = {
   { "nativeInit", "()V", (void *) gst_native_init},
+  { "changeIpConnexion", "(IIII)V", (void *) gst_changeIpConnexion},
   { "nativeFinalize", "()V", (void *) gst_native_finalize},
   { "nativePlay", "()V", (void *) gst_native_play},
   { "nativePause", "()V", (void *) gst_native_pause},

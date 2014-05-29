@@ -20,6 +20,10 @@ import com.gstreamer.GStreamer;
 public class MainActivity extends Activity implements SurfaceHolder.Callback {
 	private native void nativeInit(); // Initialize native code, build pipeline,
 
+	private native void changeIpConnexion(int a, int b, int c, int d); // Update
+																		// Ip
+	// Connexion
+
 	private native void nativeFinalize(); // Destroy pipeline and shutdown
 											// native code
 
@@ -66,7 +70,14 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback {
 		sh.addCallback(this);
 
 		nativeInit();
-		// nativeSurfaceInit(sv);
+
+		changeIpConnexion(10, 1, 1, 190);
+		nativePause();
+		nativePlay();
+
+		changeIpConnexion(10, 1, 1, 116);
+		nativePause();
+		nativePlay();
 	}
 
 	@Override
@@ -113,11 +124,23 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback {
 		Log.i("GStreamer", "Gst initialized. Restoring state, playing:"
 				+ is_playing_desired);
 		// Restore previous playing state
-		if (is_playing_desired) {
-			nativePlay();
-		} else {
-			nativePause();
-		}
+
+		// changeIpConnexion(10, 1, 1, 190);
+		// nativePause();
+		nativePlay();
+
+		// changeIpConnexion(10, 1, 1, 160);
+		// nativePause();
+		// nativePlay();
+		// nativeFinalize();
+		// nativeClassInit();
+		// nativeInit();
+		// is_playing_desired = true;
+		// if (is_playing_desired) {
+		// nativePlay();
+		// } else {
+		// nativePause();
+		// }
 
 		// Re-enable buttons, now that GStreamer is initialized
 		final Activity activity = this;
