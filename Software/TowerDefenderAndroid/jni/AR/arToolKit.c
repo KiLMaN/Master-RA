@@ -406,10 +406,12 @@ JNIEXPORT jint JNICALL Java_net_towerdefender_image_ARToolkit_artoolkit_1detectm
 	static jfieldID glMatrixField = NULL;
 	static jfieldID transMatField = NULL;
 	static jfieldID vertexField = NULL;
+	//static jfieldID dirField = NULL;
 	jclass arObjectClass = NULL;
 	jfloatArray glMatrixArrayObj = NULL;
 	jdoubleArray transMatArrayObj = NULL;
 	jdoubleArray vertexArrayObj = NULL;
+	//jint dirObj = NULL;
 
 #ifdef DEBUG_LOGGING
 	__android_log_write(ANDROID_LOG_INFO,"AR native","done detecting markers, going to iterate over markers now");
@@ -469,9 +471,21 @@ JNIEXPORT jint JNICALL Java_net_towerdefender_image_ARToolkit_artoolkit_1detectm
 						"[D");				//[F means array of floats
 			}
 		}
+		/*if (dirField == NULL) {
+					if (arObjectClass == NULL) {
+						if (curObject->objref != NULL)
+							arObjectClass = (*env)->GetObjectClass(env,
+									curObject->objref);
+					}
+					if (arObjectClass != NULL) {
+						dirField = (*env)->GetFieldID(env, arObjectClass, "dir",
+								"I");				//[F means array of floats
+					}
+				}
 
+*/
 		if (visibleField == NULL || glMatrixField == NULL
-				|| transMatField == NULL) {
+				|| transMatField == NULL /*|| dirField == NULL*/) {
 			//something went wrong..
 #ifdef DEBUG_LOGGING
 			__android_log_write(ANDROID_LOG_INFO,"AR native","error: either visibleField or glMatrixField or transMatField null");
@@ -526,7 +540,9 @@ JNIEXPORT jint JNICALL Java_net_towerdefender_image_ARToolkit_artoolkit_1detectm
 				transMatField);
 		vertexArrayObj = (*env)->GetObjectField(env, curObject->objref,
 				vertexField);
-		if (transMatArrayObj == NULL || glMatrixArrayObj == NULL || vertexArrayObj == NULL) {
+		/*dirObj = (*env)->GetObjectField(env, curObject->objref,
+						dirField);*/
+		if (transMatArrayObj == NULL || glMatrixArrayObj == NULL || vertexArrayObj == NULL /*|| dirObj == NULL*/) {
 #ifdef DEBUG_LOGGING
 			__android_log_write(ANDROID_LOG_INFO,"AR native","failed to fetch the matrix arrays objects");
 #endif
@@ -560,6 +576,19 @@ JNIEXPORT jint JNICALL Java_net_towerdefender_image_ARToolkit_artoolkit_1detectm
 #ifdef DEBUG_LOGGING
 		__android_log_write(ANDROID_LOG_INFO,"AR native","calculating trans mat now");
 #endif
+
+		/*int* dirPtr = (*env)->GetIntArrayElements(env, dirObj,
+						JNI_FALSE);
+				if (dirPtr == NULL) {
+		#ifdef DEBUG_LOGGING
+					__android_log_write(ANDROID_LOG_INFO,"AR native","failed to fetch the matrix arrays");
+		#endif
+					continue;				//something went wrong
+				}
+		#ifdef DEBUG_LOGGING
+				__android_log_write(ANDROID_LOG_INFO,"AR native","calculating trans mat now");
+		#endif
+*/
 		// get the transformation between the marker and the real camera 
 		if (curObject->contF == 0) {
 			arGetTransMat(&marker_info[k], curObject->marker_center,
@@ -584,6 +613,8 @@ JNIEXPORT jint JNICALL Java_net_towerdefender_image_ARToolkit_artoolkit_1detectm
 			vertexMatrix[vertexId] = outx;
 			vertexMatrix[vertexId+1] = outy;
 		}
+
+		//*dirPtr = marker_info[k].dir;
 		//argConvGlpara(patt_trans, gl_para);
 #ifdef DEBUG_LOGGING
 		__android_log_write(ANDROID_LOG_INFO,"AR native","releasing arrays");
@@ -591,6 +622,7 @@ JNIEXPORT jint JNICALL Java_net_towerdefender_image_ARToolkit_artoolkit_1detectm
 		(*env)->ReleaseFloatArrayElements(env, glMatrixArrayObj, glMatrix, 0);
 		(*env)->ReleaseDoubleArrayElements(env, transMatArrayObj, transMat, 0);
 		(*env)->ReleaseDoubleArrayElements(env, vertexArrayObj, vertexMatrix, 0);
+		//(*env)->ReleaseDoubleArrayElements(env, dirObj, dirPtr, 0);
 
 		(*env)->SetBooleanField(env, curObject->objref, visibleField, JNI_TRUE);
 #ifdef DEBUG_LOGGING

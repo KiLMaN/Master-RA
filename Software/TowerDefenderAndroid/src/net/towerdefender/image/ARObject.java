@@ -48,6 +48,9 @@ public abstract class ARObject {
 	private double[] vertexMat = new double[8];// [4][2];// array
 	private int id;
 	private boolean initialized = false;
+	private int dir = 0; // Direction of the glyph (0,1,2,3)
+
+	// private double angle = 0; // Angle of the glyph
 
 	/**
 	 * Create a new AR object.
@@ -144,14 +147,16 @@ public abstract class ARObject {
 
 	public abstract void init();
 
-	public float getX() {
+	public double[] getXs() {
 		// TODO Auto-generated method stub
-		return (float) vertexMat[0];
+		return new double[] { vertexMat[0], vertexMat[2], vertexMat[4],
+				vertexMat[6] };
 	}
 
-	public float getY() {
+	public double[] getYs() {
 		// TODO Auto-generated method stub
-		return (float) vertexMat[1];
+		return new double[] { vertexMat[1], vertexMat[3], vertexMat[5],
+				vertexMat[7] };
 	}
 
 }

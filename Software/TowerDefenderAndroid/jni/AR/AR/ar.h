@@ -194,8 +194,8 @@ extern int      arDebug;
 /**
  shall debug messages be printed to the android log
 */
-//#define DEBUG_LOGGING 1
-#undef DEBUG_LOGGING
+#define DEBUG_LOGGING 1
+//#undef DEBUG_LOGGING
 
 /** \var ARUint8 *arImage
 * \brief internal image

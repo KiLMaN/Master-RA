@@ -215,7 +215,7 @@ public class GameActivity extends BaseGameActivity /*
 
 		cam.setPreviewCallback(mCameraPreview);
 		mCameraPreview.init(cam);
-		ARObject obj = new CustomObject("test", "patt.hiro", 80.0,
+		ARObject obj = new CustomObject("test", "barcode.patt", 80.0,
 				new double[] { 0, 0 });
 		markerInfo.registerARObject(obj);
 
