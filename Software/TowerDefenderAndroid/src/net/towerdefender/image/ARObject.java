@@ -21,6 +21,8 @@ package net.towerdefender.image;
 
 import java.nio.FloatBuffer;
 
+import rajawali.renderer.RajawaliRenderer;
+
 /**
  * 
  * @author tobi
@@ -32,6 +34,7 @@ public abstract class ARObject {
 	 * visible?
 	 */
 	private boolean visible = false;
+	private boolean hidden = true;
 	@SuppressWarnings("unused")
 	private String name;
 	private String patternName;
@@ -40,6 +43,7 @@ public abstract class ARObject {
 	// this object must be locked while altering the glMatrix
 	private float[] glMatrix = new float[16];
 	protected static float[] glCameraMatrix = new float[16];
+	@SuppressWarnings("unused")
 	private FloatBuffer glMatrixBuffer;
 	protected static FloatBuffer glCameraMatrixBuffer;
 
@@ -47,7 +51,8 @@ public abstract class ARObject {
 	private double[] transMat = new double[16];// [3][4] array
 	private double[] vertexMat = new double[8];// [4][2];// array
 	private int id;
-	private boolean initialized = false;
+	protected boolean initialized = false;
+	@SuppressWarnings("unused")
 	private int dir = 0; // Direction of the glyph (0,1,2,3)
 
 	// private double angle = 0; // Angle of the glyph
@@ -114,6 +119,11 @@ public abstract class ARObject {
 		return transMat;
 	}
 
+	public boolean isInitialised() {
+
+		return initialized;
+	}
+
 	/**
 	 * Do OpenGL stuff. Everything draw here will be drawn directly onto the
 	 * marker. TODO replace wrap by real floatbuffer
@@ -145,18 +155,30 @@ public abstract class ARObject {
 	 * } }
 	 */
 
-	public abstract void init();
+	public abstract void init(RajawaliRenderer renderer);
 
-	public double[] getXs() {
-		// TODO Auto-generated method stub
-		return new double[] { vertexMat[0], vertexMat[2], vertexMat[4],
-				vertexMat[6] };
+	public abstract void render(RajawaliRenderer renderer);
+
+	public float[] getXs() {
+		return new float[] { (float) vertexMat[0], (float) vertexMat[2],
+				(float) vertexMat[4], (float) vertexMat[6] };
 	}
 
-	public double[] getYs() {
-		// TODO Auto-generated method stub
-		return new double[] { vertexMat[1], vertexMat[3], vertexMat[5],
-				vertexMat[7] };
+	public float[] getYs() {
+		return new float[] { (float) vertexMat[1], (float) vertexMat[3],
+				(float) vertexMat[5], (float) vertexMat[7] };
+	}
+
+	public boolean isHidden() {
+		return hidden;
+	}
+
+	public void hide() {
+		this.setHidden(true);
+	}
+
+	public void setHidden(boolean hide) {
+		this.hidden = hide;
 	}
 
 }

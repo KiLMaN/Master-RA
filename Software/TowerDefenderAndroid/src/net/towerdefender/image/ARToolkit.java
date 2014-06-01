@@ -25,8 +25,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
-import javax.microedition.khronos.opengles.GL10;
-
 import android.content.res.Resources;
 import android.util.Log;
 
@@ -266,32 +264,6 @@ public class ARToolkit {
 		// make sure we initialized the native library
 		if (initialized) {
 			detectMarkerWorker.nextFrame(image);
-		}
-	}
-
-	/**
-	 * Draw all ARObjects.
-	 * 
-	 * @param gl
-	 */
-	public final void draw(GL10 gl) {
-		// TODO : Call rajawalli ?
-		/*
-		 * if (initialized) { // if (Config.DEBUG) Log.i("MarkerInfo",
-		 * "going to draw opengl stuff now"); for (ARObject obj : arobjects) {
-		 * // if (obj.isVisible()) obj.draw(); } }
-		 */
-	}
-
-	/**
-	 * initialize the objects.
-	 * 
-	 * @param gl
-	 */
-	public final void initGL(GL10 gl) {
-		for (ARObject obj : arobjects) {
-			if (obj.isVisible())
-				obj.init();
 		}
 	}
 

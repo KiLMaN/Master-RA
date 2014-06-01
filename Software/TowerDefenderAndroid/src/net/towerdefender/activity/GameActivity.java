@@ -6,7 +6,7 @@ import net.towerdefender.TowerDefender;
 import net.towerdefender.image.ARObject;
 import net.towerdefender.image.ARToolkit;
 import net.towerdefender.image.CameraPreviewHandler;
-import net.towerdefender.image.CustomObject;
+import net.towerdefender.image.GlyphObject;
 import net.towerdefender.image.IO;
 import net.towerdefender.manager.ResourcesManager;
 import net.towerdefender.manager.SceneManager;
@@ -215,8 +215,26 @@ public class GameActivity extends BaseGameActivity /*
 
 		cam.setPreviewCallback(mCameraPreview);
 		mCameraPreview.init(cam);
-		ARObject obj = new CustomObject("test", "barcode.patt", 80.0,
-				new double[] { 0, 0 });
+
+		ARObject obj;/*
+					 * = new GlyphObject("test", "barcode.patt", 80.0, new
+					 * double[] { 0, 0 }); markerInfo.registerARObject(obj);
+					 */
+
+		obj = new GlyphObject("test", "marker1.patt", 80.0,
+				new double[] { 0, 0 }, 0x00FFFF);
+		markerInfo.registerARObject(obj);
+
+		obj = new GlyphObject("test", "marker2.patt", 80.0,
+				new double[] { 0, 0 }, 0xFFFFFF);
+		markerInfo.registerARObject(obj);
+
+		obj = new GlyphObject("test", "marker3.patt", 80.0,
+				new double[] { 0, 0 }, 0xFFFF00);
+		markerInfo.registerARObject(obj);
+
+		obj = new GlyphObject("test", "marker4.patt", 80.0,
+				new double[] { 0, 0 }, 0xFF00FF);
 		markerInfo.registerARObject(obj);
 
 		// mGPUImage.setUpCamera(cam, rotate, flipImage, false);
