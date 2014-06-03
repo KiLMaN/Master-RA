@@ -71,13 +71,16 @@ public class GameScene extends BaseScene {
 		pictureSettings.dispose();
 
 		// TODO: à décommenter une fois que la condition aura été implémentée
-		// picturePause.detachSelf();
-		// picturePause.dispose();
+		if(picturePause!=null){
+			picturePause.detachSelf();
+			picturePause.dispose();
+		}
 		disposeTowersButtons(3); //TODO: chiffre 3 à remplacer par le nombre de tours détectées
 		disposeTabletButton();
-		
-		picturePlay.detachSelf();
-		picturePlay.dispose();
+		if(picturePlay!=null){
+			picturePlay.detachSelf();
+			picturePlay.dispose();
+		}
 
 		scoreText.detachSelf();
 		scoreText.dispose();
@@ -162,18 +165,27 @@ public class GameScene extends BaseScene {
 					
 					picturePlay.detachSelf();
 					picturePlay.dispose();
-					
+					picturePlay=null;
 					
 					  picturePause = new Sprite(0, 0,
 					  resourcesManager.buttonOptionPause_region, vbom) {
 					  
 					  @Override protected void preDraw(GLState pGLState, Camera pCamera) {
-					 super.preDraw(pGLState, pCamera); pGLState.enableDither(); } };
+					 super.preDraw(pGLState, pCamera); pGLState.enableDither(); } 
+					 
+					 public boolean onAreaTouched(final TouchEvent pSceneTouchEvent,
+								final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
+							if(pSceneTouchEvent.isActionUp()){
+								
+							}
+							return true;
+						}
+					  };
 					  picturePause.setPosition(camera.getWidth() - 100, 0);
 					  picturePause.setHeight(100); picturePause.setWidth(100);
 					  picturePause.setWidth(100);
-					 // gameHUD.registerTouchArea(picturePause);
-					//  gameHUD.setTouchAreaBindingOnActionDownEnabled(true);
+					  gameHUD.registerTouchArea(picturePause);
+					  gameHUD.setTouchAreaBindingOnActionDownEnabled(true);
 					  gameHUD.attachChild(picturePause);
 					 
 					
