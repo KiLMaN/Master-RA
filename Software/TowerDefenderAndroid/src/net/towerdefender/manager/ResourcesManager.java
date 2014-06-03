@@ -61,6 +61,14 @@ public class ResourcesManager {
 	private BuildableBitmapTextureAtlas pauseTextureAtlas;
 	public ITextureRegion buttonOptionBack_region;
 	private BuildableBitmapTextureAtlas backTextureAtlas;
+	public ITextureRegion buttonOptionTower_region;
+	private BuildableBitmapTextureAtlas towerTextureAtlas;
+	//public ITextureRegion buttonOptionTower2_region;
+	//public ITextureRegion buttonOptionTower3_region;
+	public ITextureRegion buttonOptionTablet_region;
+	private BuildableBitmapTextureAtlas tabletTextureAtlas;
+	
+	
 
 	// ---------------------------------------------
 	// TEXTURES & TEXTURE REGIONS
@@ -197,6 +205,7 @@ public class ResourcesManager {
 		} catch (final TextureAtlasBuilderException e) {
 			Log.e("TD3", e.toString());
 		}
+		
 
 		BitmapTextureAtlasTextureRegionFactory
 				.setAssetBasePath("gfx/TowerDefender/game/");
@@ -215,6 +224,51 @@ public class ResourcesManager {
 		} catch (final TextureAtlasBuilderException e) {
 			Log.e("TD4", e.toString());
 		}
+		// towerButtons Configuration
+		BitmapTextureAtlasTextureRegionFactory
+		.setAssetBasePath("gfx/TowerDefender/game/");
+
+towerTextureAtlas = new BuildableBitmapTextureAtlas(
+		activity.getTextureManager(), 256, 256, TextureOptions.BILINEAR);
+
+buttonOptionTower_region = BitmapTextureAtlasTextureRegionFactory
+		.createFromAsset(towerTextureAtlas, activity, "tour.png");
+
+//buttonOptionTower2_region = BitmapTextureAtlasTextureRegionFactory
+//.createFromAsset(towerTextureAtlas, activity, "tour.png");
+//
+//buttonOptionTower3_region = BitmapTextureAtlasTextureRegionFactory
+//.createFromAsset(towerTextureAtlas, activity, "tour.png");
+
+try {
+	this.towerTextureAtlas
+			.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(
+					0, 1, 0));
+	this.towerTextureAtlas.load();
+} catch (final TextureAtlasBuilderException e) {
+	Log.e("TD6 je crois", e.toString());
+}
+
+	BitmapTextureAtlasTextureRegionFactory
+	.setAssetBasePath("gfx/TowerDefender/game/");
+	
+	tabletTextureAtlas = new BuildableBitmapTextureAtlas(
+	activity.getTextureManager(), 256, 256, TextureOptions.BILINEAR);
+	
+	buttonOptionTablet_region = BitmapTextureAtlasTextureRegionFactory
+	.createFromAsset(tabletTextureAtlas, activity, "tablette.png");
+	
+	
+	try {
+	this.tabletTextureAtlas
+		.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(
+				0, 1, 0));
+	this.tabletTextureAtlas.load();
+	} catch (final TextureAtlasBuilderException e) {
+	Log.e("TD7 je crois", e.toString());
+	}
+	
+	
 
 	}
 

@@ -49,7 +49,7 @@ public class Sprite extends RectangularShape {
 			.add(ShaderProgramConstants.ATTRIBUTE_TEXTURECOORDINATES_LOCATION,
 					ShaderProgramConstants.ATTRIBUTE_TEXTURECOORDINATES, 2,
 					GLES20.GL_FLOAT, false).build();
-
+    private int index;
 	// ===========================================================
 	// Fields
 	// ===========================================================
@@ -172,6 +172,14 @@ public class Sprite extends RectangularShape {
 		this.onUpdateColor();
 		this.onUpdateTextureCoordinates();
 	}
+	
+	public Sprite(final float pX, final float pY,
+			final ITextureRegion pTextureRegion,
+			final VertexBufferObjectManager pVertexBufferObjectManager, int index) {
+		this(pX, pY, pTextureRegion.getWidth(), pTextureRegion.getHeight(),
+				pTextureRegion, pVertexBufferObjectManager, DrawType.STATIC);
+		this.index = index;
+	}
 
 	// ===========================================================
 	// Getter & Setter
@@ -218,6 +226,10 @@ public class Sprite extends RectangularShape {
 
 			this.onUpdateTextureCoordinates();
 		}
+	}
+	
+	public int getIndex() {
+		return this.index;
 	}
 
 	// ===========================================================
