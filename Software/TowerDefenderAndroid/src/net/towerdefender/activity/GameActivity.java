@@ -1,9 +1,17 @@
 package net.towerdefender.activity;
 
+import gameplay.Game;
+import gameplay.Player;
+import gameplay.XMLParser;
+import gameplay.XMLParserTower;
+import gameplay.XMLParserWave;
+import gameplay.XMLParserWeapon;
+
 import java.io.IOException;
 
 import jp.co.cyberagent.android.gpuimage.GPUImage;
 import jp.co.cyberagent.android.gpuimage.GPUImageSobelEdgeDetection;
+import net.towerdefender.FileReaderAndroid;
 import net.towerdefender.TowerDefender;
 import net.towerdefender.manager.ResourcesManager;
 import net.towerdefender.manager.SceneManager;
@@ -19,7 +27,9 @@ import org.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
 import org.andengine.entity.scene.Scene;
 import org.andengine.opengl.view.RenderSurfaceView;
 import org.andengine.ui.activity.BaseGameActivity;
+import org.w3c.dom.Node;
 
+import simulation.FileReaderPC;
 import android.graphics.PixelFormat;
 import android.hardware.Camera.CameraInfo;
 import android.opengl.GLSurfaceView;
@@ -32,7 +42,7 @@ public class GameActivity extends BaseGameActivity /*
 													 * implements
 													 * SurfaceHolder.Callback
 													 */{
-
+private Game mGame;
 	private static GameActivity INSTANCE;
 
 	@SuppressWarnings("unused")
@@ -78,8 +88,38 @@ public class GameActivity extends BaseGameActivity /*
 	 * go // to PLAYING
 	 */
 
+	public void initGame()
+	{
+		XMLParser parserWeapon = new XMLParser("weapons.xml");
+		parserWeapon.loadFile(new FileReaderAndroid(this));
+		Node rootWeapon = parserWeapon.getRoot();
+		mGame.setDefaultWeapons(XMLParserWeapon.parseXMLWeapon(rootWeapon));
+
+		System.out.println("Loading Tower Positions");
+		XMLParser parserTower = new XMLParser("towers.xml");
+		parserTower.loadFile(new FileReaderAndroid(this));
+		Node rootTower = parserTower.getRoot();
+		mGame.setTowers(XMLParserTower.parseXMLTowers(rootTower));
+
+		mGame.assignWeapons();
+
+		System.out.println("Loading Enemies Waves");
+		XMLParser parserWaves = new XMLParser("waves.xml");
+		parserWaves.loadFile(new FileReaderAndroid(this));
+		Node rootWave = parserWaves.getRoot();
+		mGame.setWaves(XMLParserWave.parseXMLWaves(rootWave));
+
+		mGame.setCurrentPlayer(new Player(1, "player n°1", 100, 0, 0));
+	}
+	
 	public GameActivity() {
 		INSTANCE = this;
+		this.mGame = new Game();
+		
+	}
+	public Game getGame()
+	{
+		return mGame;
 	}
 
 	public static GameActivity getInstance() {
@@ -203,6 +243,8 @@ public class GameActivity extends BaseGameActivity /*
 		// addContentView(this.mGstreamerView, new LayoutParams(
 		// LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 
+		
+		initGame();
 	}
 
 	public void setHardwareCamera(android.hardware.Camera cam) {

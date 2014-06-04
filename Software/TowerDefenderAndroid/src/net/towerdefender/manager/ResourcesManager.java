@@ -33,6 +33,7 @@ public class ResourcesManager {
 	private static final ResourcesManager INSTANCE = new ResourcesManager();
 
 	public Font Coolvetica;
+	public Font Sanford;
 
 	public Engine engine;
 	public GameActivity activity;
@@ -272,6 +273,17 @@ public class ResourcesManager {
 				activity.getAssets(), "coolvetica.ttf", 50, true, Color.BLACK,
 				2, Color.WHITE, true);
 		Coolvetica.load();
+		
+		final ITexture mainFontTextureSanford = new BitmapTextureAtlas(
+				activity.getTextureManager(), 256, 256,
+				TextureOptions.BILINEAR_PREMULTIPLYALPHA);
+		
+		Sanford = FontFactory.createStrokeFromAsset(
+				
+				activity.getFontManager(), mainFontTextureSanford,
+				activity.getAssets(), "Sanford.ttf", 50, true, Color.BLACK,
+				2, Color.BLACK, false);
+		Sanford.load();
 	}
 
 	public void unloadGameTextures() {

@@ -253,4 +253,8 @@ public class Tower extends CommunicationTower {
 		this.pweapons = pweapons;
 
 	}
+
+	public ArrayList<Pweapon> getWeapons() {
+		return this.pweapons;
+	}
 }

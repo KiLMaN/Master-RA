@@ -14,7 +14,7 @@ public class Pweapon {
 		this.locked = lockedWeapon;
 	}
 
-	public Weapon get(int id) {
+	public Weapon getWeapon() {
 		return Weapon;
 	}
 
