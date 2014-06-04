@@ -256,10 +256,10 @@ public class ResourcesManager {
 		.setAssetBasePath("gfx/TowerDefender/game/");
 
 towerTextureAtlas = new BuildableBitmapTextureAtlas(
-		activity.getTextureManager(), 256, 256, TextureOptions.BILINEAR);
+		activity.getTextureManager(), 120, 120, TextureOptions.BILINEAR);
 
 buttonOptionTower_region = BitmapTextureAtlasTextureRegionFactory
-		.createFromAsset(towerTextureAtlas, activity, "tour.png");
+		.createFromAsset(towerTextureAtlas, activity, "tower.png");
 
 //buttonOptionTower2_region = BitmapTextureAtlasTextureRegionFactory
 //.createFromAsset(towerTextureAtlas, activity, "tour.png");
@@ -280,10 +280,10 @@ try {
 	.setAssetBasePath("gfx/TowerDefender/game/");
 	
 	tabletTextureAtlas = new BuildableBitmapTextureAtlas(
-	activity.getTextureManager(), 256, 256, TextureOptions.BILINEAR);
+	activity.getTextureManager(), 1196, 781, TextureOptions.BILINEAR);
 	
 	buttonOptionTablet_region = BitmapTextureAtlasTextureRegionFactory
-	.createFromAsset(tabletTextureAtlas, activity, "tablette.png");
+	.createFromAsset(tabletTextureAtlas, activity, "tablet.png");
 	
 	
 	try {

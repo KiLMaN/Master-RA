@@ -353,7 +353,9 @@ public class GameScene extends BaseScene {
 					* widthButtons, camera.getHeight() - heightButtons);
 			pictureTower[i].setHeight(heightButtons);
 			pictureTower[i].setWidth(widthButtons);
-
+			Text towerText = new Text(40, 25, resourcesManager.Coolvetica,
+					Integer.toString(i+1) ,new TextOptions(HorizontalAlign.CENTER), vbom);
+            pictureTower[i].attachChild(towerText);
 			gameHUD.registerTouchArea(pictureTower[i]);
 			gameHUD.setTouchAreaBindingOnActionDownEnabled(true);
 			gameHUD.attachChild(pictureTower[i]);
@@ -406,6 +408,7 @@ public class GameScene extends BaseScene {
 						disposeTowersButtons(3);
 						displayList= false;
 						
+						if(analogOnScreenControl!=null)
 						disposeAnalogOnScreenControl();
 						
 						//TODO: connect to tablet
