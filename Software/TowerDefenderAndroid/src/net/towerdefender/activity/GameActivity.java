@@ -32,7 +32,6 @@ import org.andengine.ui.activity.BaseGameActivity;
 import org.w3c.dom.Node;
 
 import android.graphics.PixelFormat;
-import android.hardware.Camera.CameraInfo;
 import android.opengl.GLSurfaceView;
 import android.util.DisplayMetrics;
 import android.view.KeyEvent;
@@ -256,15 +255,9 @@ public class GameActivity extends BaseGameActivity /*
 
 	public void setHardwareCamera(android.hardware.Camera cam) {
 
-						TowerDefender.CameraSelection == CameraInfo.CAMERA_FACING_FRONT ? 180
-								: 0,
-		 * mGPUImage .setUpCamera( cam, TowerDefender.CameraSelection ==
-		 * CameraInfo.CAMERA_FACING_FRONT ? 180 : 0,
-						TowerDefender.CameraSelection == CameraInfo.CAMERA_FACING_FRONT,
-		 * false);
 		cam.setPreviewCallback(mCameraPreview);
 		mCameraPreview.init(cam);
-		 */
+
 		ARObject obj;/*
 					 * = new GlyphObject("test", "barcode.patt", 80.0, new
 					 * double[] { 0, 0 }); markerInfo.registerARObject(obj);
@@ -285,11 +278,6 @@ public class GameActivity extends BaseGameActivity /*
 		obj = new GlyphObject("test", "marker4.patt", 80.0,
 				new double[] { 0, 0 }, 0xFF00FF);
 		markerInfo.registerARObject(obj);
-
-		// mGPUImage.setUpCamera(cam, rotate, flipImage, false);
-
-		// mGPUImage.setUpCamera(cam);
-		// mGPUImage.setFilter(new GPUImageSobelEdgeDetection());
 	}
 
 	public CameraPreviewSurfaceView getCameraPreviewSurface() {
