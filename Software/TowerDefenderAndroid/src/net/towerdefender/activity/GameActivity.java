@@ -9,10 +9,7 @@ import gameplay.XMLParserWeapon;
 
 import java.io.IOException;
 
-import jp.co.cyberagent.android.gpuimage.GPUImage;
-import jp.co.cyberagent.android.gpuimage.GPUImageSobelEdgeDetection;
 import net.towerdefender.FileReaderAndroid;
-import net.towerdefender.TowerDefender;
 import net.towerdefender.manager.ResourcesManager;
 import net.towerdefender.manager.SceneManager;
 
@@ -29,9 +26,7 @@ import org.andengine.opengl.view.RenderSurfaceView;
 import org.andengine.ui.activity.BaseGameActivity;
 import org.w3c.dom.Node;
 
-import simulation.FileReaderPC;
 import android.graphics.PixelFormat;
-import android.hardware.Camera.CameraInfo;
 import android.opengl.GLSurfaceView;
 import android.util.DisplayMetrics;
 import android.view.KeyEvent;
@@ -42,7 +37,7 @@ public class GameActivity extends BaseGameActivity /*
 													 * implements
 													 * SurfaceHolder.Callback
 													 */{
-private Game mGame;
+	private Game mGame;
 	private static GameActivity INSTANCE;
 
 	@SuppressWarnings("unused")
@@ -55,7 +50,7 @@ private Game mGame;
 	@SuppressWarnings("unused")
 	private ResourcesManager resourcesManager;
 
-	public GPUImage mGPUImage;
+	// public GPUImage mGPUImage;
 
 	private CameraPreviewSurfaceView mCameraPreviewSurfaceView;
 	private GLSurfaceView mRAView;
@@ -88,8 +83,7 @@ private Game mGame;
 	 * go // to PLAYING
 	 */
 
-	public void initGame()
-	{
+	public void initGame() {
 		XMLParser parserWeapon = new XMLParser("weapons.xml");
 		parserWeapon.loadFile(new FileReaderAndroid(this));
 		Node rootWeapon = parserWeapon.getRoot();
@@ -111,14 +105,14 @@ private Game mGame;
 
 		mGame.setCurrentPlayer(new Player(1, "player n°1", 100, 0, 0));
 	}
-	
+
 	public GameActivity() {
 		INSTANCE = this;
 		this.mGame = new Game();
-		
+
 	}
-	public Game getGame()
-	{
+
+	public Game getGame() {
 		return mGame;
 	}
 
@@ -207,12 +201,13 @@ private Game mGame;
 
 		this.mCameraPreviewSurfaceView = new CameraPreviewSurfaceView(this);
 
-		GLSurfaceView mGLSurfaceView = new GLSurfaceView(this);
-		mGLSurfaceView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
-		mGLSurfaceView.getHolder().setFormat(PixelFormat.TRANSLUCENT);
-		mGLSurfaceView.setEGLContextClientVersion(2);
-		mGPUImage = new GPUImage(this);
-		mGPUImage.setGLSurfaceView(mGLSurfaceView);
+		/*
+		 * GLSurfaceView mGLSurfaceView = new GLSurfaceView(this);
+		 * mGLSurfaceView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
+		 * mGLSurfaceView.getHolder().setFormat(PixelFormat.TRANSLUCENT);
+		 * mGLSurfaceView.setEGLContextClientVersion(2); //mGPUImage = new
+		 * GPUImage(this); //mGPUImage.setGLSurfaceView(mGLSurfaceView);
+		 */
 
 		this.mRenderSurfaceView = new RenderSurfaceView(this);
 		this.mRenderSurfaceView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
@@ -235,30 +230,27 @@ private Game mGame;
 		addContentView(mRAView, new LayoutParams(LayoutParams.WRAP_CONTENT,
 				LayoutParams.WRAP_CONTENT));
 
-		addContentView(mGLSurfaceView, new LayoutParams(
-				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+		// addContentView(mGLSurfaceView, new LayoutParams(
+		// LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 
 		addContentView(mCameraPreviewSurfaceView, new LayoutParams(
 				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 		// addContentView(this.mGstreamerView, new LayoutParams(
 		// LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 
-		
 		initGame();
 	}
 
 	public void setHardwareCamera(android.hardware.Camera cam) {
 
-		mGPUImage
-				.setUpCamera(
-						cam,
-						TowerDefender.CameraSelection == CameraInfo.CAMERA_FACING_FRONT ? 180
-								: 0,
-						TowerDefender.CameraSelection == CameraInfo.CAMERA_FACING_FRONT,
-						false);
-
+		/*
+		 * mGPUImage .setUpCamera( cam, TowerDefender.CameraSelection ==
+		 * CameraInfo.CAMERA_FACING_FRONT ? 180 : 0,
+		 * TowerDefender.CameraSelection == CameraInfo.CAMERA_FACING_FRONT,
+		 * false);
+		 */
 		// mGPUImage.setUpCamera(cam);
-	//	mGPUImage.setFilter(new GPUImageSobelEdgeDetection());
+		// mGPUImage.setFilter(new GPUImageSobelEdgeDetection());
 	}
 
 	public CameraPreviewSurfaceView getCameraPreviewSurface() {
