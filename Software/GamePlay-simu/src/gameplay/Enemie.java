@@ -9,10 +9,12 @@ public class Enemie {
 	private int health;
 	private float speed;
 	private boolean spawned = false;
+	private int points;
 
-	public Enemie(int health, int speed) {
+	public Enemie(int health, int speed, int points) {
 		this.health = health;
 		this.speed = speed;
+		this.points = points;
 	}
 
 	public void spawn(Position position) {
@@ -165,5 +167,11 @@ public class Enemie {
 
 	public void setPath(Path path) {
 		this.path = path;
+	}
+
+	/* Number of point earned by killing this enemie */
+	public int getPoints() {
+		return this.points;
+
 	}
 }

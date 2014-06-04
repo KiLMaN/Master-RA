@@ -33,6 +33,7 @@ public class ResourcesManager {
 	private static final ResourcesManager INSTANCE = new ResourcesManager();
 
 	public Font Coolvetica;
+	public Font Sanford;
 
 	public Engine engine;
 	public GameActivity activity;
@@ -48,6 +49,7 @@ public class ResourcesManager {
 	public ITextureRegion play_region;
 	public ITextureRegion options_region;
 	private BuildableBitmapTextureAtlas menuTextureAtlas;
+	
 
 	/* Game */
 	public ITextureRegion onScreenControlBase;
@@ -59,17 +61,22 @@ public class ResourcesManager {
 	private BuildableBitmapTextureAtlas playTextureAtlas;
 	public ITextureRegion buttonOptionPause_region;
 	private BuildableBitmapTextureAtlas pauseTextureAtlas;
-	public ITextureRegion buttonOptionBack_region;
-	private BuildableBitmapTextureAtlas backTextureAtlas;
-	public ITextureRegion buttonOptionTower_region;
 	private BuildableBitmapTextureAtlas towerTextureAtlas;
-	//public ITextureRegion buttonOptionTower2_region;
-	//public ITextureRegion buttonOptionTower3_region;
 	public ITextureRegion buttonOptionTablet_region;
+	public ITextureRegion buttonOptionTower_region;
 	private BuildableBitmapTextureAtlas tabletTextureAtlas;
 	
 	
+	/* Tools*/
+	public ITextureRegion buttonOptionBack_region;
+	private BuildableBitmapTextureAtlas backTextureAtlas;
+	public ITextureRegion buttonOptionTowerOpt_region;
+	private BuildableBitmapTextureAtlas stoneTextureAtlas;
+	
 
+
+
+	
 	// ---------------------------------------------
 	// TEXTURES & TEXTURE REGIONS
 	// ---------------------------------------------
@@ -143,6 +150,26 @@ public class ResourcesManager {
 		} catch (final TextureAtlasBuilderException e) {
 			Log.e("TD5", e.toString());
 		}
+
+		
+		BitmapTextureAtlasTextureRegionFactory
+				.setAssetBasePath("gfx/TowerDefender/tools/");
+		
+		stoneTextureAtlas = new BuildableBitmapTextureAtlas(
+				activity.getTextureManager(), 1024, 768, TextureOptions.BILINEAR);
+
+		buttonOptionTowerOpt_region = BitmapTextureAtlasTextureRegionFactory
+				.createFromAsset(stoneTextureAtlas, activity, "texturePierre.jpg");
+
+		try {
+			this.stoneTextureAtlas
+					.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(
+							0, 1, 0));
+			this.stoneTextureAtlas.load();
+		} catch (final TextureAtlasBuilderException e) {
+			Log.e("TD6", e.toString());
+		}
+		
 
 	}
 
@@ -296,9 +323,20 @@ try {
 
 		Coolvetica = FontFactory.createStrokeFromAsset(
 				activity.getFontManager(), mainFontTexture,
-				activity.getAssets(), "coolvetica.ttf", 50, true, Color.WHITE,
-				2, Color.BLACK, true);
+				activity.getAssets(), "coolvetica.ttf", 50, true, Color.BLACK,
+				2, Color.WHITE, true);
 		Coolvetica.load();
+		
+		final ITexture mainFontTextureSanford = new BitmapTextureAtlas(
+				activity.getTextureManager(), 256, 256,
+				TextureOptions.BILINEAR_PREMULTIPLYALPHA);
+		
+		Sanford = FontFactory.createStrokeFromAsset(
+				
+				activity.getFontManager(), mainFontTextureSanford,
+				activity.getAssets(), "Sanford.ttf", 50, true, Color.BLACK,
+				2, Color.BLACK, false);
+		Sanford.load();
 	}
 
 	public void unloadGameTextures() {

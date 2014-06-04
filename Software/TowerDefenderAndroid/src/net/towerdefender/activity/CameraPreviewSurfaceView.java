@@ -1,8 +1,12 @@
 package net.towerdefender.activity;
 
+import java.io.IOException;
 import java.util.List;
 
 import net.towerdefender.TowerDefender;
+
+import org.andengine.util.debuging.Debuging;
+
 import android.content.Context;
 import android.hardware.Camera;
 import android.hardware.Camera.CameraInfo;
@@ -34,7 +38,6 @@ public class CameraPreviewSurfaceView extends GLSurfaceView implements
 	// Constructors
 	// ===========================================================
 
-	@SuppressWarnings("deprecation")
 	public CameraPreviewSurfaceView(final Context pContext) {
 		super(pContext);
 
@@ -69,11 +72,13 @@ public class CameraPreviewSurfaceView extends GLSurfaceView implements
 		}
 
 		// this.mCamera.setPreviewCallback(this);
-		/*
-		 * try { this.mCamera.setPreviewDisplay(pSurfaceHolder); } catch
-		 * (IOException e) { Debuging.e("Error in Camera.setPreviewDisplay", e);
-		 * }
-		 */
+
+		try {
+			this.mCamera.setPreviewDisplay(pSurfaceHolder);
+		} catch (IOException e) {
+			Debuging.e("Error in Camera.setPreviewDisplay", e);
+		}
+
 	}
 
 	public void surfaceDestroyed(final SurfaceHolder pSurfaceHolder) {
@@ -101,6 +106,7 @@ public class CameraPreviewSurfaceView extends GLSurfaceView implements
 		this.mCamera.setParameters(parameters);
 		// this.mCamera.startPreview();
 		GameActivity.getInstance().setHardwareCamera(mCamera);
+		mCamera.startPreview();
 	}
 
 	// ===========================================================
