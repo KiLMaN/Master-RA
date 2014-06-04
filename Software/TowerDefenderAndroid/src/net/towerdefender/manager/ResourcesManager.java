@@ -73,9 +73,6 @@ public class ResourcesManager {
 	public ITextureRegion buttonOptionTowerOpt_region;
 	private BuildableBitmapTextureAtlas stoneTextureAtlas;
 	
-
-
-
 	
 	// ---------------------------------------------
 	// TEXTURES & TEXTURE REGIONS
@@ -334,7 +331,7 @@ try {
 		Sanford = FontFactory.createStrokeFromAsset(
 				
 				activity.getFontManager(), mainFontTextureSanford,
-				activity.getAssets(), "Sanford.ttf", 50, true, Color.BLACK,
+				activity.getAssets(), "Sanford.ttf", 30, true, Color.BLACK,
 				2, Color.BLACK, false);
 		Sanford.load();
 	}

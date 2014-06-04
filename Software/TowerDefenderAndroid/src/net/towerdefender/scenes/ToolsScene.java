@@ -56,6 +56,7 @@ public class ToolsScene extends BaseScene {
 
 	private void createTabs() {
 		int i = 2;
+		int largeur = this.engine.getSurfaceWidth() / 5;
 		for (Tower tower : listConnected) {
 			Sprite pictureTower = new SpriteTower(0, 0,
 					resourcesManager.buttonOptionTowerOpt_region, vbom, tower);
@@ -68,7 +69,7 @@ public class ToolsScene extends BaseScene {
 			towerText.setText(" Tour n°0");
 			towerText.setText(" Tour n°" + (tower.getIdTower() + 1));
 
-			pictureTower.setPosition(i * 300, 100);
+			pictureTower.setPosition(largeur * (i - 1), 100);
 			pictureTower.setHeight(80);
 			pictureTower.setWidth(200);
 			pictureTower.attachChild(towerText);
@@ -199,16 +200,19 @@ public class ToolsScene extends BaseScene {
 
 					Weapon w = weapon.getWeapon();
 					nameWeaponText = new Text(0, 0, resourcesManager.Sanford,
-							"Nom: 0123456789", new TextOptions(
+							"Nom: 0123456789012345", new TextOptions(
 									HorizontalAlign.LEFT), vbom);
-					nameWeaponText.setPosition(50, (50 + (j * 220)));
-					nameWeaponText.setText("Nom: " + w.getNameWeapon());
+					nameWeaponText.setPosition(20, (50 + (j * 220)));
+					int stringSize = (w.getNameWeapon().length() < 16) ? w
+							.getNameWeapon().length() : 10;
+					nameWeaponText.setText("Nom:"
+							+ w.getNameWeapon().substring(0, stringSize));
 					gameHUD.attachChild(nameWeaponText);
 
 					statusWeaponText = new Text(0, 0, resourcesManager.Sanford,
-							"Nom: 0123456789", new TextOptions(
+							"statutArme", new TextOptions(
 									HorizontalAlign.LEFT), vbom);
-					statusWeaponText.setPosition((camera.getWidth() / 3),
+					statusWeaponText.setPosition(3*(camera.getWidth() / 10),
 							(50 + (j * 220)));
 					if (weapon.isLocked()) {
 						statusWeaponText.setText("bloqué");
@@ -222,7 +226,7 @@ public class ToolsScene extends BaseScene {
 									HorizontalAlign.LEFT), vbom);
 					rangeWeaponText.setPosition((3 * camera.getWidth() / 5),
 							(75 + (j * 220)));
-					rangeWeaponText.setText("Portee: " + w.getRange());
+					rangeWeaponText.setText("Portee:" + w.getRange());
 					gameHUD.attachChild(rangeWeaponText);
 
 					damageWeaponText = new Text(0, 0, resourcesManager.Sanford,
