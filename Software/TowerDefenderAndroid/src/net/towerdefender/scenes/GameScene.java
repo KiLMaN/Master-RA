@@ -41,6 +41,7 @@ public class GameScene extends BaseScene {
 	private int score = 0, lastUpdate = 0;
 	private static Tower currentControlTower = null;
 	private boolean displayList = true;
+	private AnalogOnScreenControl analogOnScreenControl;
 
 	@Override
 	public void createScene() {
@@ -228,7 +229,7 @@ public class GameScene extends BaseScene {
 	}
 
 	private void createController() {
-		final AnalogOnScreenControl analogOnScreenControl = new AnalogOnScreenControl(
+		analogOnScreenControl = new AnalogOnScreenControl(
 				0,
 				camera.getHeight()
 						- ResourcesManager.getInstance().onScreenControlBase
@@ -274,7 +275,7 @@ public class GameScene extends BaseScene {
 		analogOnScreenControl.getControlKnob().setScale(3f);
 		analogOnScreenControl.getBackground().setColor(0, 0, 0, 0);
 		analogOnScreenControl.refreshControlKnobPosition();
-
+		
 		this.setChildScene(analogOnScreenControl);
 	}
 	
@@ -304,6 +305,10 @@ public class GameScene extends BaseScene {
 							 disposeTabletButton();
 							 
 							 displayList= false;
+							 
+							 if(analogOnScreenControl==null){
+								 createController();
+							 }
 							
 							// TODO connect to tower
 							 connectToTower();
@@ -381,6 +386,8 @@ public class GameScene extends BaseScene {
 							disposeTowersButtons(3);
 							displayList= false;
 							
+							disposeAnalogOnScreenControl();
+							
 							//TODO: connect to tablet
 							connectToTablet();	
 						}
@@ -411,6 +418,16 @@ public class GameScene extends BaseScene {
 			pictureTablet.dispose();
 			pictureTablet=null;
 		}
+	}
+	
+	private void disposeAnalogOnScreenControl(){
+		analogOnScreenControl.setVisible(false);
+		analogOnScreenControl.clearTouchAreas();
+		analogOnScreenControl.clearChildScene();
+		analogOnScreenControl.clearEntityModifiers();
+		analogOnScreenControl.detachSelf();
+		analogOnScreenControl.dispose();	
+		analogOnScreenControl=null;
 	}
 	
 	private boolean connectToTower(){
