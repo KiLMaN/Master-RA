@@ -33,6 +33,7 @@ public class ResourcesManager {
 	private static final ResourcesManager INSTANCE = new ResourcesManager();
 
 	public Font Coolvetica;
+	public Font Sanford;
 
 	public Engine engine;
 	public GameActivity activity;
@@ -48,6 +49,7 @@ public class ResourcesManager {
 	public ITextureRegion play_region;
 	public ITextureRegion options_region;
 	private BuildableBitmapTextureAtlas menuTextureAtlas;
+	
 
 	/* Game */
 	public ITextureRegion onScreenControlBase;
@@ -59,7 +61,22 @@ public class ResourcesManager {
 	private BuildableBitmapTextureAtlas playTextureAtlas;
 	public ITextureRegion buttonOptionPause_region;
 	private BuildableBitmapTextureAtlas pauseTextureAtlas;
+	private BuildableBitmapTextureAtlas towerTextureAtlas;
+	public ITextureRegion buttonOptionTablet_region;
+	public ITextureRegion buttonOptionTower_region;
+	private BuildableBitmapTextureAtlas tabletTextureAtlas;
+	
+	
+	/* Tools*/
+	public ITextureRegion buttonOptionBack_region;
+	private BuildableBitmapTextureAtlas backTextureAtlas;
+	public ITextureRegion buttonOptionTowerOpt_region;
+	private BuildableBitmapTextureAtlas stoneTextureAtlas;
+	
 
+
+
+	
 	// ---------------------------------------------
 	// TEXTURES & TEXTURE REGIONS
 	// ---------------------------------------------
@@ -78,6 +95,12 @@ public class ResourcesManager {
 		loadGameGraphics();
 		loadGameFonts();
 		loadGameAudio();
+	}
+
+	public void loadToolsResources() {
+		loadToolsGraphics();
+		loadToolsFonts();
+		loadToolsAudio();
 	}
 
 	private void loadMenuGraphics() {
@@ -109,6 +132,47 @@ public class ResourcesManager {
 
 	}
 
+	private void loadToolsGraphics() {
+		BitmapTextureAtlasTextureRegionFactory
+				.setAssetBasePath("gfx/TowerDefender/tools/");
+
+		backTextureAtlas = new BuildableBitmapTextureAtlas(
+				activity.getTextureManager(), 250, 308, TextureOptions.BILINEAR);
+
+		buttonOptionBack_region = BitmapTextureAtlasTextureRegionFactory
+				.createFromAsset(backTextureAtlas, activity, "back.png");
+
+		try {
+			this.backTextureAtlas
+					.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(
+							0, 1, 0));
+			this.backTextureAtlas.load();
+		} catch (final TextureAtlasBuilderException e) {
+			Log.e("TD5", e.toString());
+		}
+
+		
+		BitmapTextureAtlasTextureRegionFactory
+				.setAssetBasePath("gfx/TowerDefender/tools/");
+		
+		stoneTextureAtlas = new BuildableBitmapTextureAtlas(
+				activity.getTextureManager(), 1024, 768, TextureOptions.BILINEAR);
+
+		buttonOptionTowerOpt_region = BitmapTextureAtlasTextureRegionFactory
+				.createFromAsset(stoneTextureAtlas, activity, "texturePierre.jpg");
+
+		try {
+			this.stoneTextureAtlas
+					.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(
+							0, 1, 0));
+			this.stoneTextureAtlas.load();
+		} catch (final TextureAtlasBuilderException e) {
+			Log.e("TD6", e.toString());
+		}
+		
+
+	}
+
 	private void loadGameGraphics() {
 
 		BitmapTextureAtlasTextureRegionFactory
@@ -137,7 +201,7 @@ public class ResourcesManager {
 				.setAssetBasePath("gfx/TowerDefender/game/");
 
 		gameTextureAtlas = new BuildableBitmapTextureAtlas(
-				activity.getTextureManager(), 512, 512, TextureOptions.BILINEAR);
+				activity.getTextureManager(), 256, 256, TextureOptions.BILINEAR);
 
 		buttonOptionSettings_region = BitmapTextureAtlasTextureRegionFactory
 				.createFromAsset(gameTextureAtlas, activity, "settings.png");
@@ -168,6 +232,7 @@ public class ResourcesManager {
 		} catch (final TextureAtlasBuilderException e) {
 			Log.e("TD3", e.toString());
 		}
+		
 
 		BitmapTextureAtlasTextureRegionFactory
 				.setAssetBasePath("gfx/TowerDefender/game/");
@@ -186,6 +251,51 @@ public class ResourcesManager {
 		} catch (final TextureAtlasBuilderException e) {
 			Log.e("TD4", e.toString());
 		}
+		// towerButtons Configuration
+		BitmapTextureAtlasTextureRegionFactory
+		.setAssetBasePath("gfx/TowerDefender/game/");
+
+towerTextureAtlas = new BuildableBitmapTextureAtlas(
+		activity.getTextureManager(), 256, 256, TextureOptions.BILINEAR);
+
+buttonOptionTower_region = BitmapTextureAtlasTextureRegionFactory
+		.createFromAsset(towerTextureAtlas, activity, "tour.png");
+
+//buttonOptionTower2_region = BitmapTextureAtlasTextureRegionFactory
+//.createFromAsset(towerTextureAtlas, activity, "tour.png");
+//
+//buttonOptionTower3_region = BitmapTextureAtlasTextureRegionFactory
+//.createFromAsset(towerTextureAtlas, activity, "tour.png");
+
+try {
+	this.towerTextureAtlas
+			.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(
+					0, 1, 0));
+	this.towerTextureAtlas.load();
+} catch (final TextureAtlasBuilderException e) {
+	Log.e("TD6 je crois", e.toString());
+}
+
+	BitmapTextureAtlasTextureRegionFactory
+	.setAssetBasePath("gfx/TowerDefender/game/");
+	
+	tabletTextureAtlas = new BuildableBitmapTextureAtlas(
+	activity.getTextureManager(), 256, 256, TextureOptions.BILINEAR);
+	
+	buttonOptionTablet_region = BitmapTextureAtlasTextureRegionFactory
+	.createFromAsset(tabletTextureAtlas, activity, "tablette.png");
+	
+	
+	try {
+	this.tabletTextureAtlas
+		.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(
+				0, 1, 0));
+	this.tabletTextureAtlas.load();
+	} catch (final TextureAtlasBuilderException e) {
+	Log.e("TD7 je crois", e.toString());
+	}
+	
+	
 
 	}
 
@@ -213,13 +323,32 @@ public class ResourcesManager {
 
 		Coolvetica = FontFactory.createStrokeFromAsset(
 				activity.getFontManager(), mainFontTexture,
-				activity.getAssets(), "coolvetica.ttf", 50, true, Color.WHITE,
+				activity.getAssets(), "coolvetica.ttf", 50, true, Color.BLACK,
 				2, Color.WHITE, true);
 		Coolvetica.load();
+		
+		final ITexture mainFontTextureSanford = new BitmapTextureAtlas(
+				activity.getTextureManager(), 256, 256,
+				TextureOptions.BILINEAR_PREMULTIPLYALPHA);
+		
+		Sanford = FontFactory.createStrokeFromAsset(
+				
+				activity.getFontManager(), mainFontTextureSanford,
+				activity.getAssets(), "Sanford.ttf", 50, true, Color.BLACK,
+				2, Color.BLACK, false);
+		Sanford.load();
 	}
 
 	public void unloadGameTextures() {
 		// TODO (Since we did not create any textures for game scene yet)
+	}
+
+	private void loadToolsFonts() {
+
+	}
+
+	private void loadToolsAudio() {
+
 	}
 
 	public void loadSplashScreen() {

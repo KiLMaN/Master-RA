@@ -82,8 +82,15 @@ public class XMLParser {
 
 	}
 
-	public static int getIntAttribute(Node Parent, String elementName) {
+	public static Node getNamedNode(Node Parent, String elementName) {
 		Node data = Parent.getAttributes().getNamedItem(elementName);
+		if (data == null) // Not an attribute
+			data = getSubNode(Parent, elementName);
+		return data;
+	}
+
+	public static int getIntAttribute(Node Parent, String elementName) {
+		Node data = getNamedNode(Parent, elementName);
 		if (data != null) {
 			String str = data.getTextContent();
 			try {
@@ -97,7 +104,7 @@ public class XMLParser {
 	}
 
 	public static float getFloatAttribute(Node Parent, String elementName) {
-		Node data = Parent.getAttributes().getNamedItem(elementName);
+		Node data = getNamedNode(Parent, elementName);
 		if (data != null) {
 			String str = data.getTextContent();
 			try {
@@ -111,7 +118,7 @@ public class XMLParser {
 	}
 
 	public static String getStringAttribute(Node Parent, String elementName) {
-		Node data = Parent.getAttributes().getNamedItem(elementName);
+		Node data = getNamedNode(Parent, elementName);
 		if (data != null) {
 			String str = data.getTextContent();
 			return str;
@@ -120,13 +127,10 @@ public class XMLParser {
 	}
 
 	public static boolean getBooleanAttribute(Node Parent, String elementName) {
-		// final Pattern patternBool = Pattern.compile(Pattern.quote("1|true"),
-		// Pattern.CASE_INSENSITIVE);
-
-		Node data = Parent.getAttributes().getNamedItem(elementName);
+		Node data = getNamedNode(Parent, elementName);
 		if (data != null) {
 			String str = data.getTextContent();
-			if (str.equals("true") || str.equals("1"))
+			if (str.trim().equalsIgnoreCase("true") || str.trim().equals("1"))
 				return true;
 			else
 				return false;

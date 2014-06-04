@@ -8,32 +8,40 @@ public class Weapon {
 	private int numberDamage;
 	private float range;
 
-	private int reloadgingTime;
-	// private int currentReload;
+	private int reloadingTime;
 
-	private boolean locked;
-	private int costWeapon;
-
+	// Statistics only
 	private int numberEnemiesKilled;
 
-	public WeaponType weaponType;
-
-	// public Pweapon Pweapon;
+	/* Locked by default and cost to unlock */
+	private boolean defaultLocked;
+	private int costUnlockWeapon = 0;
+	/* Upgrades, maximums and costs */
+	private int maxDamage = 0;
+	private float maxRange = 0;
+	private int costUpgradeRange = 0;
+	private int costUpgradeDamage = 0;
 
 	public Weapon(int idWeapon, String nameWeapon, int numberDamage,
-			float range, int numberEnemiesKilled, int timeToRecharge,
-			WeaponType WeaponType, int costWeapon, boolean lockedWeapon) {
+			int maxDamage, int costDamage, float range, int maxRange,
+			int costRange, int timeToReload, int costUnclockWeapon,
+			boolean lockedDefaultWeapon) {
 		this.idWeapon = idWeapon;
 		this.nameWeapon = nameWeapon;
 		this.numberDamage = numberDamage;
 		this.range = range;
-		this.numberEnemiesKilled = numberEnemiesKilled;
-		this.costWeapon = costWeapon;
-		this.reloadgingTime = timeToRecharge;
-		// this.currentReload = 0;
-		this.locked = lockedWeapon;
-		this.weaponType = WeaponType;
-		// Pweapon = new Pweapon(this,timeToRecharge,lockedWeapon);
+
+		this.reloadingTime = timeToReload;
+
+		this.defaultLocked = lockedDefaultWeapon;
+		this.costUnlockWeapon = costUnclockWeapon;
+
+		this.maxDamage = maxDamage;
+		this.maxRange = maxRange;
+		this.costUpgradeRange = costRange;
+		this.costUpgradeDamage = costDamage;
+
+		this.numberEnemiesKilled = 0;
 	}
 
 	public int getIdWeapon() {
@@ -77,11 +85,11 @@ public class Weapon {
 	}
 
 	public int getCostWeapon() {
-		return costWeapon;
+		return costUnlockWeapon;
 	}
 
 	public void setCostWeapon(int costWeapon) {
-		this.costWeapon = costWeapon;
+		this.costUnlockWeapon = costWeapon;
 	}
 
 	/*
@@ -92,16 +100,50 @@ public class Weapon {
 	 * public void startReload() { this.currentReload = this.reloadgingTime; }
 	 */
 
-	public boolean isLocked() {
-		return this.locked;
+	public boolean isLockedByDefault() {
+		return this.defaultLocked;
 	}
 
 	public int getReloadingTime() {
-		return this.reloadgingTime;
+		return this.reloadingTime;
 	}
 
-	public WeaponType getWeaponType() {
-		return this.weaponType;
+	/*
+	 * public WeaponType getWeaponType() { return this.weaponType; }
+	 */
+
+	public int getCostUpgrade(UpgradeType upgradeType) {
+		switch (upgradeType) {
+		case UPGRADE_POWER:
+			return this.costUpgradeDamage;
+		case UPGRADE_RANGE:
+			return this.costUpgradeRange;
+		default:
+			return Integer.MAX_VALUE;
+		}
+	}
+
+	public boolean upgrade(UpgradeType upgradeType) {
+		switch (upgradeType) {
+		case UPGRADE_POWER:
+			if (this.numberDamage < this.maxDamage)
+				return false;
+			else {
+				this.numberDamage++;
+				return true;
+			}
+
+		case UPGRADE_RANGE:
+			if (this.range < this.maxRange)
+				return false;
+			else {
+				this.range++;
+				return true;
+			}
+		default:
+			return false;
+
+		}
 	}
 
 }

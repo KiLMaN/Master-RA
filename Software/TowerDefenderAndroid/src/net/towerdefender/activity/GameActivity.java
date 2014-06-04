@@ -1,11 +1,21 @@
 package net.towerdefender.activity;
 
+import gameplay.Game;
+import gameplay.Player;
+import gameplay.XMLParser;
+import gameplay.XMLParserTower;
+import gameplay.XMLParserWave;
+import gameplay.XMLParserWeapon;
+
 import java.io.IOException;
 
-import jp.co.cyberagent.android.gpuimage.GPUImage;
-import jp.co.cyberagent.android.gpuimage.GPUImageSobelEdgeDetection;
+import net.towerdefender.FileReaderAndroid;
+import net.towerdefender.image.ARObject;
+import net.towerdefender.image.ARToolkit;
+import net.towerdefender.image.CameraPreviewHandler;
+import net.towerdefender.image.GlyphObject;
 import net.towerdefender.R;
-import net.towerdefender.TowerDefender;
+import net.towerdefender.image.IO;
 import net.towerdefender.gstreamer.GStreamerSurfaceView;
 import net.towerdefender.manager.ResourcesManager;
 import net.towerdefender.manager.SceneManager;
@@ -21,9 +31,9 @@ import org.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
 import org.andengine.entity.scene.Scene;
 import org.andengine.opengl.view.RenderSurfaceView;
 import org.andengine.ui.activity.BaseGameActivity;
+import org.w3c.dom.Node;
 
 import android.graphics.PixelFormat;
-import android.hardware.Camera.CameraInfo;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -39,7 +49,7 @@ import com.gstreamer.GStreamer;
 
 public class GameActivity extends BaseGameActivity implements
 		SurfaceHolder.Callback {
-
+	private Game mGame;
 	private static GameActivity INSTANCE;
 
 	@SuppressWarnings("unused")
@@ -48,11 +58,12 @@ public class GameActivity extends BaseGameActivity implements
 	private static int _HEIGHT = 720;
 
 	private Camera mEngineCamera;
-	private ARRajawaliRender mARRajawaliRender;
+	public ARRajawaliRender mARRajawaliRender;
 	@SuppressWarnings("unused")
 	private ResourcesManager resourcesManager;
-
-	public GPUImage mGPUImage;
+	CameraPreviewHandler mCameraPreview;
+	ARToolkit markerInfo;
+	// public GPUImage mGPUImage;
 
 	private CameraPreviewSurfaceView mCameraPreviewSurfaceView;
 	private GLSurfaceView mRAView;
@@ -88,12 +99,40 @@ public class GameActivity extends BaseGameActivity implements
 	public void updateIp(int a, int b, int c, int d) {
 
 		changeIpConnexion(a, b, c, d, 1);
-
 		nativePlay();
+	}
+	
+	public void initGame() {
+		XMLParser parserWeapon = new XMLParser("weapons.xml");
+		parserWeapon.loadFile(new FileReaderAndroid(this));
+		Node rootWeapon = parserWeapon.getRoot();
+		mGame.setDefaultWeapons(XMLParserWeapon.parseXMLWeapon(rootWeapon));
+
+		System.out.println("Loading Tower Positions");
+		XMLParser parserTower = new XMLParser("towers.xml");
+		parserTower.loadFile(new FileReaderAndroid(this));
+		Node rootTower = parserTower.getRoot();
+		mGame.setTowers(XMLParserTower.parseXMLTowers(rootTower));
+
+		mGame.assignWeapons();
+
+		System.out.println("Loading Enemies Waves");
+		XMLParser parserWaves = new XMLParser("waves.xml");
+		parserWaves.loadFile(new FileReaderAndroid(this));
+		Node rootWave = parserWaves.getRoot();
+		mGame.setWaves(XMLParserWave.parseXMLWaves(rootWave));
+
+		mGame.setCurrentPlayer(new Player(1, "player n°1", 100, 0, 0));
 	}
 
 	public GameActivity() {
 		INSTANCE = this;
+		this.mGame = new Game();
+
+	}
+
+	public Game getGame() {
+		return mGame;
 	}
 
 	public static GameActivity getInstance() {
@@ -199,16 +238,15 @@ public class GameActivity extends BaseGameActivity implements
 	protected void onSetContentView() {
 
 		this.mGstreamerView = new GStreamerSurfaceView(this);
-
 		this.mCameraPreviewSurfaceView = new CameraPreviewSurfaceView(this);
 
-		GLSurfaceView mGLSurfaceView = new GLSurfaceView(this);
-		mGLSurfaceView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
-		mGLSurfaceView.getHolder().setFormat(PixelFormat.TRANSLUCENT);
-		mGLSurfaceView.setEGLContextClientVersion(2);
-		mGPUImage = new GPUImage(this);
-		mGPUImage.setGLSurfaceView(mGLSurfaceView);
-
+		/*
+		 * GLSurfaceView mGLSurfaceView = new GLSurfaceView(this);
+		 * mGLSurfaceView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
+		 * mGLSurfaceView.getHolder().setFormat(PixelFormat.TRANSLUCENT);
+		 * mGLSurfaceView.setEGLContextClientVersion(2); //mGPUImage = new
+		 * GPUImage(this); //mGPUImage.setGLSurfaceView(mGLSurfaceView);
+		 */
 		this.mRenderSurfaceView = new RenderSurfaceView(this);
 		this.mRenderSurfaceView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
 		this.mRenderSurfaceView.getHolder().setFormat(PixelFormat.TRANSLUCENT);
@@ -216,7 +254,6 @@ public class GameActivity extends BaseGameActivity implements
 		this.mRenderSurfaceView.setRenderer(this.mEngine, this);
 
 		this.mARRajawaliRender = new ARRajawaliRender(this);
-
 		mRAView = new GLSurfaceView(this);
 
 		mRAView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
@@ -224,35 +261,59 @@ public class GameActivity extends BaseGameActivity implements
 		mRAView.setEGLContextClientVersion(2);
 		mRAView.setRenderer(mARRajawaliRender);
 
+		markerInfo = new ARToolkit(getResources(), getFilesDir());
+		markerInfo.addVisibilityListener(mARRajawaliRender);
+		mCameraPreview = new CameraPreviewHandler(mRAView, getResources(),
+				markerInfo);
+		try {
+			IO.transferFilesToPrivateFS(getFilesDir(), getResources());
+		} catch (IOException e) {
+			e.printStackTrace();
+			// throw new AndARRuntimeException(e.getMessage());
+		}
+
 		setContentView(mRenderSurfaceView, new LayoutParams(
 				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 
 		addContentView(mRAView, new LayoutParams(LayoutParams.WRAP_CONTENT,
 				LayoutParams.WRAP_CONTENT));
 
-		// addContentView(mGLSurfaceView, new LayoutParams(
-		// LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+		//addContentView(mGLSurfaceView, new LayoutParams(
+		 //LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 
 		addContentView(this.mGstreamerView, new LayoutParams(
-				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-
+		LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 		addContentView(mCameraPreviewSurfaceView, new LayoutParams(
 				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 
+		initGame();
 	}
 
 	public void setHardwareCamera(android.hardware.Camera cam) {
 
-		mGPUImage
-				.setUpCamera(
-						cam,
-						TowerDefender.CameraSelection == CameraInfo.CAMERA_FACING_FRONT ? 180
-								: 0,
-						TowerDefender.CameraSelection == CameraInfo.CAMERA_FACING_FRONT,
-						false);
+		cam.setPreviewCallback(mCameraPreview);
+		mCameraPreview.init(cam);
 
-		// mGPUImage.setUpCamera(cam);
-		mGPUImage.setFilter(new GPUImageSobelEdgeDetection());
+		ARObject obj;/*
+					 * = new GlyphObject("test", "barcode.patt", 80.0, new
+					 * double[] { 0, 0 }); markerInfo.registerARObject(obj);
+					 */
+
+		obj = new GlyphObject("test", "marker1.patt", 80.0,
+				new double[] { 0, 0 }, 0x00FFFF);
+		markerInfo.registerARObject(obj);
+
+		obj = new GlyphObject("test", "marker2.patt", 80.0,
+				new double[] { 0, 0 }, 0xFFFFFF);
+		markerInfo.registerARObject(obj);
+
+		obj = new GlyphObject("test", "marker3.patt", 80.0,
+				new double[] { 0, 0 }, 0xFFFF00);
+		markerInfo.registerARObject(obj);
+
+		obj = new GlyphObject("test", "marker4.patt", 80.0,
+				new double[] { 0, 0 }, 0xFF00FF);
+		markerInfo.registerARObject(obj);
 	}
 
 	public CameraPreviewSurfaceView getCameraPreviewSurface() {

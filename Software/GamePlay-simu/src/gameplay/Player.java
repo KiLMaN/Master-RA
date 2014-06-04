@@ -5,7 +5,7 @@ public class Player {
 	private int idPlayer;
 	private String nickname;
 	private int lifesPlayer;
-	private int pointsPlayer;
+	// private int pointsPlayer;
 	private int numberEnemiesKilled;
 
 	public Player(int idPlayer, String nickname, int lifesPlayer,
@@ -14,7 +14,7 @@ public class Player {
 		this.idPlayer = idPlayer;
 		this.nickname = nickname;
 		this.lifesPlayer = lifesPlayer;
-		this.pointsPlayer = pointsPlayer;
+		// this.pointsPlayer = pointsPlayer;
 		this.numberEnemiesKilled = numberEnemiesKilled;
 	}
 
@@ -42,13 +42,12 @@ public class Player {
 		this.lifesPlayer = lifesPlayer;
 	}
 
-	public int getPointsPlayer() {
-		return pointsPlayer;
-	}
-
-	public void setPointsPlayer(int pointsPlayer) {
-		this.pointsPlayer = pointsPlayer;
-	}
+	/*
+	 * public int getPointsPlayer() { return pointsPlayer; }
+	 * 
+	 * public void setPointsPlayer(int pointsPlayer) { this.pointsPlayer =
+	 * pointsPlayer; }
+	 */
 
 	public int getNumberEnemiesKilled() {
 		return numberEnemiesKilled;
