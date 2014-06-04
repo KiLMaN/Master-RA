@@ -30,6 +30,7 @@ public class SplashScene extends BaseScene {
 				camera.getCenterY() - (splash.getWidth() / 2));
 
 		attachChild(splash);
+
 	}
 
 	@Override

@@ -35,7 +35,6 @@ import org.w3c.dom.Node;
 import android.graphics.PixelFormat;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.SurfaceHolder;
@@ -51,7 +50,7 @@ public class GameActivity extends BaseGameActivity implements
 	private static GameActivity INSTANCE;
 
 	@SuppressWarnings("unused")
-	private static int _LimitFPS = 60;
+	private static int _LimitFPS = 30;
 	private static int _WIDTH = 1280;
 	private static int _HEIGHT = 720;
 
@@ -194,10 +193,14 @@ public class GameActivity extends BaseGameActivity implements
 
 	public EngineOptions onCreateEngineOptions() {
 		/* Recuperation de la taille de l'ecran */
-		DisplayMetrics metrics = new DisplayMetrics();
-		getWindowManager().getDefaultDisplay().getMetrics(metrics);
-		_HEIGHT = metrics.heightPixels;
-		_WIDTH = metrics.widthPixels;
+		// DisplayMetrics metrics = new DisplayMetrics();
+		// getWindowManager().getDefaultDisplay().getMetrics(metrics);
+		/*
+		 * Desactivation de la taille automatique en fonction de l'ecran, comme
+		 * ça on a la meme chose entre les tablettes et les téléphones
+		 */
+		// _HEIGHT = metrics.heightPixels;
+		// _WIDTH = metrics.widthPixels;
 
 		// Debig affichage
 		toastOnUIThread("Resolution : " + _HEIGHT + "x" + _WIDTH,

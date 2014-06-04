@@ -51,7 +51,7 @@ static jmethodID on_gstreamer_initialized_method_id;
  * Private methods
  */
 
-static char commande[200];// = "tcpclientsrc host=192.168.1.7 port=5000 ! gdpdepay ! rtph264depay ! decodebin2  ! autovideosink sync=true";
+static char commande[200];// = "tcpclientsrc host=192.168.1.7 port=5000 ! gdpdepay ! rtph264depay ! decodebin2  ! autovideosink";
 
 
 
@@ -197,6 +197,7 @@ static void *app_function (void *userdata) {
   /* Instruct the bus to emit signals for each received message, and connect to the interesting signals */
   bus = gst_element_get_bus (data->pipeline);
   bus_source = gst_bus_create_watch (bus);
+  g_source_set_priority (bus_source, G_PRIORITY_DEFAULT);
   g_source_set_callback (bus_source, (GSourceFunc) gst_bus_async_signal_func, NULL, NULL);
   g_source_attach (bus_source, data->context);
   g_source_unref (bus_source);
@@ -329,7 +330,7 @@ static void gst_native_surface_finalize (JNIEnv *env, jobject thiz) {
 }
 
 static void gst_updateIp( int a,int b,int c, int d ){
-	sprintf(commande, "tcpclientsrc host=%i.%i.%i.%i port=5000 ! gdpdepay ! rtph264depay ! decodebin2  ! autovideosink sync=true",a,b,c,d);
+	sprintf(commande, "tcpclientsrc host=%i.%i.%i.%i port=5000  ! gdpdepay ! rtph264depay ! decodebin2  ! autovideosink",a,b,c,d);
 
 
 }

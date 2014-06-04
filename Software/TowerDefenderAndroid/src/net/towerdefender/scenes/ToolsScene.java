@@ -199,7 +199,7 @@ public class ToolsScene extends BaseScene {
 
 					Weapon w = weapon.getWeapon();
 					nameWeaponText = new Text(0, 0, resourcesManager.Sanford,
-							"Nom: 0123456789", new TextOptions(
+							"Nom: 01234567890123456789", new TextOptions(
 									HorizontalAlign.LEFT), vbom);
 					nameWeaponText.setPosition(50, (50 + (j * 220)));
 					nameWeaponText.setText("Nom: " + w.getNameWeapon());
