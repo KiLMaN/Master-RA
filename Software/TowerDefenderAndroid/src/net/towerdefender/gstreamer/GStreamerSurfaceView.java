@@ -1,4 +1,4 @@
-package gstreamer;
+package net.towerdefender.gstreamer;
 
 import android.content.Context;
 import android.util.AttributeSet;

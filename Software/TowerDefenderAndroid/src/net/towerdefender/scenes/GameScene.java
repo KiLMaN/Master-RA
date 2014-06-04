@@ -39,7 +39,6 @@ public class GameScene extends BaseScene {
 	private static Tower currentControlTower = null;
 	private boolean displayList = true;
 	private AnalogOnScreenControl analogOnScreenControl;
-	private int btnPlayTouchedcount = 0;
 
 	@Override
 	public void createScene() {
@@ -193,9 +192,7 @@ public class GameScene extends BaseScene {
 					gameHUD.attachChild(picturePause);
 
 				}
-				btnPlayTouchedcount++;
-				if (btnPlayTouchedcount == 2)
-					btnPlayTouchedcount = 0;
+				
 				return true;
 			}
 		};
@@ -466,3 +463,4 @@ public class GameScene extends BaseScene {
 	}
 
 }
+
