@@ -44,7 +44,7 @@ public class GameScene extends BaseScene {
 		createController();
 
 		currentControlTower = new Tower(new Position());
-		currentControlTower.setIp("10.1.1.116");
+		currentControlTower.setIp("192.168.1.14");
 		currentControlTower.startCommunication();
 
 	}
@@ -211,27 +211,23 @@ public class GameScene extends BaseScene {
 					public void onControlClick(
 							final AnalogOnScreenControl pAnalogOnScreenControl) {
 						addToScore(1);
-
 						if (idCamera == 0) {
 							idCamera = 1;
-							GameActivity.getInstance().a(10, 1, 1, 190);
+							GameActivity.getInstance()
+									.updateIp(192, 168, 1, 14);
 						} else {
-							GameActivity.getInstance().a(10, 1, 1, 116);
+							GameActivity.getInstance().updateIp(192, 168, 1, 7);
 							idCamera = 0;
 
 						}
-						// GameActivity.getInstance().nativePause();
-						// GameActivity.getInstance().nativePlay();
 
-						/*
-						 * GameActivity.getInstance().getCameraPreviewSurface()
-						 * .autoFocusCamera(); if (currentControlTower != null)
-						 * { if (!currentControlTower.isConnected())
-						 * currentControlTower.connect(); else {
-						 * GameActivity.getInstance().nativePlay();
-						 * 
-						 * } } }
-						 */
+						try {
+							Thread.sleep(1000);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						GameActivity.getInstance().nativePlay();
 					}
 				});
 

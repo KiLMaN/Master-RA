@@ -22,7 +22,6 @@ import org.andengine.entity.scene.Scene;
 import org.andengine.opengl.view.RenderSurfaceView;
 import org.andengine.ui.activity.BaseGameActivity;
 
-import android.app.Activity;
 import android.graphics.PixelFormat;
 import android.hardware.Camera.CameraInfo;
 import android.opengl.GLSurfaceView;
@@ -61,22 +60,22 @@ public class GameActivity extends BaseGameActivity implements
 	// Gstreamer
 	private GStreamerSurfaceView mGstreamerView = null;
 
-	private native void nativeInit(); // Initialize native code, build pipeline,
+	public native void nativeInit(); // Initialize native code, build pipeline,
 
-	public native void changeIpConnexion(int a, int b, int c, int d); // Update
-																		// Ip
+	public native void changeIpConnexion(int a, int b, int c, int d, int stop); // Update
+	// Ip
 	// Connexion
 
-	private native void nativeFinalize(); // Destroy pipeline and shutdown
+	public native void nativeFinalize(); // Destroy pipeline and shutdown
 											// native code
 
 	public native void nativePlay(); // Set pipeline to PLAYING
 
 	public native void nativePause(); // Set pipeline to PAUSED
 
-	private static native boolean nativeClassInit(); // Initialize native class:
-														// cache Method IDs for
-														// callbacks
+	public static native boolean nativeClassInit(); // Initialize native class:
+													// cache Method IDs for
+													// callbacks
 
 	private native void nativeSurfaceInit(Object surface);
 
@@ -86,11 +85,10 @@ public class GameActivity extends BaseGameActivity implements
 										// private data
 	private boolean is_playing_desired = true; // Whether the user asked to go
 
-	// to PLAYING
+	public void updateIp(int a, int b, int c, int d) {
 
-	public void a(int a, int b, int c, int d) {
-		changeIpConnexion(a, b, c, d);
-		nativePause();
+		changeIpConnexion(a, b, c, d, 1);
+
 		nativePlay();
 	}
 
@@ -115,23 +113,12 @@ public class GameActivity extends BaseGameActivity implements
 			return;
 		}
 
-		// setContentView(R.layout.activity_main);
-
-		/*
-		 * if (savedInstanceState == null) {
-		 * getSupportFragmentManager().beginTransaction() .add(R.id.container,
-		 * new PlaceholderFragment()).commit(); }
-		 */
-
 		SurfaceView sv = (SurfaceView) this.mGstreamerView;
 		SurfaceHolder sh = sv.getHolder();
 		sh.addCallback(this);
 
 		nativeInit();
-		a(10, 1, 1, 116);
-		// changeIpConnexion(10, 1, 1, 116);
-		// nativePause();
-		// nativePlay();
+		nativePause();
 	}
 
 	public void onCreateResources(
@@ -317,27 +304,15 @@ public class GameActivity extends BaseGameActivity implements
 		// nativePause();
 		nativePlay();
 
-		// changeIpConnexion(10, 1, 1, 160);
-		// nativePause();
-		// nativePlay();
-		// nativeFinalize();
-		// nativeClassInit();
-		// nativeInit();
-		// is_playing_desired = true;
-		// if (is_playing_desired) {
-		// nativePlay();
-		// } else {
-		// nativePause();
-		// }
-
 		// Re-enable buttons, now that GStreamer is initialized
-		final Activity activity = this;
-		runOnUiThread(new Runnable() {
-			public void run() {
-				// activity.findViewById(R.id.button_play).setEnabled(true);
-				// activity.findViewById(R.id.button_stop).setEnabled(true);
-			}
-		});
+
+		/*
+		 * final Activity activity = this; runOnUiThread(new Runnable() { public
+		 * void run() { //
+		 * activity.findViewById(R.id.button_play).setEnabled(true); //
+		 * activity.findViewById(R.id.button_stop).setEnabled(true); } });
+		 */
+
 	}
 
 }
