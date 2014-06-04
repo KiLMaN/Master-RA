@@ -26,6 +26,8 @@ GST_DEBUG_CATEGORY_STATIC (debug_category);
 # define SET_CUSTOM_DATA(env, thiz, fieldID, data) (*env)->SetLongField (env, thiz, fieldID, (jlong)(jint)data)
 #endif
 
+
+
 /* Structure to contain all our information, so we can pass it to callbacks */
 typedef struct _CustomData {
   jobject app;            /* Application instance, used to call its methods. A global reference is kept. */
@@ -48,6 +50,10 @@ static jmethodID on_gstreamer_initialized_method_id;
 /*
  * Private methods
  */
+
+static char commande[200];// = "tcpclientsrc host=192.168.1.7 port=5000 ! gdpdepay ! rtph264depay ! decodebin2  ! autovideosink sync=true";
+
+
 
 /* Register this thread with the VM */
 static JNIEnv *attach_current_thread (void) {
@@ -92,7 +98,7 @@ static void set_ui_message (const gchar *message, CustomData *data) {
   jstring jmessage = (*env)->NewStringUTF(env, message);
   (*env)->CallVoidMethod (env, data->app, set_message_method_id, jmessage);
   if ((*env)->ExceptionCheck (env)) {
-    GST_ERROR ("Failed to call Java method");
+    GST_ERROR ("Failed to call Java method set_ui_message");
     (*env)->ExceptionClear (env);
   }
   (*env)->DeleteLocalRef (env, jmessage);
@@ -139,7 +145,7 @@ static void check_initialization_complete (CustomData *data) {
 
     (*env)->CallVoidMethod (env, data->app, on_gstreamer_initialized_method_id);
     if ((*env)->ExceptionCheck (env)) {
-      GST_ERROR ("Failed to call Java method");
+      GST_ERROR ("Failed to call Java method check_initialization_complete");
       (*env)->ExceptionClear (env);
     }
     data->initialized = TRUE;
@@ -156,6 +162,8 @@ static void *app_function (void *userdata) {
 
   GST_DEBUG ("Creating pipeline in CustomData at %p", data);
 
+  if( commande == NULL || commande == ""  )
+	  return NULL;
   /* Create our own GLib Main Context and make it the default one */
   data->context = g_main_context_new ();
   g_main_context_push_thread_default(data->context);
@@ -163,7 +171,9 @@ static void *app_function (void *userdata) {
   /* Build pipeline */
 //  data->pipeline = gst_parse_launch("videotestsrc ! warptv ! ffmpegcolorspace ! autovideosink", &error);
   //data->pipeline = gst_parse_launch("tcpsrc=192.168.1.23 port=5000  ! ffmpegcolorspace4 ! autovideosink sync=false", &error);
-  data->pipeline = gst_parse_launch(" tcpclientsrc host=192.168.1.23 port=5000 ! gdpdepay ! rtph264depay ! decodebin2  ! autovideosink sync=false", &error);
+//  data->pipeline = gst_parse_launch("tcpclientsrc host=192.168.1.7 port=5000 ! gdpdepay ! rtph264depay ! decodebin2  ! autovideosink sync=true" , &error);
+  data->pipeline = gst_parse_launch(commande , &error);
+ // data->pipeline = gst_parse_launch("udpsrc port=5000 ! gdpdepay ! rtph264depay ! decodebin2  ! autovideosink sync=false" , &error);
   //data->pipeline = gst_parse_launch(" tcpclientsrc host=192.168.1.23 port=5000 ! gdpdepay ! rtph264depay ! autovideosink sync=false", &error);
 
 
@@ -200,8 +210,8 @@ static void *app_function (void *userdata) {
   check_initialization_complete (data);
   g_main_loop_run (data->main_loop);
   GST_DEBUG ("Exited main loop");
-  g_main_loop_unref (data->main_loop);
-  data->main_loop = NULL;
+//  g_main_loop_unref (data->main_loop);
+//  data->main_loop = NULL;
 
   /* Free resources */
   g_main_context_pop_thread_default(data->context);
@@ -221,7 +231,7 @@ static void *app_function (void *userdata) {
 static void gst_native_init (JNIEnv* env, jobject thiz) {
   CustomData *data = g_new0 (CustomData, 1);
   SET_CUSTOM_DATA (env, thiz, custom_data_field_id, data);
-  GST_DEBUG_CATEGORY_INIT (debug_category, "tutorial-3", 0, "Android tutorial 3");
+  //GST_DEBUG_CATEGORY_INIT (debug_category, "tutorial-3", 0, "Android tutorial 3");
   gst_debug_set_threshold_for_name("tutorial-3", GST_LEVEL_DEBUG);
   GST_DEBUG ("Created CustomData at %p", data);
   data->app = (*env)->NewGlobalRef (env, thiz);
@@ -249,6 +259,7 @@ static void gst_native_finalize (JNIEnv* env, jobject thiz) {
 static void gst_native_play (JNIEnv* env, jobject thiz) {
   CustomData *data = GET_CUSTOM_DATA (env, thiz, custom_data_field_id);
   if (!data) return;
+
   GST_DEBUG ("Setting state to PLAYING");
   gst_element_set_state (data->pipeline, GST_STATE_PLAYING);
 }
@@ -271,7 +282,7 @@ static jboolean gst_native_class_init (JNIEnv* env, jclass klass) {
     /* We emit this message through the Android log instead of the GStreamer log because the later
      * has not been initialized yet.
      */
-    __android_log_print (ANDROID_LOG_ERROR, "tutorial-3", "The calling class does not implement all necessary interface methods");
+    //__android_log_print (ANDROID_LOG_ERROR, "tutorial-3", "The calling class does not implement all necessary interface methods");
     return JNI_FALSE;
   }
   return JNI_TRUE;
@@ -317,9 +328,52 @@ static void gst_native_surface_finalize (JNIEnv *env, jobject thiz) {
   data->initialized = FALSE;
 }
 
+static void gst_updateIp( int a,int b,int c, int d ){
+	sprintf(commande, "tcpclientsrc host=%i.%i.%i.%i port=5000 ! gdpdepay ! rtph264depay ! decodebin2  ! autovideosink sync=true",a,b,c,d);
+
+
+}
+
+static void gst_changeIpConnexion( JNIEnv *env, jobject thiz, int a,int b,int c, int d, int stop){
+	gst_updateIp(a,b,c,d);
+	if ( stop == 1) {
+		 GST_DEBUG ("Try Change Ip connexion");
+			GError *error = NULL;
+			CustomData *data = GET_CUSTOM_DATA (env, thiz, custom_data_field_id);
+			if (!data) return;
+			ANativeWindow *temp = data->native_window;
+			 GST_DEBUG ("Try Pause Pipeline");
+			gst_element_set_state (data->pipeline, GST_STATE_PLAYING);
+			GST_DEBUG ("Try Update IP");
+
+			GST_DEBUG ("Try update Pipeline");
+			g_main_loop_quit (data->main_loop);
+
+
+			GST_DEBUG ("Waiting for thread to finish...");
+
+			pthread_join (gst_app_thread, NULL);
+			(*env)->DeleteGlobalRef (env, data->app);
+			GST_DEBUG ("Freeing CustomData at %p", data);
+
+			data->native_window = temp;
+			g_free (data);
+			SET_CUSTOM_DATA (env, thiz, custom_data_field_id, NULL);
+			CustomData *data1 = g_new0 (CustomData, 1);
+			SET_CUSTOM_DATA (env, thiz, custom_data_field_id, data1);
+			gst_debug_set_threshold_for_name("tutorial-3", GST_LEVEL_DEBUG);
+			GST_DEBUG ("Created CustomData at %p", data1);
+			data1->app = (*env)->NewGlobalRef (env, thiz);
+			data1->native_window = temp;
+			GST_DEBUG ("Created GlobalRef for app object at %p", data1->app);
+			pthread_create (&gst_app_thread, NULL, &app_function, data1);
+	}
+}
+
 /* List of implemented native methods */
 static JNINativeMethod native_methods[] = {
   { "nativeInit", "()V", (void *) gst_native_init},
+  { "changeIpConnexion", "(IIIII)V", (void *) gst_changeIpConnexion},
   { "nativeFinalize", "()V", (void *) gst_native_finalize},
   { "nativePlay", "()V", (void *) gst_native_play},
   { "nativePause", "()V", (void *) gst_native_pause},
@@ -335,13 +389,15 @@ jint JNI_OnLoad(JavaVM *vm, void *reserved) {
   java_vm = vm;
 
   if ((*vm)->GetEnv(vm, (void**) &env, JNI_VERSION_1_4) != JNI_OK) {
-    __android_log_print (ANDROID_LOG_ERROR, "tutorial-3", "Could not retrieve JNIEnv");
+    __android_log_print (ANDROID_LOG_ERROR, "gstreamer_td", "Could not retrieve JNIEnv");
     return 0;
   }
-  jclass klass = (*env)->FindClass (env, "com/gst_sdk_tutorials/tutorial_3/Tutorial3");
+  jclass klass = (*env)->FindClass (env, "net/towerdefender/activity/GameActivity");
   (*env)->RegisterNatives (env, klass, native_methods, G_N_ELEMENTS(native_methods));
 
   pthread_key_create (&current_jni_env, detach_current_thread);
 
   return JNI_VERSION_1_4;
 }
+
+

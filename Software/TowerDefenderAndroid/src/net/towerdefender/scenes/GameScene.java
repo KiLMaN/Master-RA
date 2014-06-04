@@ -1,5 +1,6 @@
 package net.towerdefender.scenes;
 
+import gameplay.Position;
 import gameplay.Tower;
 
 import javax.microedition.khronos.opengles.GL10;
@@ -35,7 +36,7 @@ public class GameScene extends BaseScene {
 	private Sprite pictureTablet;
 	private Text scoreText;
 	private Text lifeText;
-	private int score = 0, lastUpdate = 0;
+	private int score = 0, lastUpdate = 0, idCamera = 0;
 	private static Tower currentControlTower = null;
 	private boolean displayList = true;
 	private AnalogOnScreenControl analogOnScreenControl;
@@ -47,9 +48,9 @@ public class GameScene extends BaseScene {
 		createHUD();
 		createController();
 
-		// currentControlTower = new Tower(new Position());
-		// currentControlTower.setIp("192.168.1.7");
-		// currentControlTower.startCommunication();
+		currentControlTower = new Tower(new Position());
+		currentControlTower.setIp("192.168.1.14");
+		currentControlTower.startCommunication();
 
 	}
 
@@ -234,8 +235,8 @@ public class GameScene extends BaseScene {
 		scoreText.setText("Score: " + score);
 	}
 
-	public float xtest = 0;
-	public float ytest = 0;
+	//public float xtest = 0;
+	//public float ytest = 0;
 
 	private void createController() {
 		analogOnScreenControl = new AnalogOnScreenControl(
@@ -251,8 +252,8 @@ public class GameScene extends BaseScene {
 							final BaseOnScreenControl pBaseOnScreenControl,
 							final float pValueX, final float pValueY) {
 
-						xtest += pValueX * 10;
-						ytest -= pValueY * 10;
+					//	xtest += pValueX * 10;
+					//	ytest -= pValueY * 10;
 						/*
 						 * GameActivity.getInstance().mARRajawaliRender
 						 * .changePositionTest(xtest, ytest, 0.0f);
@@ -275,15 +276,23 @@ public class GameScene extends BaseScene {
 					public void onControlClick(
 							final AnalogOnScreenControl pAnalogOnScreenControl) {
 						addToScore(1);
-						GameActivity.getInstance().getCameraPreviewSurface()
-								.autoFocusCamera();
-						if (currentControlTower != null) {
-							if (!currentControlTower.isConnected())
-								currentControlTower.connect();
-							else {
+						if (idCamera == 0) {
+							idCamera = 1;
+							GameActivity.getInstance()
+									.updateIp(192, 168, 1, 14);
+						} else {
+							GameActivity.getInstance().updateIp(192, 168, 1, 7);
+							idCamera = 0;
 
-							}
 						}
+
+						try {
+							Thread.sleep(1000);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						GameActivity.getInstance().nativePlay();
 					}
 				});
 
