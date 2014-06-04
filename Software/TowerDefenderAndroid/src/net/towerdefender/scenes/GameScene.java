@@ -1,5 +1,7 @@
 package net.towerdefender.scenes;
 
+import java.util.ArrayList;
+
 import gameplay.Position;
 import gameplay.Tower;
 
@@ -32,10 +34,13 @@ public class GameScene extends BaseScene {
 	private Sprite pictureSettings;
 	private Sprite picturePlay;
 	private Sprite picturePause;
+	private Sprite[] pictureTower;
+    private Sprite pictureTablet;
 	private Text scoreText;
 	private Text lifeText;
 	private int score = 0, lastUpdate = 0;
 	private static Tower currentControlTower = null;
+	private boolean displayList = true;
 	private boolean btnPlayTouched[] ={false,false};
 	private int btnPlayTouchedcount=0;
 
@@ -46,9 +51,9 @@ public class GameScene extends BaseScene {
 		createController();
 
 		
-		  currentControlTower = new Tower(new Position());
-		  currentControlTower.setIp("192.168.1.7");
-		  currentControlTower.startCommunication();
+//		  currentControlTower = new Tower(new Position());
+//		  currentControlTower.setIp("192.168.1.7");
+//		  currentControlTower.startCommunication();
 		 
 	}
 
@@ -67,12 +72,17 @@ public class GameScene extends BaseScene {
 		pictureSettings.detachSelf();
 		pictureSettings.dispose();
 
-		// TODO: à décommenter une fois que la condition aura été implémentée
-		// picturePause.detachSelf();
-		// picturePause.dispose();
-
-		picturePlay.detachSelf();
-		picturePlay.dispose();
+		
+		if(picturePause!=null){
+			picturePause.detachSelf();
+			picturePause.dispose();
+		}
+		disposeTowersButtons(3); //TODO: chiffre 3 à remplacer par le nombre de tours détectées
+		disposeTabletButton();
+		if(picturePlay!=null){
+			picturePlay.detachSelf();
+			picturePlay.dispose();
+		}
 
 		scoreText.detachSelf();
 		scoreText.dispose();
@@ -152,19 +162,27 @@ public class GameScene extends BaseScene {
 
 			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent,
 					final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
-			    btnPlayTouched[btnPlayTouchedcount]=true;
-				if(btnPlayTouched[0]==true && btnPlayTouched[1]==false){    // bouton play appuyé une fois
+				if(pSceneTouchEvent.isActionUp()){
 				addToScore(1);
 					
 					picturePlay.detachSelf();
 					picturePlay.dispose();
-					
+					picturePlay=null;
 					
 					  picturePause = new Sprite(0, 0,
 					  resourcesManager.buttonOptionPause_region, vbom) {
 					  
 					  @Override protected void preDraw(GLState pGLState, Camera pCamera) {
-					 super.preDraw(pGLState, pCamera); pGLState.enableDither(); } };
+					 super.preDraw(pGLState, pCamera); pGLState.enableDither(); } 
+					 
+					 public boolean onAreaTouched(final TouchEvent pSceneTouchEvent,
+								final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
+							if(pSceneTouchEvent.isActionUp()){
+								
+							}
+							return true;
+						}
+					  };
 					  picturePause.setPosition(camera.getWidth() - 100, 0);
 					  picturePause.setHeight(100); picturePause.setWidth(100);
 					  picturePause.setWidth(100);
@@ -177,7 +195,6 @@ public class GameScene extends BaseScene {
 				btnPlayTouchedcount++;
 				if(btnPlayTouchedcount==2)
 					btnPlayTouchedcount=0;
-                
 				return true;
 			}
 		};
@@ -204,7 +221,9 @@ public class GameScene extends BaseScene {
 		lifeText.setPosition(0, 200);
 		lifeText.setText("Life : 0");
 		gameHUD.attachChild(lifeText);
-
+		
+		createTowersButtons(3,100,100); //TODO: chiffre 3 à remplacer par le nombre de tours détectées
+		createTabletButton(100,100);
 		camera.setHUD(gameHUD);
 	}
 
@@ -263,4 +282,151 @@ public class GameScene extends BaseScene {
 
 		this.setChildScene(analogOnScreenControl);
 	}
+	
+	private void createTowersButtons(int numberButtons, final int widthButtons, int heightButtons){
+		pictureTower =  new Sprite[numberButtons];
+		for(int i=0; i<=numberButtons-1; i++){
+			 pictureTower[i] = new Sprite(0, 0,
+					resourcesManager.buttonOptionTower_region, vbom,i) {
+
+				@Override
+				protected void preDraw(GLState pGLState, Camera pCamera) {
+					super.preDraw(pGLState, pCamera);
+					pGLState.enableDither();
+				}
+				
+				public boolean onAreaTouched(final TouchEvent pSceneTouchEvent,
+						final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
+					
+					if(pSceneTouchEvent.isActionUp())
+					{
+						if(displayList)
+						{
+							 this.setPosition(camera.getWidth() - widthButtons, camera.getHeight()-widthButtons);
+							 
+							 disposeTowersButtons(3,this.getIndex()); 
+							 
+							 disposeTabletButton();
+							 
+							 displayList= false;
+							
+							// TODO connect to tower
+							 connectToTower();
+						}
+						else
+						{
+							gameHUD.unregisterTouchArea(this);
+							this.detachSelf();
+							this.dispose();
+							
+							createTowersButtons(3,100,100);
+							createTabletButton(100,100);
+							displayList = true;
+						}
+					}
+					return true;
+				}
+			};
+			
+			
+			
+			 pictureTower[i].setPosition(camera.getWidth() - (i+2)*widthButtons, camera.getHeight()-heightButtons);
+			 pictureTower[i].setHeight(heightButtons);
+			 pictureTower[i].setWidth(widthButtons);
+
+			gameHUD.registerTouchArea( pictureTower[i]);
+			gameHUD.setTouchAreaBindingOnActionDownEnabled(true);
+			gameHUD.attachChild( pictureTower[i]);
+			
+		}
+		
+	}
+	
+	private void disposeTowersButtons(int numberButtons){
+		for(int i=0; i<=numberButtons-1; i++){
+			if(pictureTower[i]!=null){
+			gameHUD.unregisterTouchArea(pictureTower[i]);
+			pictureTower[i].detachSelf();
+			pictureTower[i].dispose();
+			pictureTower[i]=null;
+			}
+		}
+	}
+	
+	private void disposeTowersButtons(int numberButtons, int j){
+		for(int i=0; i<=numberButtons-1; i++){
+			if(i==j){
+				continue;
+			}
+			gameHUD.unregisterTouchArea(pictureTower[i]);
+			pictureTower[i].detachSelf();
+			pictureTower[i].dispose();
+			pictureTower[i]=null;
+		}
+	}
+	
+	private void createTabletButton(final int widthButton, final int heightButton){
+		 pictureTablet = new Sprite(0, 0,
+					resourcesManager.buttonOptionTablet_region, vbom) {
+
+				@Override
+				protected void preDraw(GLState pGLState, Camera pCamera) {
+					super.preDraw(pGLState, pCamera);
+					pGLState.enableDither();
+				}
+				
+				public boolean onAreaTouched(final TouchEvent pSceneTouchEvent,
+						final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
+					
+					if(pSceneTouchEvent.isActionUp())
+					{
+						if(displayList)
+						{
+							 
+							disposeTowersButtons(3);
+							displayList= false;
+							
+							//TODO: connect to tablet
+							connectToTablet();	
+						}
+						else
+						{
+							
+							createTowersButtons(3,100,100);
+							displayList = true;
+						}
+					}
+					return true;
+				}
+			};
+			
+			 pictureTablet.setPosition(camera.getWidth() - widthButton, camera.getHeight()-heightButton);
+			 pictureTablet.setHeight(heightButton);
+			 pictureTablet.setWidth(widthButton);
+
+			gameHUD.registerTouchArea( pictureTablet);
+			gameHUD.setTouchAreaBindingOnActionDownEnabled(true);
+			gameHUD.attachChild(pictureTablet);
+	}
+	
+	private void disposeTabletButton(){	
+		if(pictureTablet!=null){
+			gameHUD.unregisterTouchArea(pictureTablet);
+			pictureTablet.detachSelf();
+			pictureTablet.dispose();
+			pictureTablet=null;
+		}
+	}
+	
+	private boolean connectToTower(){
+		
+		return true;
+	}
+	
+    private boolean connectToTablet(){
+		
+		return true;
+	}
+		
+	
 }

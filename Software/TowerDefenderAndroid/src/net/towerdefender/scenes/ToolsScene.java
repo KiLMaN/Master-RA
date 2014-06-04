@@ -59,7 +59,7 @@ public class ToolsScene extends BaseScene {
 		int i = 2;
 		for (Tower tower : listConnected) {
 			Sprite pictureTower = new SpriteTower(0, 0,
-					resourcesManager.buttonOptionTower_region, vbom, tower);
+					resourcesManager.buttonOptionTowerOpt_region, vbom, tower);
 
 			Text towerText = new Text(0, 0, resourcesManager.Coolvetica,
 					" Tour: 0123456789",
