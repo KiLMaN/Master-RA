@@ -35,7 +35,7 @@ public class GlyphObject extends ARObject {
 	public void init(RajawaliRenderer renderer) {
 		material = new Material();
 		material.enableLighting(false);
-		_object = new Cube(0.1f);
+		_object = new Cube(1f);
 		_object.setMaterial(material);
 		_object.setColor(_color);
 

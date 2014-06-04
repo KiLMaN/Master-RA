@@ -241,8 +241,8 @@ public class GameScene extends BaseScene {
 				GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 		analogOnScreenControl.getControlBase().setAlpha(0.5f);
 		analogOnScreenControl.getControlBase().setScaleCenter(0, 128);
-		analogOnScreenControl.getControlBase().setScale(3f);
-		analogOnScreenControl.getControlKnob().setScale(3f);
+		analogOnScreenControl.getControlBase().setScale(1f);
+		analogOnScreenControl.getControlKnob().setScale(1f);
 		analogOnScreenControl.getBackground().setColor(0, 0, 0, 0);
 		analogOnScreenControl.refreshControlKnobPosition();
 
