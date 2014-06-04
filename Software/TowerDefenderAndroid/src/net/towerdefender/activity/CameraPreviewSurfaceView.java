@@ -34,7 +34,6 @@ public class CameraPreviewSurfaceView extends GLSurfaceView implements
 	// Constructors
 	// ===========================================================
 
-	@SuppressWarnings("deprecation")
 	public CameraPreviewSurfaceView(final Context pContext) {
 		super(pContext);
 

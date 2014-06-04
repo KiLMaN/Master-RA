@@ -1,10 +1,10 @@
 package net.towerdefender.scenes;
 
-import java.util.ArrayList;
-
 import gameplay.Pweapon;
 import gameplay.Tower;
 import gameplay.Weapon;
+
+import java.util.ArrayList;
 
 import net.towerdefender.activity.GameActivity;
 import net.towerdefender.manager.SceneManager;
@@ -23,7 +23,6 @@ import org.andengine.opengl.util.GLState;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
 import org.andengine.util.HorizontalAlign;
 import org.andengine.util.color.Color;
-
 
 public class ToolsScene extends BaseScene {
 
@@ -68,7 +67,7 @@ public class ToolsScene extends BaseScene {
 			towerText.setWidth(250);
 			towerText.setText(" Tour n°0");
 			towerText.setText(" Tour n°" + (tower.getIdTower() + 1));
-			
+
 			pictureTower.setPosition(i * 300, 100);
 			pictureTower.setHeight(80);
 			pictureTower.setWidth(200);
@@ -97,8 +96,8 @@ public class ToolsScene extends BaseScene {
 	@Override
 	public void disposeScene() {
 
-		//pictureTower.detachSelf();
-		//pictureTower.dispose();
+		// pictureTower.detachSelf();
+		// pictureTower.dispose();
 
 		pictureBack.detachSelf();
 		pictureBack.dispose();
@@ -106,8 +105,8 @@ public class ToolsScene extends BaseScene {
 		scoreText.detachSelf();
 		scoreText.dispose();
 
-		//towerText.detachSelf();
-		//towerText.dispose();
+		// towerText.detachSelf();
+		// towerText.dispose();
 
 		gameHUD.detachSelf();
 		gameHUD.dispose();
@@ -168,10 +167,6 @@ public class ToolsScene extends BaseScene {
 			currentTower = tower;
 		}
 
-		public Tower getTower() {
-			return currentTower;
-		}
-
 		@Override
 		protected void preDraw(GLState pGLState, Camera pCamera) {
 			super.preDraw(pGLState, pCamera);
@@ -181,7 +176,7 @@ public class ToolsScene extends BaseScene {
 		public boolean onAreaTouched(final TouchEvent pSceneTouchEvent,
 				final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
 			if (pSceneTouchEvent.isActionUp()) {
-				int j=1;
+				int j = 1;
 				if (pansTools != null) {
 					pansTools.detachSelf();
 					pansTools.dispose();
@@ -204,38 +199,41 @@ public class ToolsScene extends BaseScene {
 
 					Weapon w = weapon.getWeapon();
 					nameWeaponText = new Text(0, 0, resourcesManager.Sanford,
-							"Nom: 0123456789", new TextOptions(HorizontalAlign.LEFT),
-							vbom);
-					nameWeaponText.setPosition(50, (50+(j*220)));
-					nameWeaponText.setText("Nom: "+ w.getNameWeapon());
+							"Nom: 0123456789", new TextOptions(
+									HorizontalAlign.LEFT), vbom);
+					nameWeaponText.setPosition(50, (50 + (j * 220)));
+					nameWeaponText.setText("Nom: " + w.getNameWeapon());
 					gameHUD.attachChild(nameWeaponText);
-					
+
 					statusWeaponText = new Text(0, 0, resourcesManager.Sanford,
-							"Nom: 0123456789", new TextOptions(HorizontalAlign.LEFT),
-							vbom);
-					statusWeaponText.setPosition((camera.getWidth()/3),(50+(j*220)));
-							if( w.isLocked()){
-								statusWeaponText.setText("bloqué");
-							}else
-							{
-								statusWeaponText.setText("débloqué");
-							}										
+							"Nom: 0123456789", new TextOptions(
+									HorizontalAlign.LEFT), vbom);
+					statusWeaponText.setPosition((camera.getWidth() / 3),
+							(50 + (j * 220)));
+					if (w.isLocked()) {
+						statusWeaponText.setText("bloqué");
+					} else {
+						statusWeaponText.setText("débloqué");
+					}
 					gameHUD.attachChild(statusWeaponText);
-					
+
 					rangeWeaponText = new Text(0, 0, resourcesManager.Sanford,
-							"Portee: 0123456789", new TextOptions(HorizontalAlign.LEFT),
-							vbom);
-					rangeWeaponText.setPosition((3*camera.getWidth()/5), (75+(j*220)));
-					rangeWeaponText.setText("Portee: "+ w.getRange());
+							"Portee: 0123456789", new TextOptions(
+									HorizontalAlign.LEFT), vbom);
+					rangeWeaponText.setPosition((3 * camera.getWidth() / 5),
+							(75 + (j * 220)));
+					rangeWeaponText.setText("Portee: " + w.getRange());
 					gameHUD.attachChild(rangeWeaponText);
-					
+
 					damageWeaponText = new Text(0, 0, resourcesManager.Sanford,
-							"Dommages: 0123456789", new TextOptions(HorizontalAlign.LEFT),
-							vbom);
-					damageWeaponText.setPosition((3*camera.getWidth()/5), (125+(j*220)));
-					damageWeaponText.setText("Dommages: "+ w.getNumberDamage());
+							"Dommages: 0123456789", new TextOptions(
+									HorizontalAlign.LEFT), vbom);
+					damageWeaponText.setPosition((3 * camera.getWidth() / 5),
+							(125 + (j * 220)));
+					damageWeaponText
+							.setText("Dommages: " + w.getNumberDamage());
 					gameHUD.attachChild(damageWeaponText);
-					
+
 					j++;
 				}
 			}

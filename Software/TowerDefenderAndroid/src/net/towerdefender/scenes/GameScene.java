@@ -38,7 +38,6 @@ public class GameScene extends BaseScene {
 	private int score = 0, lastUpdate = 0;
 	private static Tower currentControlTower = null;
 	private boolean displayList = true;
-	private boolean btnPlayTouched[] = { false, false };
 	private int btnPlayTouchedcount = 0;
 
 	@Override
