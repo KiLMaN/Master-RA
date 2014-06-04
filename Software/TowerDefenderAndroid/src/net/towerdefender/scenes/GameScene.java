@@ -235,12 +235,11 @@ public class GameScene extends BaseScene {
 		scoreText.setText("Score: " + score);
 	}
 
-	//public float xtest = 0;
-	//public float ytest = 0;
+	// public float xtest = 0;
+	// public float ytest = 0;
 
 	private void createController() {
-		analogOnScreenControl = new AnalogOnScreenControl(
-				0,
+		analogOnScreenControl = new AnalogOnScreenControl(0,
 				camera.getHeight()
 						- ResourcesManager.getInstance().onScreenControlBase
 								.getHeight(), camera,
@@ -252,8 +251,8 @@ public class GameScene extends BaseScene {
 							final BaseOnScreenControl pBaseOnScreenControl,
 							final float pValueX, final float pValueY) {
 
-					//	xtest += pValueX * 10;
-					//	ytest -= pValueY * 10;
+						// xtest += pValueX * 10;
+						// ytest -= pValueY * 10;
 						/*
 						 * GameActivity.getInstance().mARRajawaliRender
 						 * .changePositionTest(xtest, ytest, 0.0f);
@@ -304,7 +303,7 @@ public class GameScene extends BaseScene {
 		analogOnScreenControl.getControlKnob().setScale(1f);
 		analogOnScreenControl.getBackground().setColor(0, 0, 0, 0);
 		analogOnScreenControl.refreshControlKnobPosition();
-		
+
 		this.setChildScene(analogOnScreenControl);
 	}
 
@@ -323,24 +322,22 @@ public class GameScene extends BaseScene {
 
 				public boolean onAreaTouched(final TouchEvent pSceneTouchEvent,
 
-						final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
-					
-					if(pSceneTouchEvent.isActionUp())
-					{
-						if(displayList)
-						{
-							 this.setPosition(camera.getWidth() - widthButtons, camera.getHeight()-widthButtons);
-							 
-							 disposeTowersButtons(3,this.getIndex()); 
-							 
-							 disposeTabletButton();
-							 
-							 displayList= false;
-							 
-							 if(analogOnScreenControl==null){
-								 createController();
-							 }
-							
+				final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
+
+					if (pSceneTouchEvent.isActionUp()) {
+						if (displayList) {
+							this.setPosition(camera.getWidth() - widthButtons,
+									camera.getHeight() - widthButtons);
+
+							disposeTowersButtons(3, this.getIndex());
+
+							disposeTabletButton();
+
+							displayList = false;
+
+							if (analogOnScreenControl == null) {
+								createController();
+							}
 
 							// TODO connect to tower
 							connectToTower();
@@ -394,7 +391,6 @@ public class GameScene extends BaseScene {
 		}
 	}
 
-
 	private void createTabletButton(final int widthButton,
 			final int heightButton) {
 		pictureTablet = new Sprite(0, 0,
@@ -413,12 +409,12 @@ public class GameScene extends BaseScene {
 					if (displayList) {
 
 						disposeTowersButtons(3);
-						displayList= false;
-						
+						displayList = false;
+
 						disposeAnalogOnScreenControl();
-						
-						//TODO: connect to tablet
-						connectToTablet();	
+
+						// TODO: connect to tablet
+						connectToTablet();
 					} else {
 
 						createTowersButtons(3, 100, 100);
@@ -449,18 +445,18 @@ public class GameScene extends BaseScene {
 		}
 	}
 
-	
-	private void disposeAnalogOnScreenControl(){
-		analogOnScreenControl.setVisible(false);
-		analogOnScreenControl.clearTouchAreas();
-		analogOnScreenControl.clearChildScene();
-		analogOnScreenControl.clearEntityModifiers();
-		analogOnScreenControl.detachSelf();
-		analogOnScreenControl.dispose();	
-		analogOnScreenControl=null;
+	private void disposeAnalogOnScreenControl() {
+		if (analogOnScreenControl != null) {
+			analogOnScreenControl.setVisible(false);
+			analogOnScreenControl.clearTouchAreas();
+			analogOnScreenControl.clearChildScene();
+			analogOnScreenControl.clearEntityModifiers();
+			analogOnScreenControl.detachSelf();
+			analogOnScreenControl.dispose();
+			analogOnScreenControl = null;
+		}
 	}
-	
-	
+
 	private boolean connectToTower() {
 
 		return true;

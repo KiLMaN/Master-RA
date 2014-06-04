@@ -10,13 +10,12 @@ import gameplay.XMLParserWeapon;
 import java.io.IOException;
 
 import net.towerdefender.FileReaderAndroid;
+import net.towerdefender.gstreamer.GStreamerSurfaceView;
 import net.towerdefender.image.ARObject;
 import net.towerdefender.image.ARToolkit;
 import net.towerdefender.image.CameraPreviewHandler;
 import net.towerdefender.image.GlyphObject;
-import net.towerdefender.R;
 import net.towerdefender.image.IO;
-import net.towerdefender.gstreamer.GStreamerSurfaceView;
 import net.towerdefender.manager.ResourcesManager;
 import net.towerdefender.manager.SceneManager;
 
@@ -42,7 +41,6 @@ import android.view.KeyEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.WindowManager.LayoutParams;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.gstreamer.GStreamer;
@@ -101,7 +99,7 @@ public class GameActivity extends BaseGameActivity implements
 		changeIpConnexion(a, b, c, d, 1);
 		nativePlay();
 	}
-	
+
 	public void initGame() {
 		XMLParser parserWeapon = new XMLParser("weapons.xml");
 		parserWeapon.loadFile(new FileReaderAndroid(this));
@@ -278,11 +276,12 @@ public class GameActivity extends BaseGameActivity implements
 		addContentView(mRAView, new LayoutParams(LayoutParams.WRAP_CONTENT,
 				LayoutParams.WRAP_CONTENT));
 
-		//addContentView(mGLSurfaceView, new LayoutParams(
-		 //LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+		// addContentView(mGLSurfaceView, new LayoutParams(
+		// LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 
 		addContentView(this.mGstreamerView, new LayoutParams(
-		LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+
 		addContentView(mCameraPreviewSurfaceView, new LayoutParams(
 				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 
@@ -347,7 +346,8 @@ public class GameActivity extends BaseGameActivity implements
 	// Called from native code. This sets the content of the TextView from the
 	// UI thread.
 	private void setMessage(final String message) {
-		final TextView tv = (TextView) this.findViewById(R.id.textview_message);
+		// final TextView tv = (TextView)
+		// this.findViewById(R.id.textview_message);
 		runOnUiThread(new Runnable() {
 			public void run() {
 				Log.d("GSTTT", message);
