@@ -11,9 +11,9 @@
 #include <glibconfig.h> // for guintptr
 
 
-GST_DEBUG_CATEGORY_STATIC (debug_category);
-#define GST_CAT_DEFAULT debug_category
 
+#define GST_CAT_DEFAULT debug_category
+GST_DEBUG_CATEGORY_STATIC (debug_category);
 /*
  * These macros provide a way to store the native pointer to CustomData, which might be 32 or 64 bits, into
  * a jlong, which is always 64 bits, without warnings.

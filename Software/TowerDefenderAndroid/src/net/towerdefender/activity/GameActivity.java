@@ -10,6 +10,11 @@ import gameplay.XMLParserWeapon;
 import java.io.IOException;
 
 import net.towerdefender.FileReaderAndroid;
+import net.towerdefender.image.ARObject;
+import net.towerdefender.image.ARToolkit;
+import net.towerdefender.image.CameraPreviewHandler;
+import net.towerdefender.image.GlyphObject;
+import net.towerdefender.image.IO;
 import net.towerdefender.manager.ResourcesManager;
 import net.towerdefender.manager.SceneManager;
 
@@ -27,6 +32,7 @@ import org.andengine.ui.activity.BaseGameActivity;
 import org.w3c.dom.Node;
 
 import android.graphics.PixelFormat;
+import android.hardware.Camera.CameraInfo;
 import android.opengl.GLSurfaceView;
 import android.util.DisplayMetrics;
 import android.view.KeyEvent;
@@ -46,10 +52,11 @@ public class GameActivity extends BaseGameActivity /*
 	private static int _HEIGHT = 720;
 
 	private Camera mEngineCamera;
-	private ARRajawaliRender mARRajawaliRender;
+	public ARRajawaliRender mARRajawaliRender;
 	@SuppressWarnings("unused")
 	private ResourcesManager resourcesManager;
-
+	CameraPreviewHandler mCameraPreview;
+	ARToolkit markerInfo;
 	// public GPUImage mGPUImage;
 
 	private CameraPreviewSurfaceView mCameraPreviewSurfaceView;
@@ -197,8 +204,6 @@ public class GameActivity extends BaseGameActivity /*
 	@Override
 	protected void onSetContentView() {
 
-		// this.mGstreamerView = new GStreamerSurfaceView(this);
-
 		this.mCameraPreviewSurfaceView = new CameraPreviewSurfaceView(this);
 
 		/*
@@ -208,7 +213,6 @@ public class GameActivity extends BaseGameActivity /*
 		 * mGLSurfaceView.setEGLContextClientVersion(2); //mGPUImage = new
 		 * GPUImage(this); //mGPUImage.setGLSurfaceView(mGLSurfaceView);
 		 */
-
 		this.mRenderSurfaceView = new RenderSurfaceView(this);
 		this.mRenderSurfaceView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
 		this.mRenderSurfaceView.getHolder().setFormat(PixelFormat.TRANSLUCENT);
@@ -216,13 +220,23 @@ public class GameActivity extends BaseGameActivity /*
 		this.mRenderSurfaceView.setRenderer(this.mEngine, this);
 
 		this.mARRajawaliRender = new ARRajawaliRender(this);
-
 		mRAView = new GLSurfaceView(this);
 
 		mRAView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
 		mRAView.getHolder().setFormat(PixelFormat.TRANSLUCENT);
 		mRAView.setEGLContextClientVersion(2);
 		mRAView.setRenderer(mARRajawaliRender);
+
+		markerInfo = new ARToolkit(getResources(), getFilesDir());
+		markerInfo.addVisibilityListener(mARRajawaliRender);
+		mCameraPreview = new CameraPreviewHandler(mRAView, getResources(),
+				markerInfo);
+		try {
+			IO.transferFilesToPrivateFS(getFilesDir(), getResources());
+		} catch (IOException e) {
+			e.printStackTrace();
+			// throw new AndARRuntimeException(e.getMessage());
+		}
 
 		setContentView(mRenderSurfaceView, new LayoutParams(
 				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
@@ -232,7 +246,6 @@ public class GameActivity extends BaseGameActivity /*
 
 		// addContentView(mGLSurfaceView, new LayoutParams(
 		// LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-
 		addContentView(mCameraPreviewSurfaceView, new LayoutParams(
 				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 		// addContentView(this.mGstreamerView, new LayoutParams(
@@ -243,12 +256,38 @@ public class GameActivity extends BaseGameActivity /*
 
 	public void setHardwareCamera(android.hardware.Camera cam) {
 
-		/*
+						TowerDefender.CameraSelection == CameraInfo.CAMERA_FACING_FRONT ? 180
+								: 0,
 		 * mGPUImage .setUpCamera( cam, TowerDefender.CameraSelection ==
 		 * CameraInfo.CAMERA_FACING_FRONT ? 180 : 0,
-		 * TowerDefender.CameraSelection == CameraInfo.CAMERA_FACING_FRONT,
+						TowerDefender.CameraSelection == CameraInfo.CAMERA_FACING_FRONT,
 		 * false);
+		cam.setPreviewCallback(mCameraPreview);
+		mCameraPreview.init(cam);
 		 */
+		ARObject obj;/*
+					 * = new GlyphObject("test", "barcode.patt", 80.0, new
+					 * double[] { 0, 0 }); markerInfo.registerARObject(obj);
+					 */
+
+		obj = new GlyphObject("test", "marker1.patt", 80.0,
+				new double[] { 0, 0 }, 0x00FFFF);
+		markerInfo.registerARObject(obj);
+
+		obj = new GlyphObject("test", "marker2.patt", 80.0,
+				new double[] { 0, 0 }, 0xFFFFFF);
+		markerInfo.registerARObject(obj);
+
+		obj = new GlyphObject("test", "marker3.patt", 80.0,
+				new double[] { 0, 0 }, 0xFFFF00);
+		markerInfo.registerARObject(obj);
+
+		obj = new GlyphObject("test", "marker4.patt", 80.0,
+				new double[] { 0, 0 }, 0xFF00FF);
+		markerInfo.registerARObject(obj);
+
+		// mGPUImage.setUpCamera(cam, rotate, flipImage, false);
+
 		// mGPUImage.setUpCamera(cam);
 		// mGPUImage.setFilter(new GPUImageSobelEdgeDetection());
 	}
