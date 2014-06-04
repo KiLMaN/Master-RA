@@ -2,8 +2,6 @@ package gameplay;
 
 import java.util.ArrayList;
 
-import simulation.SimulationPC;
-
 import communication.CommunicationTower;
 
 public class Tower extends CommunicationTower {
@@ -129,7 +127,7 @@ public class Tower extends CommunicationTower {
 		this.target = nearest;
 	}
 
-	public boolean targetedEnemieInRange() {
+	public boolean isTargetedEnemieInRange() {
 		if (this.target == null)
 			return false;
 		return this.target.getPosition().distanceTo(this.position) < this
@@ -148,7 +146,7 @@ public class Tower extends CommunicationTower {
 	}
 
 	/*
-	 * Tirer avec l'arme la plus puissante sur l'enemie selectionn , retourne
+	 * Tirer avec l'arme la plus puissante sur l'enemie selectionne , retourne
 	 * true si l'enemie est mort
 	 */
 	public boolean shootTargetedEnemie() {
@@ -170,37 +168,30 @@ public class Tower extends CommunicationTower {
 		if (best != null) {
 			boolean dead = target.hitBy(best.Weapon, this);
 			if (dead == true) {
-				int pointsPlayer = SimulationPC.game.getCurrentPlayer()
-						.getPointsPlayer();
-				SimulationPC.game.getCurrentPlayer().setPointsPlayer( // player
-																		// score
-																		// incremented
-						pointsPlayer + GameConfig.NUMBER_POINTS_AT_KILL);
-				System.out.println("Points player :"
-						+ SimulationPC.game.getCurrentPlayer()
-								.getPointsPlayer());
-				int numberEnemiesKilled = best.Weapon.getNumberEnemiesKilled();
-				best.Weapon.setNumberEnemiesKilled(numberEnemiesKilled
-						+ GameConfig.NUMBER_POINTS_AT_KILL); // number
-				// of
-				// enemies
-				// killed
-				// with
-				// weapon
-				// incremented
-				if ((best.Weapon.getNumberEnemiesKilled() % GameConfig.NUMBER_KILLED_ENEMIE_TO_UPGRADE) == 0) { // maximum
-																												// de
-																												// points
-																												// pour
-																												// débloquer
-																												// la
-																												// prochaine
-																												// arme
-																												// atteint
+				Game currentGame = Game.getCurrentGame();
 
-					UnlockNextWeapon(best.Weapon.getWeaponType());
+				// player score incremented
+				currentGame.addPoints(GameConfig.NUMBER_POINTS_AT_KILL);
 
-				}
+				/*
+				 * System.out.println("Points player :" +
+				 * SimulationPC.game.getCurrentPlayer() .getPointsPlayer());
+				 */
+				/*
+				 * int numberEnemiesKilled =
+				 * best.Weapon.getNumberEnemiesKilled();
+				 * best.Weapon.setNumberEnemiesKilled(numberEnemiesKilled +
+				 * GameConfig.NUMBER_POINTS_AT_KILL); // number of enemies
+				 * killed with weapon incremented
+				 * 
+				 * // maximum de points pour débloquer la prochaine armeatteint
+				 * if ((best.Weapon.getNumberEnemiesKilled() %
+				 * GameConfig.NUMBER_KILLED_ENEMIE_TO_UPGRADE) == 0) {
+				 * 
+				 * UnlockNextWeapon(best.Weapon.getWeaponType());
+				 * 
+				 * }
+				 */
 			}
 
 			best.startReload();
@@ -214,29 +205,79 @@ public class Tower extends CommunicationTower {
 		}
 	}
 
-	public void UnlockNextWeapon(WeaponType weaponType) {
-		for (Pweapon pweapon : pweapons) { // TODO: voir s'il n'y a pas moyen de
-											// gagner en rapidité par un système
-											// de type requète
-			if (pweapon.Weapon.getWeaponType() == weaponType) {
+	/*
+	 * public void UnlockNextWeapon(WeaponType weaponType) { for (Pweapon
+	 * pweapon : pweapons) { // TODO: voir s'il n'y a pas moyen de // gagner en
+	 * rapidité par un système // de type requète if
+	 * (pweapon.Weapon.getWeaponType() == weaponType) { if (pweapon.isLocked())
+	 * { pweapon.setLocked(false);
+	 * 
+	 * // SimulationPC.gamePanel.setPrintWeaponUnblocked(true); //
+	 * SimulationPC.gamePanel.getWeaponUnlocked(pweapon); // // juste // pour //
+	 * affichage return; } } }
+	 * 
+	 * }
+	 */
+	/**
+	 * Débloque une arme pour la tour courrante
+	 * 
+	 * @param weapon
+	 * @return 1 si le débloquage est validé , 0 Si le joueur n'as pas assez de
+	 *         points, -1 si l'arme est déjà débloquée , -10 si erreur inconnue
+	 * 
+	 */
+	public int unlockWeapon(Weapon weapon) {
+		for (Pweapon pweapon : pweapons) {
+			if (pweapon.getWeapon().equals(weapon)) {
 				if (pweapon.isLocked()) {
-					pweapon.setLocked(false);
-					System.out.println("Weapon( NAME= "
-							+ pweapon.Weapon.getNameWeapon() + " TYPE= "
-							+ pweapon.Weapon.getWeaponType() + " DAMAGE= "
-							+ pweapon.Weapon.getNumberDamage() + " Locked= "
-							+ pweapon.isLocked() + " RELOADTIME = "
-							+ pweapon.Weapon.getReloadingTime() + " RANGE = "
-							+ pweapon.Weapon.getRange() + ") unlocked");
-					SimulationPC.gamePanel.setPrintWeaponUnblocked(true);
-					SimulationPC.gamePanel.getWeaponUnlocked(pweapon); // juste
-																		// pour
-																		// affichage
-					return;
-				}
+					Game currentGame = Game.getCurrentGame();
+					// Si on à assez d'argent pour débloquer l'arme
+					if (pweapon.getWeapon().getCostWeapon() <= currentGame
+							.getPoints()) {
+						pweapon.setLocked(false);
+						currentGame.removePoints(pweapon.getWeapon()
+								.getCostWeapon());
+						return 1;
+					} else
+						return 0;
+				} else
+					return -1;
 			}
 		}
+		return -10;
+	}
 
+	/**
+	 * Upgrade une arme
+	 * 
+	 * @param weapon
+	 *            : Arme à upgrader
+	 * @param upgradeType
+	 *            : type de l'upgrade
+	 * @return 1 si l'upgrade c'est bien passée, 0 si le joueur n'as pas assez
+	 *         de points, -1, si l'arme ne peut pas être upgradé, -3 si arme pas
+	 *         été débloquée, -10 si erreur inconnue
+	 */
+	public int upgradeWeapon(Weapon weapon, UpgradeType upgradeType) {
+		for (Pweapon pweapon : pweapons) {
+			if (pweapon.getWeapon().equals(weapon)) {
+				if (pweapon.isLocked()) {
+					Game currentGame = Game.getCurrentGame();
+					// Si on à assez d'argent pour débloquer l'arme
+					int cost = pweapon.getWeapon().getCostUpgrade(upgradeType);
+					if (cost <= currentGame.getPoints()) {
+						if (pweapon.getWeapon().upgrade(upgradeType)) {
+							currentGame.removePoints(cost);
+							return 1;
+						} else
+							return -1;
+					} else
+						return 0;
+				} else
+					return -3;
+			}
+		}
+		return -10;
 	}
 
 	public void tickReloadTimers() {

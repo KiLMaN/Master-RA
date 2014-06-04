@@ -210,7 +210,7 @@ public class ToolsScene extends BaseScene {
 									HorizontalAlign.LEFT), vbom);
 					statusWeaponText.setPosition((camera.getWidth() / 3),
 							(50 + (j * 220)));
-					if (w.isLocked()) {
+					if (weapon.isLocked()) {
 						statusWeaponText.setText("bloqué");
 					} else {
 						statusWeaponText.setText("débloqué");

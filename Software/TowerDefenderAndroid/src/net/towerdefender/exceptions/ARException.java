@@ -1,16 +1,8 @@
 package net.towerdefender.exceptions;
 
-/**
- * There are different reasons, why an AndARException may occur.
- * Though they are rather unlikely.
- * Nevertheless they should be catched, so that the user might be informed.
- * If they occur they are rather severe, which means the library doesn't work. 
- * Therefor they inherit from RuntimeExecptions.
- * This also means, that they may be thrown at any time.
- * @author Tobi
- *
- */
 public class ARException extends Exception {
+	private static final long serialVersionUID = -7074672318255915337L;
+
 	public ARException(String msg) {
 		super(msg);
 	}

@@ -12,6 +12,9 @@ public class Game {
 	private int numberEnemiesKilled;
 	private int currentWaveId = 0;
 
+	private int totalPoints = 0;
+	private int gamePoints = 0;
+
 	private Player currentPlayer;
 
 	private ArrayList<Wave> listWaves;
@@ -118,7 +121,7 @@ public class Game {
 							target = tower.getTarget();
 						}
 						// si la cible ennemie est à portée
-						if (tower.targetedEnemieInRange()) {
+						if (tower.isTargetedEnemieInRange()) {
 
 							/*
 							 * System.out.println("tir d'une tour @ " +
@@ -130,6 +133,7 @@ public class Game {
 							if (tower.shootTargetedEnemie()) {
 								/* System.out.println("Ennemi Mort !"); */
 								currentWave.enemieKilled(target);
+								this.addPoints(target.getPoints());
 							}
 						} else
 							tower.targetClosestEnemi(enemiesAlive);
@@ -274,7 +278,7 @@ public class Game {
 			for (Weapon weapon : defaultWeapons) {
 				Pweapon pweapon = null;
 				pweapon = new Pweapon(weapon, weapon.getReloadingTime(),
-						weapon.isLocked());
+						weapon.isLockedByDefault());
 				pweapons.add(pweapon);
 			}
 			tower.setWeapons(pweapons);
@@ -290,4 +294,29 @@ public class Game {
 		this.defaultWeapons = weapons;
 	}
 
+	// points of the game
+	public int getPoints() {
+		return gamePoints;
+	}
+
+	public int getTotalPoints() {
+		return totalPoints;
+	}
+
+	public void addPoints(int nbPoints) {
+		if (nbPoints > 0) {
+			this.gamePoints += nbPoints;
+			this.totalPoints += nbPoints;
+
+		} else
+			System.err.println("Cannot add '" + nbPoints + "' points");
+	}
+
+	public void removePoints(int nbPoints) {
+		if (nbPoints > 0) {
+			this.gamePoints -= nbPoints;
+
+		} else
+			System.err.println("Cannot remove '" + nbPoints + "' points");
+	}
 }

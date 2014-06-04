@@ -1,7 +1,6 @@
 package simulation;
 
 import gameplay.Game;
-import gameplay.GamePanel;
 import gameplay.Player;
 import gameplay.XMLParser;
 import gameplay.XMLParserTower;
