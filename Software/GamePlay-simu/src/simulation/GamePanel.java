@@ -225,12 +225,10 @@ public class GamePanel extends JPanel {
 			g.drawString(
 					"Weapon( NAME= " + pweapon.Weapon.getNameWeapon()
 
-					+ " DAMAGE= " + pweapon.Weapon.getNumberDamage()
-							+ " Locked= " + pweapon.isLocked()
-							+ " RELOADTIME = "
+					+ " DAMAGE= " + pweapon.getDamage() + " Locked= "
+							+ pweapon.isLocked() + " RELOADTIME = "
 							+ pweapon.Weapon.getReloadingTime() + " RANGE = "
-							+ pweapon.Weapon.getRange() + ") unlocked", 300,
-					200);
+							+ pweapon.getRange() + ") unlocked", 300, 200);
 			// printWeaponUnblocked = false;
 		}
 

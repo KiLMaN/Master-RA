@@ -49,7 +49,6 @@ public class ResourcesManager {
 	public ITextureRegion play_region;
 	public ITextureRegion options_region;
 	private BuildableBitmapTextureAtlas menuTextureAtlas;
-	
 
 	/* Game */
 	public ITextureRegion onScreenControlBase;
@@ -65,15 +64,19 @@ public class ResourcesManager {
 	public ITextureRegion buttonOptionTablet_region;
 	public ITextureRegion buttonOptionTower_region;
 	private BuildableBitmapTextureAtlas tabletTextureAtlas;
-	
-	
-	/* Tools*/
+
+	/* Tools */
 	public ITextureRegion buttonOptionBack_region;
-	private BuildableBitmapTextureAtlas backTextureAtlas;
+	private BuildableBitmapTextureAtlas buttonsOptionBackTextureAtlas;
+	public ITextureRegion buttonPlus_region;
+	public ITextureRegion buttonPlusGris_region;
+	private BuildableBitmapTextureAtlas buttonsPlusTextureAtlas,
+			buttonsPlusGrisTextureAtlas;
+	public ITextureRegion buttonUnlock_region;
+	private BuildableBitmapTextureAtlas buttonsUnlockTextureAtlas;
 	public ITextureRegion buttonOptionTowerOpt_region;
 	private BuildableBitmapTextureAtlas stoneTextureAtlas;
-	
-	
+
 	// ---------------------------------------------
 	// TEXTURES & TEXTURE REGIONS
 	// ---------------------------------------------
@@ -133,30 +136,64 @@ public class ResourcesManager {
 		BitmapTextureAtlasTextureRegionFactory
 				.setAssetBasePath("gfx/TowerDefender/tools/");
 
-		backTextureAtlas = new BuildableBitmapTextureAtlas(
+		buttonsOptionBackTextureAtlas = new BuildableBitmapTextureAtlas(
 				activity.getTextureManager(), 250, 308, TextureOptions.BILINEAR);
+		buttonsPlusTextureAtlas = new BuildableBitmapTextureAtlas(
+				activity.getTextureManager(), 48, 48, TextureOptions.BILINEAR);
+		buttonsPlusGrisTextureAtlas = new BuildableBitmapTextureAtlas(
+				activity.getTextureManager(), 48, 48, TextureOptions.BILINEAR);
+		buttonsUnlockTextureAtlas = new BuildableBitmapTextureAtlas(
+				activity.getTextureManager(), 128, 128, TextureOptions.BILINEAR);
 
 		buttonOptionBack_region = BitmapTextureAtlasTextureRegionFactory
-				.createFromAsset(backTextureAtlas, activity, "back.png");
+				.createFromAsset(buttonsOptionBackTextureAtlas, activity,
+						"back.png");
+
+		buttonPlus_region = BitmapTextureAtlasTextureRegionFactory
+				.createFromAsset(buttonsPlusTextureAtlas, activity, "plus.png");
+		buttonPlusGris_region = BitmapTextureAtlasTextureRegionFactory
+				.createFromAsset(buttonsPlusGrisTextureAtlas, activity,
+						"plus_gris.png");
+
+		buttonUnlock_region = BitmapTextureAtlasTextureRegionFactory
+				.createFromAsset(buttonsUnlockTextureAtlas, activity,
+						"unlock.png");
 
 		try {
-			this.backTextureAtlas
+			this.buttonsOptionBackTextureAtlas
 					.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(
 							0, 1, 0));
-			this.backTextureAtlas.load();
+			this.buttonsOptionBackTextureAtlas.load();
+
+			this.buttonsPlusTextureAtlas
+					.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(
+							0, 1, 0));
+			this.buttonsPlusTextureAtlas.load();
+
+			this.buttonsPlusGrisTextureAtlas
+					.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(
+							0, 1, 0));
+			this.buttonsPlusGrisTextureAtlas.load();
+
+			this.buttonsUnlockTextureAtlas
+					.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(
+							0, 1, 0));
+			this.buttonsUnlockTextureAtlas.load();
+
 		} catch (final TextureAtlasBuilderException e) {
 			Log.e("TD5", e.toString());
 		}
 
-		
 		BitmapTextureAtlasTextureRegionFactory
 				.setAssetBasePath("gfx/TowerDefender/tools/");
-		
+
 		stoneTextureAtlas = new BuildableBitmapTextureAtlas(
-				activity.getTextureManager(), 1024, 768, TextureOptions.BILINEAR);
+				activity.getTextureManager(), 1024, 768,
+				TextureOptions.BILINEAR);
 
 		buttonOptionTowerOpt_region = BitmapTextureAtlasTextureRegionFactory
-				.createFromAsset(stoneTextureAtlas, activity, "texturePierre.jpg");
+				.createFromAsset(stoneTextureAtlas, activity,
+						"texturePierre.jpg");
 
 		try {
 			this.stoneTextureAtlas
@@ -166,7 +203,6 @@ public class ResourcesManager {
 		} catch (final TextureAtlasBuilderException e) {
 			Log.e("TD6", e.toString());
 		}
-		
 
 	}
 
@@ -229,7 +265,6 @@ public class ResourcesManager {
 		} catch (final TextureAtlasBuilderException e) {
 			Log.e("TD3", e.toString());
 		}
-		
 
 		BitmapTextureAtlasTextureRegionFactory
 				.setAssetBasePath("gfx/TowerDefender/game/");
@@ -250,49 +285,47 @@ public class ResourcesManager {
 		}
 		// towerButtons Configuration
 		BitmapTextureAtlasTextureRegionFactory
-		.setAssetBasePath("gfx/TowerDefender/game/");
+				.setAssetBasePath("gfx/TowerDefender/game/");
 
-towerTextureAtlas = new BuildableBitmapTextureAtlas(
-		activity.getTextureManager(), 120, 120, TextureOptions.BILINEAR);
+		towerTextureAtlas = new BuildableBitmapTextureAtlas(
+				activity.getTextureManager(), 120, 120, TextureOptions.BILINEAR);
 
-buttonOptionTower_region = BitmapTextureAtlasTextureRegionFactory
-		.createFromAsset(towerTextureAtlas, activity, "tower.png");
+		buttonOptionTower_region = BitmapTextureAtlasTextureRegionFactory
+				.createFromAsset(towerTextureAtlas, activity, "tower.png");
 
-//buttonOptionTower2_region = BitmapTextureAtlasTextureRegionFactory
-//.createFromAsset(towerTextureAtlas, activity, "tour.png");
-//
-//buttonOptionTower3_region = BitmapTextureAtlasTextureRegionFactory
-//.createFromAsset(towerTextureAtlas, activity, "tour.png");
+		// buttonOptionTower2_region = BitmapTextureAtlasTextureRegionFactory
+		// .createFromAsset(towerTextureAtlas, activity, "tour.png");
+		//
+		// buttonOptionTower3_region = BitmapTextureAtlasTextureRegionFactory
+		// .createFromAsset(towerTextureAtlas, activity, "tour.png");
 
-try {
-	this.towerTextureAtlas
-			.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(
-					0, 1, 0));
-	this.towerTextureAtlas.load();
-} catch (final TextureAtlasBuilderException e) {
-	Log.e("TD6 je crois", e.toString());
-}
+		try {
+			this.towerTextureAtlas
+					.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(
+							0, 1, 0));
+			this.towerTextureAtlas.load();
+		} catch (final TextureAtlasBuilderException e) {
+			Log.e("TD6 je crois", e.toString());
+		}
 
-	BitmapTextureAtlasTextureRegionFactory
-	.setAssetBasePath("gfx/TowerDefender/game/");
-	
-	tabletTextureAtlas = new BuildableBitmapTextureAtlas(
-	activity.getTextureManager(), 1196, 781, TextureOptions.BILINEAR);
-	
-	buttonOptionTablet_region = BitmapTextureAtlasTextureRegionFactory
-	.createFromAsset(tabletTextureAtlas, activity, "tablet.png");
-	
-	
-	try {
-	this.tabletTextureAtlas
-		.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(
-				0, 1, 0));
-	this.tabletTextureAtlas.load();
-	} catch (final TextureAtlasBuilderException e) {
-	Log.e("TD7 je crois", e.toString());
-	}
-	
-	
+		BitmapTextureAtlasTextureRegionFactory
+				.setAssetBasePath("gfx/TowerDefender/game/");
+
+		tabletTextureAtlas = new BuildableBitmapTextureAtlas(
+				activity.getTextureManager(), 1196, 781,
+				TextureOptions.BILINEAR);
+
+		buttonOptionTablet_region = BitmapTextureAtlasTextureRegionFactory
+				.createFromAsset(tabletTextureAtlas, activity, "tablet.png");
+
+		try {
+			this.tabletTextureAtlas
+					.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(
+							0, 1, 0));
+			this.tabletTextureAtlas.load();
+		} catch (final TextureAtlasBuilderException e) {
+			Log.e("TD7 je crois", e.toString());
+		}
 
 	}
 
@@ -323,16 +356,16 @@ try {
 				activity.getAssets(), "coolvetica.ttf", 50, true, Color.BLACK,
 				2, Color.WHITE, true);
 		Coolvetica.load();
-		
+
 		final ITexture mainFontTextureSanford = new BitmapTextureAtlas(
 				activity.getTextureManager(), 256, 256,
 				TextureOptions.BILINEAR_PREMULTIPLYALPHA);
-		
+
 		Sanford = FontFactory.createStrokeFromAsset(
-				
-				activity.getFontManager(), mainFontTextureSanford,
-				activity.getAssets(), "Sanford.ttf", 30, true, Color.BLACK,
-				2, Color.BLACK, false);
+
+		activity.getFontManager(), mainFontTextureSanford,
+				activity.getAssets(), "Sanford.ttf", 30, true, Color.BLACK, 2,
+				Color.BLACK, false);
 		Sanford.load();
 	}
 

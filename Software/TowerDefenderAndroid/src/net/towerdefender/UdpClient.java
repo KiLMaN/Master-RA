@@ -49,10 +49,11 @@ public class UdpClient implements Runnable {
 		}
 		Iterator<InetAddress> it = ipClients.iterator();
 		ArrayList<Tower> towers = new ArrayList<Tower>();
+		int cpt = 1;
 		while (it.hasNext()) {
 			InetAddress a = it.next();
 
-			Tower t = new Tower(new Position());
+			Tower t = new Tower(cpt++, new Position());
 			t.setIp(a.toString());
 			towers.add(t);
 		}

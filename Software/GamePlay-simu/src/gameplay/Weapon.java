@@ -5,8 +5,8 @@ public class Weapon {
 	private int idWeapon;
 	private String nameWeapon;
 
-	private int numberDamage;
-	private float range;
+	private int defaultDamage;
+	private float defaultRange;
 
 	private int reloadingTime;
 
@@ -28,8 +28,8 @@ public class Weapon {
 			boolean lockedDefaultWeapon) {
 		this.idWeapon = idWeapon;
 		this.nameWeapon = nameWeapon;
-		this.numberDamage = numberDamage;
-		this.range = range;
+		this.defaultDamage = numberDamage;
+		this.defaultRange = range;
 
 		this.reloadingTime = timeToReload;
 
@@ -60,21 +60,21 @@ public class Weapon {
 		this.nameWeapon = nameWeapon;
 	}
 
-	public int getNumberDamage() {
-		return numberDamage;
+	public int getDefaultDamage() {
+		return defaultDamage;
 	}
 
-	public void setNumberDamage(int numberDamage) {
-		this.numberDamage = numberDamage;
+	// public void setNumberDamage(int numberDamage) {
+	// this.defaultDamage = numberDamage;
+	// }
+
+	public float getDefaultRange() {
+		return defaultRange;
 	}
 
-	public float getRange() {
-		return range;
-	}
-
-	public void setRange(float range) {
-		this.range = range;
-	}
+	// public void setRange(float range) {
+	// this.defaultRange = range;
+	// }
 
 	public int getNumberEnemiesKilled() {
 		return numberEnemiesKilled;
@@ -92,14 +92,6 @@ public class Weapon {
 		this.costUnlockWeapon = costWeapon;
 	}
 
-	/*
-	 * public boolean isReloading() { return currentReload != 0; }
-	 * 
-	 * public void tickReloading() { this.currentReload--; }
-	 * 
-	 * public void startReload() { this.currentReload = this.reloadgingTime; }
-	 */
-
 	public boolean isLockedByDefault() {
 		return this.defaultLocked;
 	}
@@ -108,42 +100,20 @@ public class Weapon {
 		return this.reloadingTime;
 	}
 
-	/*
-	 * public WeaponType getWeaponType() { return this.weaponType; }
-	 */
-
-	public int getCostUpgrade(UpgradeType upgradeType) {
-		switch (upgradeType) {
-		case UPGRADE_POWER:
-			return this.costUpgradeDamage;
-		case UPGRADE_RANGE:
-			return this.costUpgradeRange;
-		default:
-			return Integer.MAX_VALUE;
-		}
+	public float getMaxRange() {
+		return maxRange;
 	}
 
-	public boolean upgrade(UpgradeType upgradeType) {
-		switch (upgradeType) {
-		case UPGRADE_POWER:
-			if (this.numberDamage < this.maxDamage)
-				return false;
-			else {
-				this.numberDamage++;
-				return true;
-			}
+	public int getMaxDamage() {
+		return maxDamage;
+	}
 
-		case UPGRADE_RANGE:
-			if (this.range < this.maxRange)
-				return false;
-			else {
-				this.range++;
-				return true;
-			}
-		default:
-			return false;
+	public int getCostDamage() {
+		return costUpgradeDamage;
+	}
 
-		}
+	public int getCostRange() {
+		return costUpgradeRange;
 	}
 
 }

@@ -16,44 +16,47 @@ public class Tower extends CommunicationTower {
 	private Enemie target;
 	private Position position;
 	private boolean enemieEngaged = false;
-	private int killSuccessRatio; // sur 10
-	private int killSuccess = 0;
-	private int frequencyShoot = 1; // sur 10
+
+	/*
+	 * @Deprecated private int killSuccessRatio; // sur 10
+	 * 
+	 * @Deprecated private int killSuccess = 0;
+	 * 
+	 * @Deprecated private int frequencyShoot = 1; // sur 10
+	 */
 
 	private boolean controledByPlayer = false;
 	private int idTower;
 
-	public Tower(Position position) {
-		// this.position = position;
-		// this.pweapons = new ArrayList<Pweapon>();
-		this(position, 7);
-	}
+	/*
+	 * public Tower(Position position) { // this.position = position; //
+	 * this.pweapons = new ArrayList<Pweapon>(); this(position, 7); }
+	 */
 
 	public Tower(int idTower, Position position) {
-		// this.position = position;
+		this.position = position;
 		// this.pweapons = new ArrayList<Pweapon>();
-		this(position, 7);
+		// this(position, 7);
 		this.idTower = idTower;
 
 	}
 
-	public Tower(Position position, int killSuccessRatio) {
-		this.position = position;
-		this.pweapons = new ArrayList<Pweapon>();
-		this.killSuccessRatio = killSuccessRatio;
-	}
+	/*
+	 * public Tower(Position position, int killSuccessRatio) { this.position =
+	 * position; this.pweapons = new ArrayList<Pweapon>(); this.killSuccessRatio
+	 * = killSuccessRatio; }
+	 */
 
 	public Tower(Position position, ArrayList<Pweapon> pweapons) {
 		this.position = position;
 		this.pweapons = pweapons;
 	}
 
-	public Tower(Position position, ArrayList<Pweapon> pweapons,
-			int killSuccessRatio) {
-		this.position = position;
-		this.pweapons = pweapons;
-		this.killSuccessRatio = killSuccessRatio;
-	}
+	/*
+	 * public Tower(Position position, ArrayList<Pweapon> pweapons, int
+	 * killSuccessRatio) { this.position = position; this.pweapons = pweapons;
+	 * //this.killSuccessRatio = killSuccessRatio; }
+	 */
 
 	public Enemie getTarget() {
 		return this.target;
@@ -67,25 +70,19 @@ public class Tower extends CommunicationTower {
 		return this.position;
 	}
 
-	public int getKillSuccessRatio() {
-		return this.killSuccessRatio;
-	}
-
-	public int getKillSuccess() {
-		return this.killSuccess;
-	}
-
-	public void setKillSuccess(int killSuccess) {
-		this.killSuccess = killSuccess;
-	}
-
-	public int getFrequencyShoot() {
-		return this.frequencyShoot;
-	}
-
-	public void setFrequencyShoot(int frequencyShoot) {
-		this.frequencyShoot = frequencyShoot;
-	}
+	/*
+	 * public int getKillSuccessRatio() { return this.killSuccessRatio; }
+	 * 
+	 * public int getKillSuccess() { return this.killSuccess; }
+	 * 
+	 * public void setKillSuccess(int killSuccess) { this.killSuccess =
+	 * killSuccess; }
+	 * 
+	 * public int getFrequencyShoot() { return this.frequencyShoot; }
+	 * 
+	 * public void setFrequencyShoot(int frequencyShoot) { this.frequencyShoot =
+	 * frequencyShoot; }
+	 */
 
 	public boolean isControledByPlayer() {
 		return this.controledByPlayer;
@@ -138,8 +135,8 @@ public class Tower extends CommunicationTower {
 		float maxRange = 0;
 		for (Pweapon pweapon : pweapons) {
 			if (!pweapon.isLocked()) {
-				if (maxRange < pweapon.Weapon.getRange())
-					maxRange = pweapon.Weapon.getRange();
+				if (maxRange < pweapon.getRange())
+					maxRange = pweapon.getRange();
 			}
 		}
 		return maxRange;
@@ -155,18 +152,18 @@ public class Tower extends CommunicationTower {
 		Pweapon best = null;
 		for (Pweapon pweapon : pweapons) {
 			if (!pweapon.isLocked()) {
-				if (distanceEnemie < pweapon.Weapon.getRange()) {
-					if (maxDamage < pweapon.Weapon.getNumberDamage()) {
+				if (distanceEnemie < pweapon.getRange()) {
+					if (maxDamage < pweapon.getDamage()) {
 						if (!pweapon.isReloading()) {
 							best = pweapon;
-							maxDamage = pweapon.Weapon.getNumberDamage();
+							maxDamage = pweapon.getDamage();
 						}
 					}
 				}
 			}
 		}
 		if (best != null) {
-			boolean dead = target.hitBy(best.Weapon, this);
+			boolean dead = target.hitBy(best, this);
 			if (dead == true) {
 				Game currentGame = Game.getCurrentGame();
 
@@ -261,12 +258,12 @@ public class Tower extends CommunicationTower {
 	public int upgradeWeapon(Weapon weapon, UpgradeType upgradeType) {
 		for (Pweapon pweapon : pweapons) {
 			if (pweapon.getWeapon().equals(weapon)) {
-				if (pweapon.isLocked()) {
+				if (!pweapon.isLocked()) {
 					Game currentGame = Game.getCurrentGame();
 					// Si on à assez d'argent pour débloquer l'arme
-					int cost = pweapon.getWeapon().getCostUpgrade(upgradeType);
+					int cost = pweapon.getCostUpgrade(upgradeType);
 					if (cost <= currentGame.getPoints()) {
-						if (pweapon.getWeapon().upgrade(upgradeType)) {
+						if (pweapon.upgrade(upgradeType)) {
 							currentGame.removePoints(cost);
 							return 1;
 						} else

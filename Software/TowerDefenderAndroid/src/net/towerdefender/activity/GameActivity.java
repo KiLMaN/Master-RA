@@ -120,6 +120,8 @@ public class GameActivity extends BaseGameActivity implements
 		mGame.setWaves(XMLParserWave.parseXMLWaves(rootWave));
 
 		mGame.setCurrentPlayer(new Player(1, "player n°1", 100, 0, 0));
+
+		mGame.addPoints(99999999);
 	}
 
 	public GameActivity() {

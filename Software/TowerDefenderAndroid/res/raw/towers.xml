@@ -8,10 +8,4 @@
 	<tower>
 		<position X="400" Y="400" />
 	</tower>
-	<tower>
-		<position X="450" Y="400" />
-	</tower>
-	<tower>
-		<position X="500" Y="400" />
-	</tower>
 </towers>
