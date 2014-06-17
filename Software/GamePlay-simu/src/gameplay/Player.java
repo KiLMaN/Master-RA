@@ -9,7 +9,7 @@ public class Player {
 	private int numberEnemiesKilled;
 
 	public Player(int idPlayer, String nickname, int lifesPlayer,
-			int pointsPlayer, int numberEnemiesKilled) {
+			int numberEnemiesKilled) {
 		super();
 		this.idPlayer = idPlayer;
 		this.nickname = nickname;

@@ -4,7 +4,6 @@ import gameplay.Game;
 import gameplay.Player;
 import gameplay.Tower;
 import gameplay.XMLParser;
-import gameplay.XMLParserTower;
 import gameplay.XMLParserWave;
 import gameplay.XMLParserWeapon;
 
@@ -120,25 +119,29 @@ public class GameActivity extends BaseGameActivity implements
 		Node rootWeapon = parserWeapon.getRoot();
 		mGame.setDefaultWeapons(XMLParserWeapon.parseXMLWeapon(rootWeapon));
 
-		System.out.println("Loading Tower Positions");
-		XMLParser parserTower = new XMLParser("towers.xml");
-		parserTower.loadFile(new FileReaderAndroid(this));
-		Node rootTower = parserTower.getRoot();
-		mGame.setTowers(XMLParserTower.parseXMLTowers(rootTower));
-
-		mGame.assignWeapons();
-
-		System.out.println("Loading Enemies Waves");
+		// System.out.println("Loading Enemies Waves");
 		XMLParser parserWaves = new XMLParser("waves.xml");
 		parserWaves.loadFile(new FileReaderAndroid(this));
 		Node rootWave = parserWaves.getRoot();
 		mGame.setWaves(XMLParserWave.parseXMLWaves(rootWave));
 
-		mGame.setCurrentPlayer(new Player(1, "player n°1", 100, 0, 0));
+		this.runOnUpdateThread(new Runnable() {
 
-		mGame.addPoints(999);
+			@Override
+			public void run() {
 
-		mGame.setPaused(true);
+				mGame.setCurrentPlayer(new Player(1, "player n°1", 100, 0));
+
+				mGame.addPoints(999);
+
+				mGame.setPaused(true);
+
+				mGame.setTowers(getUdpClient().getTowers());
+				mGame.assignWeapons();
+
+			}
+		});
+
 	}
 
 	public Game getGame() {
@@ -154,15 +157,31 @@ public class GameActivity extends BaseGameActivity implements
 	}
 
 	public void setCurrentlyControlledTower(Tower _tower) {
-		if (mCurrentlyControlledTower != null) {
-			this.mCurrentlyControlledTower.disconnect();
-			this.mCurrentlyControlledTower.stopCommunication();
-			this.mCurrentlyControlledTower.setControledByPlayer(false);
+		if (_tower != null) {
+			if (mCurrentlyControlledTower != null) {
+				this.mCurrentlyControlledTower.disconnect();
+				this.mCurrentlyControlledTower.stopCommunication();
+				this.mCurrentlyControlledTower.setControledByPlayer(false);
+			}
+			this.mCurrentlyControlledTower = _tower;
+			this.mCurrentlyControlledTower.setControledByPlayer(true);
+			this.mCurrentlyControlledTower.startCommunication();
+			this.mCurrentlyControlledTower.connect();
+			int[] ip = mCurrentlyControlledTower.getIpNumbers();
+			updateIp(ip[0], ip[1], ip[2], ip[3]);
+
+		} else {
+			if (mCurrentlyControlledTower != null) {
+				this.mCurrentlyControlledTower.disconnect();
+				this.mCurrentlyControlledTower.stopCommunication();
+				this.mCurrentlyControlledTower.setControledByPlayer(false);
+				nativePause();
+				changeIpConnexion(127, 0, 0, 1, 1);
+				// TODO hide surface to see throught it !
+
+			}
+			this.mCurrentlyControlledTower = null;
 		}
-		this.mCurrentlyControlledTower = _tower;
-		this.mCurrentlyControlledTower.setControledByPlayer(true);
-		this.mCurrentlyControlledTower.startCommunication();
-		this.mCurrentlyControlledTower.connect();
 
 	}
 

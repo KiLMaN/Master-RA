@@ -227,14 +227,6 @@ public class GameScene extends BaseScene {
 		updateLife();
 		gameHUD.attachChild(lifeText);
 
-		GameActivity
-				.getInstance()
-				.getGame()
-				.setTowers(
-						GameActivity.getInstance().getUdpClient().getTowers());
-
-		GameActivity.getInstance().getGame().assignWeapons();
-
 		// createTowersButtons(GameActivity.getInstance().getGame().getTowers()
 		// .size(), 100, 100);
 		createTabletButton(100, 100);
@@ -416,6 +408,7 @@ public class GameScene extends BaseScene {
 	}
 
 	private void connectToTablet() {
+		GameActivity.getInstance().setCurrentlyControlledTower(null);
 	}
 
 	public class IconTower extends Sprite {

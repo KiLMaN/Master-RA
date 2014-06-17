@@ -42,6 +42,23 @@ public class CommunicationTower {
 		SERVER_IP = ip;
 	}
 
+	public int[] getIpNumbers() {
+		int[] ip = new int[] { 0, 0, 0, 0 };
+		try {
+			InetAddress serverAddr = InetAddress.getByName(SERVER_IP.substring(
+					1, SERVER_IP.length()));
+			String[] ips = serverAddr.getHostAddress().split("\\.");
+			ip[0] = Integer.parseInt(ips[0]);
+			ip[1] = Integer.parseInt(ips[1]);
+			ip[2] = Integer.parseInt(ips[2]);
+			ip[3] = Integer.parseInt(ips[3]);
+		} catch (UnknownHostException e) {
+
+			e.printStackTrace();
+		}
+		return ip;
+	}
+
 	// / TCP client
 	private void runTcpClient() {
 		if (SERVER_IP == "")
