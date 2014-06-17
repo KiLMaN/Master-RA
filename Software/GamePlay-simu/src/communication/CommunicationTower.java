@@ -48,7 +48,8 @@ public class CommunicationTower {
 			return;
 		try {
 			// Create socket
-			InetAddress serverAddr = InetAddress.getByName(SERVER_IP);
+			InetAddress serverAddr = InetAddress.getByName(SERVER_IP.substring(
+					1, SERVER_IP.length()));
 			socket = new Socket(serverAddr, SERVERPORT);
 
 			// Update running flags
@@ -135,9 +136,11 @@ public class CommunicationTower {
 		}
 	}
 
+	Thread t;
+
 	// / Actions called by Tower
 	public boolean startCommunication() {
-		Thread t = new Thread(new Runnable() {
+		t = new Thread(new Runnable() {
 			public void run() {
 				try {
 					runTcpClient();
@@ -149,6 +152,13 @@ public class CommunicationTower {
 		});
 		t.start();
 		return running;
+	}
+
+	public void stopCommunication() {
+
+		if (t != null)
+			if (t.isAlive())
+				this.running = false;
 	}
 
 	public boolean connect() {

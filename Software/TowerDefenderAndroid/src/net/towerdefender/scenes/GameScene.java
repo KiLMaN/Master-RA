@@ -1,5 +1,7 @@
 package net.towerdefender.scenes;
 
+import gameplay.Tower;
+
 import javax.microedition.khronos.opengles.GL10;
 
 import net.towerdefender.activity.GameActivity;
@@ -17,7 +19,9 @@ import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.text.Text;
 import org.andengine.entity.text.TextOptions;
 import org.andengine.input.touch.TouchEvent;
+import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.opengl.util.GLState;
+import org.andengine.opengl.vbo.VertexBufferObjectManager;
 import org.andengine.util.HorizontalAlign;
 import org.andengine.util.color.Color;
 
@@ -298,50 +302,11 @@ public class GameScene extends BaseScene {
 	private void createTowersButtons(int numberButtons, final int widthButtons,
 			int heightButtons) {
 		pictureTower = new Sprite[numberButtons];
+
 		for (int i = 0; i <= numberButtons - 1; i++) {
-			pictureTower[i] = new Sprite(0, 0,
-					resourcesManager.buttonOptionTower_region, vbom, i) {
-
-				@Override
-				protected void preDraw(GLState pGLState, Camera pCamera) {
-					super.preDraw(pGLState, pCamera);
-					pGLState.enableDither();
-				}
-
-				public boolean onAreaTouched(final TouchEvent pSceneTouchEvent,
-
-				final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
-
-					if (pSceneTouchEvent.isActionUp()) {
-						if (displayList) {
-							this.setPosition(camera.getWidth() - widthButtons,
-									camera.getHeight() - widthButtons);
-
-							disposeTowersButtonExcept(this.getIndex());
-
-							disposeTabletButton();
-
-							displayList = false;
-
-							if (analogOnScreenControl == null) {
-								createController();
-							}
-							connectToTower();
-						} else {
-							gameHUD.unregisterTouchArea(this);
-							this.detachSelf();
-							this.dispose();
-
-							createTowersButtons(GameActivity.getInstance()
-									.getGame().getTowers().size(), 100, 100);
-							createTabletButton(100, 100);
-							displayList = true;
-						}
-					}
-					return true;
-				}
-			};
-
+			pictureTower[i] = new IconTower(0, 0,
+					resourcesManager.buttonOptionTower_region, vbom,
+					GameActivity.getInstance().getGame().getTowers().get(i));
 			pictureTower[i].setPosition(camera.getWidth() - (i + 2)
 					* widthButtons, camera.getHeight() - heightButtons);
 			pictureTower[i].setHeight(heightButtons);
@@ -382,8 +347,7 @@ public class GameScene extends BaseScene {
 		}
 	}
 
-	private void createTabletButton(final int widthButton,
-			final int heightButton) {
+	private void createTabletButton(int widthButton, int heightButton) {
 		pictureTablet = new Sprite(0, 0,
 				resourcesManager.buttonOptionTablet_region, vbom) {
 
@@ -447,10 +411,61 @@ public class GameScene extends BaseScene {
 		analogOnScreenControl = null;
 	}
 
-	private void connectToTower() {
+	private void connectToTower(Tower _tower) {
+		GameActivity.getInstance().setCurrentlyControlledTower(_tower);
 	}
 
 	private void connectToTablet() {
 	}
 
+	public class IconTower extends Sprite {
+
+		private Tower _tower = null;
+
+		public IconTower(int i, int j, ITextureRegion buttonOptionTower_region,
+				VertexBufferObjectManager vbom, Tower tower) {
+			super(i, j, buttonOptionTower_region, vbom);
+			this._tower = tower;
+		}
+
+		@Override
+		protected void preDraw(GLState pGLState, Camera pCamera) {
+			super.preDraw(pGLState, pCamera);
+			pGLState.enableDither();
+		}
+
+		public boolean onAreaTouched(final TouchEvent pSceneTouchEvent,
+
+		final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
+
+			if (pSceneTouchEvent.isActionUp()) {
+				if (displayList) {
+					this.setPosition(camera.getWidth() - this.getWidth(),
+							camera.getHeight() - this.getHeight());
+
+					disposeTowersButtonExcept(this.getIndex());
+
+					disposeTabletButton();
+
+					displayList = false;
+
+					if (analogOnScreenControl == null) {
+						createController();
+					}
+					connectToTower(_tower);
+				} else {
+					gameHUD.unregisterTouchArea(this);
+					this.detachSelf();
+					this.dispose();
+
+					createTowersButtons(GameActivity.getInstance().getGame()
+							.getTowers().size(), 100, 100);
+					createTabletButton(100, 100);
+					displayList = true;
+				}
+			}
+			return true;
+		}
+
+	}
 }

@@ -153,6 +153,19 @@ public class GameActivity extends BaseGameActivity implements
 		return mCurrentlyControlledTower;
 	}
 
+	public void setCurrentlyControlledTower(Tower _tower) {
+		if (mCurrentlyControlledTower != null) {
+			this.mCurrentlyControlledTower.disconnect();
+			this.mCurrentlyControlledTower.stopCommunication();
+			this.mCurrentlyControlledTower.setControledByPlayer(false);
+		}
+		this.mCurrentlyControlledTower = _tower;
+		this.mCurrentlyControlledTower.setControledByPlayer(true);
+		this.mCurrentlyControlledTower.startCommunication();
+		this.mCurrentlyControlledTower.connect();
+
+	}
+
 	public UdpClient getUdpClient() {
 		return this.mUdpClient;
 	}
