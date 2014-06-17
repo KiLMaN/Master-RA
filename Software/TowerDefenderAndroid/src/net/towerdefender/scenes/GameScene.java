@@ -1,7 +1,5 @@
 package net.towerdefender.scenes;
 
-import gameplay.Tower;
-
 import javax.microedition.khronos.opengles.GL10;
 
 import net.towerdefender.activity.GameActivity;
@@ -23,8 +21,6 @@ import org.andengine.opengl.util.GLState;
 import org.andengine.util.HorizontalAlign;
 import org.andengine.util.color.Color;
 
-import android.opengl.GLES20;
-
 public class GameScene extends BaseScene {
 
 	private HUD gameHUD;
@@ -35,16 +31,29 @@ public class GameScene extends BaseScene {
 	private Sprite pictureTablet;
 	private Text scoreText;
 	private Text lifeText;
-	private int score = 0, lastUpdate = 0;
-	private static Tower currentControlTower = null;
-	private boolean displayList = true;
+	private int lastUpdate = 0;
+
+	private boolean displayList = false;
 	private AnalogOnScreenControl analogOnScreenControl;
+
+	public void updateScore() {
+		scoreText.setText(GameActivity.getInstance().getGame().getPoints()
+				+ " pts");
+
+	}
+
+	public void updateLife() {
+		lifeText.setText(" Lives : "
+				+ GameActivity.getInstance().getGame().getCurrentPlayer()
+						.getLifesPlayer());
+
+	}
 
 	@Override
 	public void createScene() {
 		createBackground();
-		createHUD();
 		createController();
+		createHUD();
 
 		// currentControlTower = new Tower(new Position());
 		// currentControlTower.setIp("192.168.1.7");
@@ -71,8 +80,7 @@ public class GameScene extends BaseScene {
 			picturePause.detachSelf();
 			picturePause.dispose();
 		}
-		disposeTowersButtons(3); // TODO: chiffre 3 à remplacer par le nombre de
-									// tours détectées
+		disposeTowersButtons();
 		disposeTabletButton();
 		if (picturePlay != null) {
 			picturePlay.detachSelf();
@@ -93,16 +101,9 @@ public class GameScene extends BaseScene {
 	}
 
 	private void createBackground() {
-		Background background = new Background(Color.RED) {
-			public void onDraw(GLState pGLState,
-					org.andengine.engine.camera.Camera pCamera) {
-				GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT
-						| GL10.GL_DEPTH_BUFFER_BIT);
-				GLES20.glClearColor(0, 0, 0, 0);
-
-			};
-		};
+		Background background = new Background(Color.TRANSPARENT);
 		setBackground(background);
+		setBackgroundEnabled(false);
 	}
 
 	private void createHUD() {
@@ -158,7 +159,7 @@ public class GameScene extends BaseScene {
 			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent,
 					final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
 				if (pSceneTouchEvent.isActionUp()) {
-					addToScore(1);
+					// addToScore(1);
 
 					gameHUD.unregisterTouchArea(picturePlay);
 					picturePlay.detachSelf();
@@ -207,32 +208,37 @@ public class GameScene extends BaseScene {
 
 		// CREATE SCORE TEXT
 		scoreText = new Text(0, 0, resourcesManager.Coolvetica,
-				"Score: 0123456789", new TextOptions(HorizontalAlign.LEFT),
+				"Score: 0123456789 pts", new TextOptions(HorizontalAlign.LEFT),
 				vbom);
 		scoreText.setPosition(0, 100);
-		scoreText.setText("Score: 0");
+		// scoreText.setText("Score: 0");
 		gameHUD.attachChild(scoreText);
+		updateScore();
 
 		// CREATE LIFE TEXT
 		lifeText = new Text(0, 0, resourcesManager.Coolvetica,
 				"Life : 987654321", new TextOptions(HorizontalAlign.LEFT), vbom);
 		lifeText.setPosition(0, 200);
 		lifeText.setText("Life : 0");
+		updateLife();
 		gameHUD.attachChild(lifeText);
 
-		createTowersButtons(3, 100, 100); // TODO: chiffre 3 à remplacer par le
-											// nombre de tours détectées
+		GameActivity
+				.getInstance()
+				.getGame()
+				.setTowers(
+						GameActivity.getInstance().getUdpClient().getTowers());
+
+		GameActivity.getInstance().getGame().assignWeapons();
+
+		// createTowersButtons(GameActivity.getInstance().getGame().getTowers()
+		// .size(), 100, 100);
 		createTabletButton(100, 100);
+		if (analogOnScreenControl != null)
+			disposeAnalogOnScreenControl();
+
 		camera.setHUD(gameHUD);
 	}
-
-	private void addToScore(int i) {
-		score += i;
-		scoreText.setText("Score: " + score);
-	}
-
-	public float xtest = 0;
-	public float ytest = 0;
 
 	private void createController() {
 		analogOnScreenControl = new AnalogOnScreenControl(0,
@@ -247,20 +253,12 @@ public class GameScene extends BaseScene {
 							final BaseOnScreenControl pBaseOnScreenControl,
 							final float pValueX, final float pValueY) {
 
-						xtest += pValueX * 10;
-						ytest -= pValueY * 10;
-						/*
-						 * GameActivity.getInstance().mARRajawaliRender
-						 * .changePositionTest(xtest, ytest, 0.0f);
-						 */
-
-						/*
-						 * Log.w("test", "test value pos : x :" + xtest +
-						 * " y : " + ytest);
-						 */
 						if (lastUpdate == 0) {
-							if (currentControlTower != null) {
-								currentControlTower.moveH((int) (pValueX * 10));
+							if (GameActivity.getInstance()
+									.getCurrentlyControlledTower() != null) {
+								GameActivity.getInstance()
+										.getCurrentlyControlledTower()
+										.moveH((int) (pValueX * 10));
 							}
 						} else {
 							lastUpdate--;
@@ -270,19 +268,18 @@ public class GameScene extends BaseScene {
 					@Override
 					public void onControlClick(
 							final AnalogOnScreenControl pAnalogOnScreenControl) {
-						addToScore(1);
 						GameActivity.getInstance().getCameraPreviewSurface()
 								.autoFocusCamera();
 
-						GameActivity.getInstance().updateIp(192, 168, 1, 88);
+						// GameActivity.getInstance().updateIp(192, 168, 1, 88);
 
-						if (currentControlTower != null) {
-							if (!currentControlTower.isConnected())
-								currentControlTower.connect();
-							else {
-
-							}
-						}
+						// if (currentControlTower != null) {
+						// if (!currentControlTower.isConnected())
+						// currentControlTower.connect();
+						// else {
+						//
+						// }
+						// }
 					}
 				});
 
@@ -320,7 +317,7 @@ public class GameScene extends BaseScene {
 							this.setPosition(camera.getWidth() - widthButtons,
 									camera.getHeight() - widthButtons);
 
-							disposeTowersButtons(3, this.getIndex());
+							disposeTowersButtonExcept(this.getIndex());
 
 							disposeTabletButton();
 
@@ -329,15 +326,14 @@ public class GameScene extends BaseScene {
 							if (analogOnScreenControl == null) {
 								createController();
 							}
-
-							// TODO connect to tower
 							connectToTower();
 						} else {
 							gameHUD.unregisterTouchArea(this);
 							this.detachSelf();
 							this.dispose();
 
-							createTowersButtons(3, 100, 100);
+							createTowersButtons(GameActivity.getInstance()
+									.getGame().getTowers().size(), 100, 100);
 							createTabletButton(100, 100);
 							displayList = true;
 						}
@@ -362,19 +358,20 @@ public class GameScene extends BaseScene {
 
 	}
 
-	private void disposeTowersButtons(int numberButtons) {
-		for (int i = 0; i <= numberButtons - 1; i++) {
+	private void disposeTowersButtons() {
+		for (int i = 0; i < pictureTower.length; i++) {
 			if (pictureTower[i] != null) {
 				gameHUD.unregisterTouchArea(pictureTower[i]);
 				pictureTower[i].detachSelf();
-				pictureTower[i].dispose();
+				if (!pictureTower[i].isDisposed())
+					pictureTower[i].dispose();
 				pictureTower[i] = null;
 			}
 		}
 	}
 
-	private void disposeTowersButtons(int numberButtons, int j) {
-		for (int i = 0; i <= numberButtons - 1; i++) {
+	private void disposeTowersButtonExcept(int j) {
+		for (int i = 0; i < pictureTower.length; i++) {
 			if (i == j) {
 				continue;
 			}
@@ -402,17 +399,17 @@ public class GameScene extends BaseScene {
 				if (pSceneTouchEvent.isActionUp()) {
 					if (displayList) {
 
-						disposeTowersButtons(3);
+						disposeTowersButtons();
 						displayList = false;
 
 						if (analogOnScreenControl != null)
 							disposeAnalogOnScreenControl();
 
-						// TODO: connect to tablet
 						connectToTablet();
 					} else {
 
-						createTowersButtons(3, 100, 100);
+						createTowersButtons(GameActivity.getInstance()
+								.getGame().getTowers().size(), 100, 100);
 						displayList = true;
 
 					}
@@ -450,14 +447,10 @@ public class GameScene extends BaseScene {
 		analogOnScreenControl = null;
 	}
 
-	private boolean connectToTower() {
-
-		return true;
+	private void connectToTower() {
 	}
 
-	private boolean connectToTablet() {
-
-		return true;
+	private void connectToTablet() {
 	}
 
 }

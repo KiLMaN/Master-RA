@@ -86,7 +86,7 @@ public class Game {
 					// enemie.move();
 					if (enemie.move()) {
 
-						System.out.println("enemie arrivé");
+						// System.out.println("enemie arrivé");
 						int lifesPlayer = this.getCurrentPlayer()
 								.getLifesPlayer();
 						this.getCurrentPlayer().setLifesPlayer(--lifesPlayer);
@@ -96,7 +96,7 @@ public class Game {
 
 						// enemiesAlive = currentWave.getEnemiesAlive();
 						if (lifesPlayer == 0) {
-							System.out.println("game over");
+							// System.out.println("game over");
 							stop();
 						}
 					}
@@ -182,14 +182,6 @@ public class Game {
 
 	public void setPlaying(Boolean playing) {
 		this.playing = playing;
-	}
-
-	public Boolean getPaused() {
-		return paused;
-	}
-
-	public void setPaused(Boolean paused) {
-		this.paused = paused;
 	}
 
 	public int getCurrentWaveId() {

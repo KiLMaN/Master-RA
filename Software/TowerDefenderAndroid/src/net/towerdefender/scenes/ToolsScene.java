@@ -41,7 +41,7 @@ public class ToolsScene extends BaseScene {
 
 	private ArrayList<Tower> listConnected;
 
-	private Rectangle pansTools;
+	// private Rectangle pansTools;
 
 	public ToolsScene() {
 		super();

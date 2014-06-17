@@ -2,6 +2,7 @@ package net.towerdefender.activity;
 
 import gameplay.Game;
 import gameplay.Player;
+import gameplay.Tower;
 import gameplay.XMLParser;
 import gameplay.XMLParserTower;
 import gameplay.XMLParserWave;
@@ -10,6 +11,7 @@ import gameplay.XMLParserWeapon;
 import java.io.IOException;
 
 import net.towerdefender.FileReaderAndroid;
+import net.towerdefender.UdpClient;
 import net.towerdefender.gstreamer.GStreamerSurfaceView;
 import net.towerdefender.image.ARObject;
 import net.towerdefender.image.ARToolkit;
@@ -46,36 +48,47 @@ import com.gstreamer.GStreamer;
 
 public class GameActivity extends BaseGameActivity implements
 		SurfaceHolder.Callback {
+	/* Jeux */
 	private Game mGame;
+
+	/* Communication */
+	private UdpClient mUdpClient;
+	private Tower mCurrentlyControlledTower = null;
+
+	/* Used to keep only one instance */
 	private static GameActivity INSTANCE;
 
-	@SuppressWarnings("unused")
+	/* Engine params */
 	private static int _LimitFPS = 30;
 	private static int _WIDTH = 1280;
 	private static int _HEIGHT = 720;
 
+	/* Engine Camera and resource manager (for AndEngine) */
 	private Camera mEngineCamera;
-	public ARRajawaliRender mARRajawaliRender;
-	@SuppressWarnings("unused")
 	private ResourcesManager resourcesManager;
-	CameraPreviewHandler mCameraPreview;
-	ARToolkit markerInfo;
-	// public GPUImage mGPUImage;
 
-	private CameraPreviewSurfaceView mCameraPreviewSurfaceView;
+	/* Augmented Reality Renderer and Surface */
+	public ARRajawaliRender mARRajawaliRender;
 	private GLSurfaceView mRAView;
 
-	// Gstreamer
+	/* Marker detector */
+	ARToolkit markerInfo;
+
+	/* Surface for the Camera and the CameraPreviewHandler */
+	private CameraPreviewSurfaceView mCameraPreviewSurfaceView;
+	private CameraPreviewHandler mCameraPreview;
+
+	/* Gstreamer Surface */
 	private GStreamerSurfaceView mGstreamerView = null;
 
 	public native void nativeInit(); // Initialize native code, build pipeline,
 
 	public native void changeIpConnexion(int a, int b, int c, int d, int stop); // Update
-	// Ip
-	// Connexion
+																				// Ip
+																				// Connexion
 
-	public native void nativeFinalize(); // Destroy pipeline and shutdown
-											// native code
+	public native void nativeFinalize(); // Destroy pipeline and shutdown native
+											// code
 
 	public native void nativePlay(); // Set pipeline to PLAYING
 
@@ -93,10 +106,12 @@ public class GameActivity extends BaseGameActivity implements
 										// private data
 	private boolean is_playing_desired = true; // Whether the user asked to go
 
-	public void updateIp(int a, int b, int c, int d) {
-
-		changeIpConnexion(a, b, c, d, 1);
-		nativePlay();
+	public GameActivity() {
+		super();
+		INSTANCE = this;
+		this.mGame = new Game();
+		this.mCurrentlyControlledTower = null;
+		this.mUdpClient = new UdpClient(this);
 	}
 
 	public void initGame() {
@@ -121,13 +136,9 @@ public class GameActivity extends BaseGameActivity implements
 
 		mGame.setCurrentPlayer(new Player(1, "player n°1", 100, 0, 0));
 
-		mGame.addPoints(99999999);
-	}
+		mGame.addPoints(999);
 
-	public GameActivity() {
-		INSTANCE = this;
-		this.mGame = new Game();
-
+		mGame.setPaused(true);
 	}
 
 	public Game getGame() {
@@ -136,6 +147,14 @@ public class GameActivity extends BaseGameActivity implements
 
 	public static GameActivity getInstance() {
 		return INSTANCE;
+	}
+
+	public Tower getCurrentlyControlledTower() {
+		return mCurrentlyControlledTower;
+	}
+
+	public UdpClient getUdpClient() {
+		return this.mUdpClient;
 	}
 
 	@Override
@@ -188,8 +207,6 @@ public class GameActivity extends BaseGameActivity implements
 
 	@Override
 	public Engine onCreateEngine(EngineOptions pEngineOptions) {
-		// We are using a limited FPS engine
-		// return new LimitedFPSEngine(pEngineOptions, _LimitFPS);
 		return new Engine(pEngineOptions);
 	}
 
@@ -290,7 +307,9 @@ public class GameActivity extends BaseGameActivity implements
 		addContentView(mCameraPreviewSurfaceView, new LayoutParams(
 				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 
+		/* Once the layout is ok, load the Game */
 		initGame();
+
 	}
 
 	public void setHardwareCamera(android.hardware.Camera cam) {
@@ -326,59 +345,42 @@ public class GameActivity extends BaseGameActivity implements
 
 	// Gstreamer
 
-	static {
-		System.loadLibrary("gstreamer_android");
-		System.loadLibrary("towerdefender_gstreamer");
-		nativeClassInit();
-	}
-
 	public void surfaceChanged(SurfaceHolder holder, int format, int width,
 			int height) {
-		// Log.d("GStreamer", "Surface changed to format " + format + " width "
-		// + width + " height " + height);
 		nativeSurfaceInit(holder.getSurface());
 	}
 
 	public void surfaceCreated(SurfaceHolder holder) {
-		// Log.d("GStreamer", "Surface created: " + holder.getSurface());
 	}
 
 	public void surfaceDestroyed(SurfaceHolder holder) {
-		// Log.d("GStreamer", "Surface destroyed");
 		nativeSurfaceFinalize();
 	}
 
 	// Called from native code. This sets the content of the TextView from the
 	// UI thread.
 	private void setMessage(final String message) {
-		// final TextView tv = (TextView)
-		// this.findViewById(R.id.textview_message);
 		runOnUiThread(new Runnable() {
 			public void run() {
-				Log.d("GSTTT", message);
-				// tv.setText(message);
+				Log.d("Gstreamer Message", message);
 			}
 		});
 	}
 
 	private void onGStreamerInitialized() {
-		Log.i("GStreamer", "Gst initialized. Restoring state, playing:"
-				+ is_playing_desired);
-		// Restore previous playing state
-
-		// changeIpConnexion(10, 1, 1, 190);
-		// nativePause();
 		nativePlay();
+	}
 
-		// Re-enable buttons, now that GStreamer is initialized
+	public void updateIp(int a, int b, int c, int d) {
 
-		/*
-		 * final Activity activity = this; runOnUiThread(new Runnable() { public
-		 * void run() { //
-		 * activity.findViewById(R.id.button_play).setEnabled(true); //
-		 * activity.findViewById(R.id.button_stop).setEnabled(true); } });
-		 */
+		changeIpConnexion(a, b, c, d, 1);
+		nativePlay();
+	}
 
+	static {
+		System.loadLibrary("gstreamer_android");
+		System.loadLibrary("towerdefender_gstreamer");
+		nativeClassInit();
 	}
 
 }

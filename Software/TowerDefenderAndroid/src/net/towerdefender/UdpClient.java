@@ -14,7 +14,7 @@ import android.content.Context;
 import android.net.DhcpInfo;
 import android.net.wifi.WifiManager;
 
-public class UdpClient implements Runnable {
+public class UdpClient {
 	private int _recievePort = 6783;
 	private Context _context;
 	private int TIMEOUT_RECEPTION_REPONSE = 2000; // Time en ms
@@ -35,16 +35,11 @@ public class UdpClient implements Runnable {
 		return InetAddress.getByAddress(quads);
 	}
 
-	public void sendBroadcast() {
-
-	}
-
 	public ArrayList<Tower> getTowers() {
 		ArrayList<InetAddress> ipClients = new ArrayList<InetAddress>();
 		try {
 			ipClients = sendFrame();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		Iterator<InetAddress> it = ipClients.iterator();
@@ -80,19 +75,12 @@ public class UdpClient implements Runnable {
 		ArrayList<InetAddress> ipClients = new ArrayList<InetAddress>();
 		while (packet.getLength() == 0 || packet.getData()[0] == (byte) 0xD0) {
 			socket.receive(packet);
-
-			ipClients.add(socket.getInetAddress());
+			ipClients.add(packet.getAddress());
 		}
 		if (packet.getLength() > 0)
 			System.out.println(packet.getLength());
 		socket.close();
 
 		return ipClients;
-	}
-
-	@Override
-	public void run() {
-		// TODO Auto-generated method stub
-
 	}
 }
