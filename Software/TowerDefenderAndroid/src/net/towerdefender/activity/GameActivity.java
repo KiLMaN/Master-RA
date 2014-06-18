@@ -170,14 +170,26 @@ public class GameActivity extends BaseGameActivity implements
 			int[] ip = mCurrentlyControlledTower.getIpNumbers();
 			updateIp(ip[0], ip[1], ip[2], ip[3]);
 
+			this.runOnUiThread(new Runnable() {
+				@Override
+				public void run() {
+					mGstreamerView.getHolder().setFormat(PixelFormat.OPAQUE);
+				}
+			});
+
 		} else {
 			if (mCurrentlyControlledTower != null) {
 				this.mCurrentlyControlledTower.disconnect();
 				this.mCurrentlyControlledTower.stopCommunication();
 				this.mCurrentlyControlledTower.setControledByPlayer(false);
 				nativePause();
-				changeIpConnexion(127, 0, 0, 1, 1);
-				// TODO hide surface to see throught it !
+				this.runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						mGstreamerView.getHolder().setFormat(
+								PixelFormat.TRANSLUCENT);
+					}
+				});
 
 			}
 			this.mCurrentlyControlledTower = null;

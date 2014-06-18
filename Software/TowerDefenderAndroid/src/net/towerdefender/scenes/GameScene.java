@@ -252,9 +252,17 @@ public class GameScene extends BaseScene {
 						if (lastUpdate == 0) {
 							if (GameActivity.getInstance()
 									.getCurrentlyControlledTower() != null) {
-								GameActivity.getInstance()
-										.getCurrentlyControlledTower()
-										.moveH((int) (pValueX * 10));
+								if (pValueX < -0.1f || pValueX > 0.1f) {
+									GameActivity.getInstance()
+											.getCurrentlyControlledTower()
+											.moveH((int) (pValueX * 10));
+								}
+
+								if (pValueY < -0.1f || pValueY > 0.1f) {
+									GameActivity.getInstance()
+											.getCurrentlyControlledTower()
+											.moveVOffset((int) pValueY * 10);
+								}
 							}
 						} else {
 							lastUpdate--;
