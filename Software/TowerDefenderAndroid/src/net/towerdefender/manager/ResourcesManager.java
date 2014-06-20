@@ -34,6 +34,7 @@ public class ResourcesManager {
 
 	public Font Coolvetica;
 	public Font Sanford;
+	public Font Sanford_White;
 
 	public Engine engine;
 	public GameActivity activity;
@@ -367,6 +368,13 @@ public class ResourcesManager {
 				activity.getAssets(), "Sanford.ttf", 30, true, Color.BLACK, 2,
 				Color.BLACK, false);
 		Sanford.load();
+
+		Sanford_White = FontFactory.createStrokeFromAsset(
+				activity.getFontManager(), mainFontTextureSanford,
+				activity.getAssets(), "Sanford.ttf", 40, true, Color.WHITE, 2,
+				Color.WHITE, false);
+		Sanford_White.load();
+
 	}
 
 	public void unloadGameTextures() {

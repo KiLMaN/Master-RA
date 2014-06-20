@@ -14,9 +14,10 @@ import org.andengine.input.touch.TouchEvent;
 import org.andengine.opengl.util.GLState;
 import org.andengine.util.HorizontalAlign;
 
-public class Credit extends BaseScene implements IOnMenuItemClickListener {
+public class CreditScene extends BaseScene implements IOnMenuItemClickListener {
 
 	private Text credits;
+	private Sprite background;
 
 	@Override
 	public void createScene() {
@@ -25,10 +26,12 @@ public class Credit extends BaseScene implements IOnMenuItemClickListener {
 		credits = new Text(
 				0,
 				0,
-				resourcesManager.Coolvetica,
+				resourcesManager.Sanford_White,
 				"Bienvenue sur le jeu Tower Defender \nCe jeu à été développé par les Master 1 ISIM SIC\ndans le cadre du projet de synthèse de la formation\nPour plus d'informations sur le développement \net l'application rendez-vous sur le site \nwww.projetra.squadfree.net \n Merci",
 				new TextOptions(HorizontalAlign.CENTER), vbom);
-		credits.setPosition(150, 150);
+		credits.setPosition(camera.getCenterX()
+				- (credits.getWidthScaled() / 2), camera.getCenterY()
+				- (credits.getHeightScaled() / 2));
 		attachChild(credits);
 	}
 
@@ -43,8 +46,8 @@ public class Credit extends BaseScene implements IOnMenuItemClickListener {
 	}
 
 	private void createBackground() {
-		Sprite background = new Sprite(0, 0,
-				resourcesManager.menu_background_region, vbom) {
+		background = new Sprite(0, 0, resourcesManager.menu_background_region,
+				vbom) {
 			@Override
 			protected void preDraw(GLState pGLState, Camera pCamera) {
 				super.preDraw(pGLState, pCamera);
@@ -54,13 +57,14 @@ public class Credit extends BaseScene implements IOnMenuItemClickListener {
 			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent,
 					final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
 				if (pSceneTouchEvent.isActionUp())
-					SceneManager.getInstance().loadMenuScene(engine);
+					SceneManager.getInstance().loadMenuSceneFromCredit(engine);
 				return true;
 			}
 		};
 
 		background.setHeight(camera.getHeight());
 		background.setWidth(camera.getWidth());
+		this.registerTouchArea(background);
 		attachChild(background);
 
 	}
@@ -68,8 +72,15 @@ public class Credit extends BaseScene implements IOnMenuItemClickListener {
 	@Override
 	public void disposeScene() {
 		// TODO Auto-generated method stub
+		this.unregisterTouchArea(background);
+		background.detachSelf();
+		background.dispose();
+
 		credits.detachSelf();
 		credits.dispose();
+
+		this.detachSelf();
+		this.dispose();
 	}
 
 	@Override

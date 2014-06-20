@@ -1,7 +1,7 @@
 package net.towerdefender.manager;
 
 import net.towerdefender.scenes.BaseScene;
-import net.towerdefender.scenes.Credit;
+import net.towerdefender.scenes.CreditScene;
 import net.towerdefender.scenes.GameScene;
 import net.towerdefender.scenes.LoadingScene;
 import net.towerdefender.scenes.MainMenuScene;
@@ -148,8 +148,12 @@ public class SceneManager {
 				}));
 	}
 
+	public void loadMenuSceneFromCredit(final Engine mEngine) {
+		setScene(menuScene);
+	}
+
 	public void loadCreditScene(final Engine mEngine) {
-		creditScene = new Credit();
+		creditScene = new CreditScene();
 
 		setScene(creditScene);
 	}
