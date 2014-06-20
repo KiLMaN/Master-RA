@@ -223,11 +223,13 @@ public class CommunicationTower {
 	}
 
 	public void moveVOffset(int offset) {
+		if (offset == 0)
+			return;
 		moveV(offset + positionV);
 	}
 
 	public void moveV(int degree) {
-		if (degree == 0 || connected == false)
+		if (connected == false)
 			return;
 		if (degree > 60)
 			degree = 60;
