@@ -308,7 +308,8 @@ public class GameScene extends BaseScene {
 					resourcesManager.buttonOptionTower_region, vbom,
 					GameActivity.getInstance().getGame().getTowers().get(i));
 			pictureTower[i].setPosition(camera.getWidth() - (i + 2)
-					* widthButtons, camera.getHeight() - heightButtons);
+					* widthButtons - (int) (0.75 * widthButtons),
+					camera.getHeight() - heightButtons);
 			pictureTower[i].setHeight(heightButtons);
 			pictureTower[i].setWidth(widthButtons);
 			Text towerText = new Text(40, 25, resourcesManager.Coolvetica,
@@ -384,10 +385,11 @@ public class GameScene extends BaseScene {
 			}
 		};
 
-		pictureTablet.setPosition(camera.getWidth() - widthButton,
+		pictureTablet.setPosition(
+				camera.getWidth() - (int) (widthButton * 1.5),
 				camera.getHeight() - heightButton);
 		pictureTablet.setHeight(heightButton);
-		pictureTablet.setWidth(widthButton);
+		pictureTablet.setWidth((int) (widthButton * 1.5));
 
 		gameHUD.registerTouchArea(pictureTablet);
 		gameHUD.setTouchAreaBindingOnActionDownEnabled(true);
