@@ -41,10 +41,10 @@ public class MainMenuScene extends BaseScene implements
 
 		final IMenuItem playMenuItem = new ScaleMenuItemDecorator(
 				new SpriteMenuItem(MENU_PLAY, resourcesManager.play_region,
-						vbom), 1.2f, 1);
+						vbom), 0.8f, 0.6f);
 		final IMenuItem optionsMenuItem = new ScaleMenuItemDecorator(
 				new SpriteMenuItem(MENU_OPTIONS,
-						resourcesManager.options_region, vbom), 1.2f, 1);
+						resourcesManager.options_region, vbom), 0.8f, 0.6f);
 
 		menuChildScene.addMenuItem(playMenuItem);
 		menuChildScene.addMenuItem(optionsMenuItem);
@@ -52,8 +52,9 @@ public class MainMenuScene extends BaseScene implements
 		menuChildScene.buildAnimations();
 		menuChildScene.setBackgroundEnabled(false);
 
-		playMenuItem.setPosition(playMenuItem.getX(), playMenuItem.getY() + 10);
-		optionsMenuItem.setPosition(optionsMenuItem.getX(),
+		playMenuItem.setPosition(playMenuItem.getX() - 80,
+				playMenuItem.getY() + 100);
+		optionsMenuItem.setPosition(optionsMenuItem.getX() - 80,
 				optionsMenuItem.getY() + playMenuItem.getHeight());
 
 		menuChildScene.setOnMenuItemClickListener(this);
@@ -90,6 +91,7 @@ public class MainMenuScene extends BaseScene implements
 			SceneManager.getInstance().loadGameScene(engine);
 			return true;
 		case MENU_OPTIONS:
+			SceneManager.getInstance().loadCreditScene(engine);
 			return true;
 		default:
 			return false;

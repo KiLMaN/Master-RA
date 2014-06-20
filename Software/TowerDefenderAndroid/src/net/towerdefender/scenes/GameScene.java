@@ -47,7 +47,7 @@ public class GameScene extends BaseScene {
 	}
 
 	public void updateLife() {
-		lifeText.setText(" Lives : "
+		lifeText.setText(" Vies : "
 				+ GameActivity.getInstance().getGame().getCurrentPlayer()
 						.getLifesPlayer());
 
@@ -221,9 +221,9 @@ public class GameScene extends BaseScene {
 
 		// CREATE LIFE TEXT
 		lifeText = new Text(0, 0, resourcesManager.Coolvetica,
-				"Life : 987654321", new TextOptions(HorizontalAlign.LEFT), vbom);
+				"Vies : 987654321", new TextOptions(HorizontalAlign.LEFT), vbom);
 		lifeText.setPosition(0, 200);
-		lifeText.setText("Life : 0");
+		lifeText.setText("Vie : 0");
 		updateLife();
 		gameHUD.attachChild(lifeText);
 
@@ -261,7 +261,7 @@ public class GameScene extends BaseScene {
 								if (pValueY < -0.1f || pValueY > 0.1f) {
 									GameActivity.getInstance()
 											.getCurrentlyControlledTower()
-											.moveVOffset((int) pValueY * 10);
+											.moveVOffset((int) (pValueY * 10));
 								}
 							}
 						} else {

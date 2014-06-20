@@ -1,6 +1,7 @@
 package net.towerdefender.manager;
 
 import net.towerdefender.scenes.BaseScene;
+import net.towerdefender.scenes.Credit;
 import net.towerdefender.scenes.GameScene;
 import net.towerdefender.scenes.LoadingScene;
 import net.towerdefender.scenes.MainMenuScene;
@@ -27,6 +28,7 @@ public class SceneManager {
 	private BaseScene gameScene;
 	private BaseScene toolsScene;
 	private BaseScene loadingScene;
+	private BaseScene creditScene;
 
 	// ---------------------------------------------
 	// VARIABLES
@@ -41,7 +43,7 @@ public class SceneManager {
 	private Engine engine = ResourcesManager.getInstance().engine;
 
 	public enum SceneType {
-		SCENE_SPLASH, SCENE_MENU, SCENE_GAME, SCENE_LOADING, SCENE_OPTION
+		SCENE_SPLASH, SCENE_MENU, SCENE_GAME, SCENE_LOADING, SCENE_OPTION, SCENE_CREDIT
 	}
 
 	// ---------------------------------------------
@@ -68,6 +70,8 @@ public class SceneManager {
 		case SCENE_LOADING:
 			setScene(loadingScene);
 			break;
+		case SCENE_CREDIT:
+			setScene(creditScene);
 		default:
 			break;
 		}
@@ -142,5 +146,15 @@ public class SceneManager {
 						setScene(menuScene);
 					}
 				}));
+	}
+
+	public void loadCreditScene(final Engine mEngine) {
+		creditScene = new Credit();
+
+		setScene(creditScene);
+	}
+
+	public void diposeCreditScene() {
+		creditScene = null;
 	}
 }
