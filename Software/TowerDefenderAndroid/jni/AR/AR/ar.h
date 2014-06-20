@@ -26,13 +26,10 @@
 *   Rev		Date		Who		Changes
 *
 *----------------------------------------------------------------------------*/
-#define __linux
 
 #ifndef AR_H
 #define AR_H
-#ifdef __cplusplus
-extern "C" {
-#endif
+
 
 // ============================================================================
 //	Public includes.
@@ -815,7 +812,5 @@ double arsModifyMatrix( double rot[3][3], double trans[3], ARSParam *arsParam,
                         double pos3dL[][3], double pos2dL[][2], int numL,
                         double pos3dR[][3], double pos2dR[][2], int numR );
 
-#ifdef __cplusplus
-}
-#endif
+
 #endif

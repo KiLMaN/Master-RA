@@ -4,9 +4,6 @@
 
 #ifndef _Included_net_towerdefender_image_ARToolkit
 #define _Included_net_towerdefender_image_ARToolkit
-#ifdef __cplusplus
-extern "C" {
-#endif
 /*
  * Class:     net_towerdefender_image_ARToolkit
  * Method:    addObject
@@ -63,24 +60,18 @@ JNIEXPORT jint JNICALL Java_net_towerdefender_image_ARToolkit_arUtilMatInv
 JNIEXPORT jint JNICALL Java_net_towerdefender_image_ARToolkit_arUtilMatMul
   (JNIEnv *, jclass, jdoubleArray, jdoubleArray, jdoubleArray);
 
-#ifdef __cplusplus
-}
-#endif
+
 #endif
 /* Header for class net_towerdefender_image_ARToolkit_DetectMarkerWorker */
 
 #ifndef _Included_net_towerdefender_image_ARToolkit_DetectMarkerWorker
 #define _Included_net_towerdefender_image_ARToolkit_DetectMarkerWorker
-#ifdef __cplusplus
-extern "C" {
-#endif
+
 #undef net_towerdefender_image_ARToolkit_DetectMarkerWorker_MIN_PRIORITY
 #define net_towerdefender_image_ARToolkit_DetectMarkerWorker_MIN_PRIORITY 1L
 #undef net_towerdefender_image_ARToolkit_DetectMarkerWorker_NORM_PRIORITY
 #define net_towerdefender_image_ARToolkit_DetectMarkerWorker_NORM_PRIORITY 5L
 #undef net_towerdefender_image_ARToolkit_DetectMarkerWorker_MAX_PRIORITY
 #define net_towerdefender_image_ARToolkit_DetectMarkerWorker_MAX_PRIORITY 10L
-#ifdef __cplusplus
-}
-#endif
+
 #endif

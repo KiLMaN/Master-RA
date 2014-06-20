@@ -181,4 +181,12 @@ public abstract class ARObject {
 		this.hidden = hide;
 	}
 
+	public static float[] getProjMatrix() {
+		return glCameraMatrix.clone();
+	}
+
+	public float[] getModelMatrix() {
+		return glMatrix.clone();
+	}
+
 }

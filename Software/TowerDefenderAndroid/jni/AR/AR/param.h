@@ -30,9 +30,7 @@
 
 #ifndef AR_PARAM_H
 #define AR_PARAM_H
-#ifdef __cplusplus
-extern "C" {
-#endif
+
 
 // ============================================================================
 //	Public includes.
@@ -213,7 +211,5 @@ int    arsParamDisp( ARSParam *sparam );
 int    arsParamGetMat( double matL[3][4], double matR[3][4],
                        double cparaL[3][4], double cparaR[3][4], double matL2R[3][4] );
 
-#ifdef __cplusplus
-}
-#endif
+
 #endif

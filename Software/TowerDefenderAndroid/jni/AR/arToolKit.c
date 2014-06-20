@@ -23,6 +23,7 @@
  * license: GPL
  * This is the glue between the Java and the C part of AndAR.
  */
+#include <jni.h>
 
 //IMPORTS
 #include <GLES/gl.h>
@@ -35,6 +36,7 @@
 #include <stdlib.h>
 #include <simclist.h>
 #include <string.h>
+
 //END IMPORTS
 
 //DATASTRUCTURES

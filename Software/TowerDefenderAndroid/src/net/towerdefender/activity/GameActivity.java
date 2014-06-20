@@ -19,6 +19,7 @@ import net.towerdefender.image.GlyphObject;
 import net.towerdefender.image.IO;
 import net.towerdefender.manager.ResourcesManager;
 import net.towerdefender.manager.SceneManager;
+import net.towerdefender.opengl.LessonOneRenderer;
 
 import org.andengine.engine.Engine;
 import org.andengine.engine.camera.Camera;
@@ -35,6 +36,7 @@ import org.w3c.dom.Node;
 
 import android.graphics.PixelFormat;
 import android.opengl.GLSurfaceView;
+import android.opengl.GLSurfaceView.Renderer;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -67,7 +69,7 @@ public class GameActivity extends BaseGameActivity implements
 	private ResourcesManager resourcesManager;
 
 	/* Augmented Reality Renderer and Surface */
-	public ARRajawaliRender mARRajawaliRender;
+	//public ARRajawaliRender mARRajawaliRender;
 	private GLSurfaceView mRAView;
 
 	/* Marker detector */
@@ -173,6 +175,8 @@ public class GameActivity extends BaseGameActivity implements
 			this.runOnUiThread(new Runnable() {
 				@Override
 				public void run() {
+					// mCameraPreviewSurfaceView
+					// .setVisibility(SurfaceView.INVISIBLE);
 					mGstreamerView.getHolder().setFormat(PixelFormat.OPAQUE);
 				}
 			});
@@ -186,6 +190,8 @@ public class GameActivity extends BaseGameActivity implements
 				this.runOnUiThread(new Runnable() {
 					@Override
 					public void run() {
+						// mCameraPreviewSurfaceView
+						// .setVisibility(SurfaceView.VISIBLE);
 						mGstreamerView.getHolder().setFormat(
 								PixelFormat.TRANSLUCENT);
 					}
@@ -317,16 +323,17 @@ public class GameActivity extends BaseGameActivity implements
 		this.mRenderSurfaceView.setEGLContextClientVersion(2);
 		this.mRenderSurfaceView.setRenderer(this.mEngine, this);
 
-		this.mARRajawaliRender = new ARRajawaliRender(this);
+		//this.mARRajawaliRender = new ARRajawaliRender(this);
+		Renderer mRenderera = new LessonOneRenderer();
 		mRAView = new GLSurfaceView(this);
 
 		mRAView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
 		mRAView.getHolder().setFormat(PixelFormat.TRANSLUCENT);
 		mRAView.setEGLContextClientVersion(2);
-		mRAView.setRenderer(mARRajawaliRender);
+		mRAView.setRenderer(mRenderera);
 
 		markerInfo = new ARToolkit(getResources(), getFilesDir());
-		markerInfo.addVisibilityListener(mARRajawaliRender);
+		//markerInfo.addVisibilityListener(mRenderera);
 		mCameraPreview = new CameraPreviewHandler(mRAView, getResources(),
 				markerInfo);
 		try {
@@ -362,9 +369,9 @@ public class GameActivity extends BaseGameActivity implements
 		mCameraPreview.init(cam);
 
 		ARObject obj;/*
-					 * = new GlyphObject("test", "barcode.patt", 80.0, new
-					 * double[] { 0, 0 }); markerInfo.registerARObject(obj);
-					 */
+						* = new GlyphObject("test", "barcode.patt", 80.0, new
+						* double[] { 0, 0 }); markerInfo.registerARObject(obj);
+						*/
 
 		obj = new GlyphObject("test", "marker1.patt", 80.0,
 				new double[] { 0, 0 }, 0x00FFFF);
@@ -381,6 +388,10 @@ public class GameActivity extends BaseGameActivity implements
 		obj = new GlyphObject("test", "marker4.patt", 80.0,
 				new double[] { 0, 0 }, 0xFF00FF);
 		markerInfo.registerARObject(obj);
+	}
+
+	public ARToolkit getArtoolkit() {
+		return markerInfo;
 	}
 
 	public CameraPreviewSurfaceView getCameraPreviewSurface() {

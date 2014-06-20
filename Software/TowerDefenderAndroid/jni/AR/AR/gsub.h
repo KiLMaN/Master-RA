@@ -27,9 +27,7 @@
 
 #ifndef AR_GSUB_H
 #define AR_GSUB_H
-#ifdef __cplusplus
-extern "C" {
-#endif
+
 
 // ============================================================================
 //	Public includes.
@@ -325,7 +323,4 @@ void argsLineSeg( double x1, double y1, double x2, double y2, int xwin, int ywin
 void argsDrawSquare( double  vertex[4][2], int xwin, int ywin, int LorR );
 
 
-#ifdef __cplusplus
-}
-#endif
 #endif

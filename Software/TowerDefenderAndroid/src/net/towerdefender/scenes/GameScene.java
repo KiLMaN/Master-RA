@@ -324,13 +324,15 @@ public class GameScene extends BaseScene {
 	}
 
 	private void disposeTowersButtons() {
-		for (int i = 0; i < pictureTower.length; i++) {
-			if (pictureTower[i] != null) {
-				gameHUD.unregisterTouchArea(pictureTower[i]);
-				pictureTower[i].detachSelf();
-				if (!pictureTower[i].isDisposed())
-					pictureTower[i].dispose();
-				pictureTower[i] = null;
+		if (pictureTower != null) {
+			for (int i = 0; i < pictureTower.length; i++) {
+				if (pictureTower[i] != null) {
+					gameHUD.unregisterTouchArea(pictureTower[i]);
+					pictureTower[i].detachSelf();
+					if (!pictureTower[i].isDisposed())
+						pictureTower[i].dispose();
+					pictureTower[i] = null;
+				}
 			}
 		}
 	}
