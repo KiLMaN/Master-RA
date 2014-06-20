@@ -23,10 +23,6 @@
 #ifndef SIMCLIST_H
 #define SIMCLIST_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include <inttypes.h>
 #include <errno.h>
 #include <sys/types.h>
@@ -962,10 +958,6 @@ list_hash_t list_hashcomputer_double(const void *el);
  * @see list_attributes_hash_computer()
  */
 list_hash_t list_hashcomputer_string(const void *el);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif
 

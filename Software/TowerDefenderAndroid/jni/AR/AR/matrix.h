@@ -28,9 +28,6 @@
 
 #ifndef AR_MATRIX_H
 #define AR_MATRIX_H
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 // ============================================================================
 //	Public includes.
@@ -358,8 +355,5 @@ double arVecInnerproduct( ARVec *x, ARVec *y );
 int    arVecTridiagonalize( ARMat *a, ARVec *d, ARVec *e );
 
 
-#ifdef __cplusplus
-}
-#endif
 #endif
 

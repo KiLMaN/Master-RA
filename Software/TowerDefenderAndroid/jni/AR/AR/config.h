@@ -245,8 +245,8 @@
 #define   AR_PATT_SIZE_Y       16 
 #define   AR_PATT_SAMPLE_NUM   64
 
-#define   AR_GL_CLIP_NEAR      50.0
-#define   AR_GL_CLIP_FAR     5000.0
+#define   AR_GL_CLIP_NEAR     50.0
+#define   AR_GL_CLIP_FAR      5000.0
 
 #define   AR_HMD_XSIZE        640
 #define   AR_HMD_YSIZE        480

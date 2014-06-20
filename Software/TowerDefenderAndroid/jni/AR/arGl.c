@@ -80,6 +80,8 @@ static void argConvGLcpara2( double cparam[3][4], int width, int height, double 
             p[i][j] = icpara[i][j] / icpara[2][2];
         }
     }
+
+
     q[0][0] = (2.0 * p[0][0] / width);
     q[0][1] = (2.0 * p[0][1] / width);
     q[0][2] = ((2.0 * p[0][2] / width)  - 1.0);
@@ -99,6 +101,33 @@ static void argConvGLcpara2( double cparam[3][4], int width, int height, double 
     q[3][1] = 0.0;
     q[3][2] = 1.0;
     q[3][3] = 0.0;
+
+
+   /*int left = -width/2;
+    int right = width/2;
+
+    int bottom = -height/2;
+    int top = height/2;
+
+	q[0][0] = ( 2 * gnear )/ (right - left);
+	q[1][0] = 0.0;
+	q[2][0] = 0.0;
+	q[3][0] = 0.0;
+
+	q[0][1] = 0.0;
+	q[1][1] =  ( 2 * gnear )/ (top - bottom);
+	q[2][1] = 0.0;
+	q[3][1] = 0.0;
+
+	q[0][2] = (right + left) / (right - left);
+	q[1][2] = (top + bottom) / (top - bottom);
+	q[2][2] = -(gfar + gnear) / (gfar - gnear);
+	q[3][2] = -1;
+
+	q[0][3] = 0.0;
+	q[1][3] = 0.0;
+	q[2][3] = -(2 * gfar * gnear) / (gfar - gnear);
+	q[3][3] = 0.0;*/
 
     for( i = 0; i < 4; i++ ) {
         for( j = 0; j < 3; j++ ) {
