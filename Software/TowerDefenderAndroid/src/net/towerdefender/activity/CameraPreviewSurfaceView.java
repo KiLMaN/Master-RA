@@ -90,7 +90,7 @@ public class CameraPreviewSurfaceView extends GLSurfaceView implements
 	public void surfaceChanged(final SurfaceHolder pSurfaceHolder,
 			final int pPixelFormat, final int pWidth, final int pHeight) {
 		final Camera.Parameters parameters = this.mCamera.getParameters();
-		// parameters.setPreviewSize(pWidth, pHeight);
+		//parameters.setPreviewSize(pWidth, pHeight);
 		List<String> focusModes = parameters.getSupportedFocusModes();
 		if (focusModes.contains(Parameters.FOCUS_MODE_CONTINUOUS_VIDEO))
 			parameters.setFocusMode(Parameters.FOCUS_MODE_CONTINUOUS_VIDEO);
