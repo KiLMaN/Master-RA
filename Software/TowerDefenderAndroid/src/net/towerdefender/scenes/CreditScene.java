@@ -27,11 +27,11 @@ public class CreditScene extends BaseScene implements IOnMenuItemClickListener {
 				0,
 				0,
 				resourcesManager.Sanford_White,
-				"Bienvenue sur le jeu Tower Defender \nCe jeu à été développé par les Master 1 ISIM SIC\ndans le cadre du projet de synthèse de la formation\nPour plus d'informations sur le développement \net l'application rendez-vous sur le site \nwww.projetra.squadfree.net \n Merci",
+				"Bienvenue sur le jeu Tower Defender \nCe jeu à été développé par les Master 1 ISIM SIC\ndans le cadre du projet de synthèse de la formation\nPour plus d'informations sur le développement \net l'application rendez-vous sur le site www.projetra.squadfree.net \n Bon jeu",
 				new TextOptions(HorizontalAlign.CENTER), vbom);
 		credits.setPosition(camera.getCenterX()
 				- (credits.getWidthScaled() / 2), camera.getCenterY()
-				- (credits.getHeightScaled() / 2));
+				- (credits.getHeightScaled() / 2) + 140);
 		attachChild(credits);
 	}
 
