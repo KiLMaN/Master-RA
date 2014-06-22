@@ -1,7 +1,7 @@
 package net.towerdefender.image;
 
 import gameplay.Enemie;
-import gameplay.Tower;
+import android.opengl.Matrix;
 
 public class ScreenObject {
 	public enum ScreenObectType {
@@ -16,7 +16,6 @@ public class ScreenObject {
 
 	private ARObject _object;
 
-	private Tower _tower = null;
 	private Enemie _enemie = null;
 
 	public ScreenObject(int id, ScreenObectType type, float posX, float posY) {
@@ -35,19 +34,29 @@ public class ScreenObject {
 	}
 
 	public float getPosX() {
+		if (_type == ScreenObectType.SCREEN_OBJECT_ENEMIE)
+			return _enemie.getPosition().getPositionX();
 		return _posX;
 	}
 
 	public void setPosX(float _PosX) {
-		this._posX = _PosX;
+		if (_type == ScreenObectType.SCREEN_OBJECT_ENEMIE)
+			_enemie.getPosition().setPositionX(_PosX);
+		else
+			this._posX = _PosX;
 	}
 
 	public float getPosY() {
+		if (_type == ScreenObectType.SCREEN_OBJECT_ENEMIE)
+			return _enemie.getPosition().getPositionY();
 		return _posY;
 	}
 
 	public void setPosY(float _PosY) {
-		this._posY = _PosY;
+		if (_type == ScreenObectType.SCREEN_OBJECT_ENEMIE)
+			_enemie.getPosition().setPositionY(_PosY);
+		else
+			this._posY = _PosY;
 	}
 
 	public ScreenObectType getType() {
@@ -67,7 +76,27 @@ public class ScreenObject {
 	}
 
 	public void setPosition(float _PosX, float _PosY) {
-		this._posX = _PosX;
-		this._posY = _PosY;
+		setPosY(_PosX);
+		setPosY(_PosY);
 	}
+
+	public Enemie get_enemie() {
+		return _enemie;
+	}
+
+	public void set_enemie(Enemie _enemie) {
+		this._enemie = _enemie;
+	}
+
+	public float[] getModelMatrix(float[] matrixProj) {
+		float[] tran = new float[16];
+
+		Matrix.setIdentityM(tran, 0);
+		tran[12] = this.getPosX();
+		tran[13] = this.getPosY();
+		Matrix.multiplyMM(tran, 0, matrixProj, 0, tran, 0);
+		return tran;
+
+	}
+
 }

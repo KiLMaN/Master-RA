@@ -2,7 +2,7 @@ package gameplay;
 
 public class Enemie {
 
-	// TODO : ADD CLASS OF ENEMIE (HEALTH, SPEED)
+	private int idEnemie = 0;
 	private Position position;
 	private Position objectif;
 	private Path path;
@@ -151,5 +151,13 @@ public class Enemie {
 	public int getPoints() {
 		return this.points;
 
+	}
+
+	public int getId() {
+		return idEnemie;
+	}
+
+	public void setId(int idEnemie) {
+		this.idEnemie = idEnemie;
 	}
 }

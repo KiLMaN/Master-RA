@@ -8,6 +8,7 @@ import org.w3c.dom.NodeList;
 public class XMLParserWave {
 
 	public static ArrayList<Wave> parseXMLWaves(Node root) {
+		int countSpawn = 0;
 		ArrayList<Wave> waves = new ArrayList<Wave>();
 
 		NodeList listWave = XMLParser.getSubNodes(root, "wave");
@@ -29,6 +30,7 @@ public class XMLParserWave {
 
 					for (int cpt = 0; cpt < count; cpt++) {
 						Enemie en = new Enemie(health, speed, points);
+						en.setId(++countSpawn);
 						enemiesToSpawn.add(en);
 					}
 				}

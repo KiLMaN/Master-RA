@@ -1,5 +1,10 @@
 package net.towerdefender.opengl;
 
+import gameplay.Enemie;
+import gameplay.Game;
+import gameplay.Position;
+import gameplay.Tower;
+
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
@@ -18,13 +23,15 @@ import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 
+import comon.EnemieUpdateListener;
+
 /**
  * This class implements our custom renderer. Note that the GL10 parameter
  * passed in is unused for OpenGL ES 2.0 renderers -- the static class GLES20 is
  * used instead.
  */
 public class LessonOneRenderer implements MarkerDetectedListener,
-		GLSurfaceView.Renderer {
+		GLSurfaceView.Renderer, EnemieUpdateListener {
 
 	private ArrayList<ScreenObject> _screenObject = new ArrayList<ScreenObject>();
 
@@ -89,9 +96,11 @@ public class LessonOneRenderer implements MarkerDetectedListener,
 
 	private boolean bMarkerVisible = false;
 	private boolean bStart = false, bObjective = false, bTower = false;
-	private int nbTowerOk = 3;
+	private int nbTowerOk = 1;
 
 	public LessonOneRenderer() {
+		GameActivity.getInstance().getGame().addEnemieListener(this);
+
 		final float[] tourVerticesData = {
 				// X, Y, Z, 
 				// R, G, B, A
@@ -351,13 +360,17 @@ public class LessonOneRenderer implements MarkerDetectedListener,
 		GLES20.glClear(GLES20.GL_DEPTH_BUFFER_BIT | GLES20.GL_COLOR_BUFFER_BIT);
 
 		float[] mMVmatrix = new float[16];
-
-		for (ScreenObject screenObj : _screenObject) {
-
-			if (screenObj.getARObject().isVisible()) {
-				Matrix.setIdentityM(mMVmatrix, 0);
-				mMVmatrix[12] = screenObj.getPosX();
-				mMVmatrix[13] = screenObj.getPosY();
+		float[] mMatricProj = null;
+		if (markerRepere != null) {
+			mMatricProj = markerRepere.getModelMatrix();
+		}
+		for (int i = 0; i < _screenObject.size(); i++) {
+			ScreenObject screenObj = _screenObject.get(i);
+			if ((screenObj.getARObject() != null && screenObj.getARObject()
+					.isVisible()) || (screenObj.getARObject() == null)) {
+				//Matrix.setIdentityM(mMVmatrix, 0);
+				//mMVmatrix[12] = screenObj.getPosX();
+				//	mMVmatrix[13] = screenObj.getPosY();
 
 				// Project model in projection topDown
 				Matrix.multiplyMM(mMVmatrix, 0, mViewMatrixProjTopDown, 0,
@@ -367,8 +380,10 @@ public class LessonOneRenderer implements MarkerDetectedListener,
 				switch (screenObj.getType()) {
 				case SCREEN_OBJECT_ENEMIE:
 					//draw(mMVmatrix, mEnemieVertices, mProjectionMatrixTopDown);
-					draw(screenObj.getARObject().getModelMatrix(),
-							mEnemieVertices, mProjectionMatrixAR);
+					if (mMatricProj != null) {
+						draw(screenObj.getModelMatrix(mMatricProj),
+								mEnemieVertices, mProjectionMatrixAR);
+					}
 					break;
 				case SCREEN_OBJECT_OBJECTIVE:
 					//draw(mMVmatrix, mObjectifVertices, mProjectionMatrixTopDown);
@@ -396,6 +411,7 @@ public class LessonOneRenderer implements MarkerDetectedListener,
 				//		mTriangle2Vertices, mProjectionMatrixAR);
 
 			}
+			//_screenObject.notifyAll();
 		}
 
 	}
@@ -459,6 +475,8 @@ public class LessonOneRenderer implements MarkerDetectedListener,
 		}
 	}
 
+	ARObject markerRepere = null;
+
 	@Override
 	public void makerUpdated() {
 		// Update de la matrice de projectionAR // Pas necessaire mais au cas ou 
@@ -466,7 +484,7 @@ public class LessonOneRenderer implements MarkerDetectedListener,
 		bObjective = false;
 		bStart = false;
 		bTower = false;
-		ARObject markerRepere = null;
+		markerRepere = null;
 		ArrayList<ARObject> listeVisible = new ArrayList<ARObject>();
 
 		Vector<ARObject> vec = GameActivity.getInstance().getArtoolkit()
@@ -564,7 +582,8 @@ public class LessonOneRenderer implements MarkerDetectedListener,
 		// On verifie si toutes les positions sont mises
 		for (ScreenObject screenObj : _screenObject) {
 			// Si l'ID correspond alors on update les positions
-			if (screenObj.getARObject().isVisible()) {
+			if (screenObj.getARObject() != null
+					&& screenObj.getARObject().isVisible()) {
 				switch (screenObj.getType()) {
 				case SCREEN_OBJECT_ENEMIE:
 					break;
@@ -589,10 +608,75 @@ public class LessonOneRenderer implements MarkerDetectedListener,
 		}
 		// Calcul des position enemies
 		if (bMarkerVisible && (bStart && bObjective && bTower)) {
-			if (System.currentTimeMillis()
-					- GameActivity.getInstance().getGame().getLastGameTick() >= 100)
-				GameActivity.getInstance().getGame().gameTick();
+			Game currentGame = GameActivity.getInstance().getGame();
+			if (!currentGame.isPlaying()) {
+
+				ArrayList<Tower> listTower = GameActivity.getInstance()
+						.getGame().getListTowers();
+				boolean bNewTower = true;
+				for (ScreenObject screenObj : _screenObject) {
+					if (screenObj.getType() == ScreenObectType.SCREEN_OBJECT_TOWER) {
+						for (Tower tower : listTower) {
+							if (tower.getIdTower() == screenObj.getId()) {
+								tower.setPosition(new Position(screenObj
+										.getPosX(), screenObj.getPosY()));
+								bNewTower = false;
+								break;
+							}
+						}
+						if (bNewTower) {
+							System.out
+									.println("A tower has been found but not in the network");
+							Tower tower = new Tower(screenObj.getId(),
+									new Position(screenObj.getPosX(),
+											screenObj.getPosY()));
+							currentGame.addTower(tower);
+							//TODO: rescan network
+						}
+					} else if (screenObj.getType() == ScreenObectType.SCREEN_OBJECT_OBJECTIVE) {
+						currentGame.setObjectiveEnemie(new Position(screenObj
+								.getPosX(), screenObj.getPosY()));
+
+					} else if (screenObj.getType() == ScreenObectType.SCREEN_OBJECT_START) {
+						currentGame.setStartPointEnemie(new Position(screenObj
+								.getPosX(), screenObj.getPosY()));
+					}
+
+				}
+
+			} else {
+				if (!currentGame.isPaused()) {
+					if (System.currentTimeMillis()
+							- GameActivity.getInstance().getGame()
+									.getLastGameTick() >= 100) {
+						GameActivity.getInstance().getGame().gameTick();
+					}
+				}
+			}
+
 		}
 
+	}
+
+	@Override
+	public void EnemieSpawned(Enemie en) {
+		ScreenObject sc = new ScreenObject(en.getId(),
+				ScreenObectType.SCREEN_OBJECT_ENEMIE, 0, 0);
+		sc.set_enemie(en);
+		_screenObject.add(sc);
+
+	}
+
+	@Override
+	public void EnemieDied(Enemie en) {
+		ScreenObject toRemove = null;
+		for (ScreenObject sc : _screenObject) {
+			if (sc.getId() == en.getId()
+					&& sc.getType() == ScreenObectType.SCREEN_OBJECT_ENEMIE) {
+				toRemove = sc;
+				break;
+			}
+		}
+		_screenObject.remove(toRemove);
 	}
 }

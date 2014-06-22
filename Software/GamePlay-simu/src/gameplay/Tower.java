@@ -70,6 +70,10 @@ public class Tower extends CommunicationTower {
 		return this.position;
 	}
 
+	public void setPosition(Position _pos) {
+		this.position = _pos;
+	}
+
 	/*
 	 * public int getKillSuccessRatio() { return this.killSuccessRatio; }
 	 * 
@@ -294,5 +298,10 @@ public class Tower extends CommunicationTower {
 
 	public ArrayList<Pweapon> getWeapons() {
 		return this.pweapons;
+	}
+
+	public void setID(int idFromIP) {
+		this.idTower = idFromIP;
+
 	}
 }

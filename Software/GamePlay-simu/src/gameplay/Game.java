@@ -2,6 +2,9 @@ package gameplay;
 
 import java.util.ArrayList;
 
+import comon.EnemieUpdateListener;
+import comon.GameTickUpdateListener;
+
 public class Game {
 
 	public static Game currentGame;
@@ -20,6 +23,8 @@ public class Game {
 	private ArrayList<Wave> listWaves;
 	private ArrayList<Tower> listTowers;
 	private ArrayList<Weapon> defaultWeapons;
+	private ArrayList<GameTickUpdateListener> _listUpdate;
+	private ArrayList<EnemieUpdateListener> _listUpdateEnemie;
 
 	private Position startPointEnemie;
 	private Position objectiveEnemie;
@@ -33,6 +38,8 @@ public class Game {
 		this.listWaves = waves; // utile ?
 		this.startPointEnemie = startPoint;
 		this.objectiveEnemie = objectivePoint;
+		_listUpdate = new ArrayList<GameTickUpdateListener>();
+		_listUpdateEnemie = new ArrayList<EnemieUpdateListener>();
 	}
 
 	public Game(ArrayList<Tower> towers, ArrayList<Wave> waves) {
@@ -45,6 +52,10 @@ public class Game {
 
 	public Game() {
 		this(new ArrayList<Tower>(), new ArrayList<Wave>());
+	}
+
+	public void addTickListener(GameTickUpdateListener gtu) {
+		this._listUpdate.add(gtu);
 	}
 
 	/* Global Game Tick */
@@ -69,8 +80,12 @@ public class Game {
 				if (currentWave.getSpawnCooldown() == 0) {
 					// Generer des enemis (1)
 					// Et Supprimer 1 du compteur de la currentWave
-					currentWave.spawnEnemies(1, startPointEnemie,
-							objectiveEnemie);
+					ArrayList<Enemie> listSpawn = currentWave.spawnEnemies(1,
+							startPointEnemie, objectiveEnemie);
+
+					for (Enemie en : listSpawn)
+						for (EnemieUpdateListener listener : _listUpdateEnemie)
+							listener.EnemieSpawned(en);
 					// Reset du cooldown
 					currentWave
 							.setSpawnCooldown(GameConfig.ENEMIE_SPAWN_COOLDOWN);
@@ -112,6 +127,8 @@ public class Game {
 
 					for (Enemie enemie : enemiesToKill) {
 						currentWave.enemieKilled(enemie);
+						for (EnemieUpdateListener listener : _listUpdateEnemie)
+							listener.EnemieDied(enemie);
 					}
 				}
 
@@ -139,6 +156,9 @@ public class Game {
 								/* System.out.println("Ennemi Mort !"); */
 								currentWave.enemieKilled(target);
 								this.addPoints(target.getPoints());
+
+								for (EnemieUpdateListener listener : _listUpdateEnemie)
+									listener.EnemieDied(target);
 							}
 						} else
 							tower.targetClosestEnemi(enemiesAlive);
@@ -159,6 +179,9 @@ public class Game {
 				}
 			}
 		}
+
+		for (GameTickUpdateListener update : _listUpdate)
+			update.gameTick();
 	}
 
 	public boolean isPlaying() {
@@ -319,5 +342,25 @@ public class Game {
 
 	public long getLastGameTick() {
 		return _lastGameTick;
+	}
+
+	public void addTower(Tower tower) {
+
+		ArrayList<Pweapon> pweapons = new ArrayList<Pweapon>();
+		for (Weapon weapon : defaultWeapons) {
+			Pweapon pweapon = null;
+			pweapon = new Pweapon(weapon, weapon.getReloadingTime(),
+					weapon.isLockedByDefault());
+			pweapons.add(pweapon);
+		}
+		tower.setWeapons(pweapons);
+		this.listTowers.add(tower);
+		// TODO Auto-generated method stub
+
+	}
+
+	public void addEnemieListener(EnemieUpdateListener enemieUpdateListener) {
+		this._listUpdateEnemie.add(enemieUpdateListener);
+
 	}
 }

@@ -51,8 +51,9 @@ public class UdpClient {
 		while (it.hasNext()) {
 			InetAddress a = it.next();
 
-			Tower t = new Tower(cpt++, new Position());
+			Tower t = new Tower(cpt++, new Position(0, 0));
 			t.setIp(a.toString());
+			t.setID(t.getIdFromIP());
 			towers.add(t);
 		}
 

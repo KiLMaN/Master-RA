@@ -59,6 +59,10 @@ public class CommunicationTower {
 		return ip;
 	}
 
+	public int getIdFromIP() {
+		return this.getIpNumbers()[3] - 100;
+	}
+
 	// / TCP client
 	private void runTcpClient() {
 		if (SERVER_IP == "")

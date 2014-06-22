@@ -25,7 +25,9 @@ import org.andengine.opengl.vbo.VertexBufferObjectManager;
 import org.andengine.util.HorizontalAlign;
 import org.andengine.util.color.Color;
 
-public class GameScene extends BaseScene {
+import comon.GameTickUpdateListener;
+
+public class GameScene extends BaseScene implements GameTickUpdateListener {
 
 	private HUD gameHUD;
 	private Sprite pictureSettings;
@@ -58,6 +60,8 @@ public class GameScene extends BaseScene {
 		createBackground();
 		createController();
 		createHUD();
+
+		GameActivity.getInstance().getGame().addTickListener(this);
 
 		// currentControlTower = new Tower(new Position());
 		// currentControlTower.setIp("192.168.1.7");
@@ -110,6 +114,29 @@ public class GameScene extends BaseScene {
 		setBackgroundEnabled(false);
 	}
 
+	private boolean playButtonOn = false;
+
+	private void switchPlayPauseButton(boolean bPlay) {
+		if (bPlay) {
+			playButtonOn = true;
+			picturePlay
+					.setTextureRegion(resourcesManager.buttonOptionPause_region);
+		} else {
+			playButtonOn = false;
+			picturePlay
+					.setTextureRegion(resourcesManager.buttonOptionPlay_region);
+		}
+
+	}
+
+	private void picturePlayPausePressed() {
+		if (!playButtonOn) {
+			GameActivity.getInstance().getGame().setPlaying(true);
+			GameActivity.getInstance().getGame().setPaused(false);
+			switchPlayPauseButton(true);
+		}
+	}
+
 	private void createHUD() {
 		gameHUD = new HUD();
 
@@ -137,20 +164,6 @@ public class GameScene extends BaseScene {
 		gameHUD.attachChild(pictureSettings);
 		// CREATE SPRITE PAUSE
 
-		// TODO: mettre l'affichage en true si le jeu est en route
-
-		/*
-		 * picturePause = new Sprite(0, 0,
-		 * resourcesManager.buttonOptionPause_region, vbom) {
-		 * 
-		 * @Override protected void preDraw(GLState pGLState, Camera pCamera) {
-		 * super.preDraw(pGLState, pCamera); pGLState.enableDither(); } };
-		 * picturePause.setPosition(camera.getWidth() - 100, 0);
-		 * picturePause.setHeight(100); picturePause.setWidth(100);
-		 * gameHUD.attachChild(picturePause);
-		 */
-		// TODO: mettre l'affichage en true si le jeu est en pause
-
 		picturePlay = new Sprite(0, 0,
 				resourcesManager.buttonOptionPlay_region, vbom) {
 
@@ -163,41 +176,8 @@ public class GameScene extends BaseScene {
 			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent,
 					final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
 				if (pSceneTouchEvent.isActionUp()) {
-					// addToScore(1);
-
-					gameHUD.unregisterTouchArea(picturePlay);
-					picturePlay.detachSelf();
-					picturePlay.dispose();
-					picturePlay = null;
-
-					picturePause = new Sprite(0, 0,
-							resourcesManager.buttonOptionPause_region, vbom) {
-
-						@Override
-						protected void preDraw(GLState pGLState, Camera pCamera) {
-							super.preDraw(pGLState, pCamera);
-							pGLState.enableDither();
-						}
-
-						public boolean onAreaTouched(
-								final TouchEvent pSceneTouchEvent,
-								final float pTouchAreaLocalX,
-								final float pTouchAreaLocalY) {
-							if (pSceneTouchEvent.isActionUp()) {
-
-							}
-							return true;
-						}
-					};
-					picturePause.setPosition(camera.getWidth() - 100, 0);
-					picturePause.setHeight(100);
-					picturePause.setWidth(100);
-					gameHUD.registerTouchArea(picturePause);
-					gameHUD.setTouchAreaBindingOnActionDownEnabled(true);
-					gameHUD.attachChild(picturePause);
-
+					picturePlayPausePressed();
 				}
-
 				return true;
 			}
 		};
@@ -205,6 +185,7 @@ public class GameScene extends BaseScene {
 		picturePlay.setPosition(camera.getWidth() - 100, 0);
 		picturePlay.setHeight(100);
 		picturePlay.setWidth(100);
+		switchPlayPauseButton(false);
 
 		gameHUD.registerTouchArea(picturePlay);
 		gameHUD.setTouchAreaBindingOnActionDownEnabled(true);
@@ -472,5 +453,12 @@ public class GameScene extends BaseScene {
 			return true;
 		}
 
+	}
+
+	@Override
+	public void gameTick() {
+		switchPlayPauseButton(!GameActivity.getInstance().getGame().isPaused());
+		updateScore();
+		updateLife();
 	}
 }
