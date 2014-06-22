@@ -5,13 +5,13 @@ import java.util.Vector;
 import javax.microedition.khronos.opengles.GL10;
 
 import net.towerdefender.image.ARObject;
-import net.towerdefender.image.MarkerVisibilityListener;
+import net.towerdefender.image.MarkerDetectedListener;
 import rajawali.lights.DirectionalLight;
 import rajawali.renderer.RajawaliRenderer;
 import android.content.Context;
 
 public class ARRajawaliRender extends RajawaliRenderer implements
-		MarkerVisibilityListener {
+		MarkerDetectedListener {
 
 	// private Object3D monkey;
 	// private Cube[] cube = new Cube[4];
@@ -47,19 +47,6 @@ public class ARRajawaliRender extends RajawaliRenderer implements
 	}
 
 	@Override
-	public void makerVisibilityChanged(boolean visible) {
-		bMarkerVisible = visible;
-		if (bMarkerVisible) {
-
-			startRendering();
-
-		} else {
-
-			stopRendering();
-		}
-	}
-
-	@Override
 	protected void onRender(final double deltaTime) {
 		Vector<ARObject> objects = GameActivity.getInstance().markerInfo
 				.getObjects();
@@ -71,6 +58,7 @@ public class ARRajawaliRender extends RajawaliRenderer implements
 		}
 		render(deltaTime);
 	}
+
 	/*
 	 * void lineSeg(double x1, double y1, double x2, double y2,
 	 * ARGL_CONTEXT_SETTINGS_REF contextSettings, ARParam cparam, double zoom) {
@@ -88,4 +76,24 @@ public class ARRajawaliRender extends RajawaliRenderer implements
 	 * ox = 0; oy = cparam.ysize - 1; glBegin(GL_LINES); glVertex2f(ox + xx1, oy
 	 * - yy1); glVertex2f(ox + xx2, oy - yy2); glEnd(); glFlush(); }
 	 */
+
+	@Override
+	public void makerDetected(boolean visible) {
+		bMarkerVisible = visible;
+		if (bMarkerVisible) {
+
+			startRendering();
+
+		} else {
+
+			stopRendering();
+		}
+
+	}
+
+	@Override
+	public void makerUpdated() {
+		// TODO Auto-generated method stub
+
+	}
 }

@@ -110,7 +110,7 @@ public class EngineRenderer implements GLSurfaceView.Renderer {
 	public void onDrawFrame(final GL10 pGL) {
 
 		GLES20.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
-		GLES20.glClearColor(0, 0, 0, .5f);
+		GLES20.glClearColor(0, 0, 0, 0);
 
 		synchronized (GLState.class) {
 			if (this.mMultiSampling

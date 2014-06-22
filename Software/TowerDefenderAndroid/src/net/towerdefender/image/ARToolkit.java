@@ -54,7 +54,7 @@ public class ARToolkit {
 	 */
 	private Object transMatMonitor = new Object();
 	private DetectMarkerWorker detectMarkerWorker = new DetectMarkerWorker();
-	private List<MarkerVisibilityListener> visListeners = new ArrayList<MarkerVisibilityListener>();
+	private List<MarkerDetectedListener> visListeners = new ArrayList<MarkerDetectedListener>();
 	private Vector<ARObject> arobjects = new Vector<ARObject>();
 
 	public Vector<ARObject> getObjects() {
@@ -268,8 +268,8 @@ public class ARToolkit {
 	}
 
 	public void addVisibilityListener(
-			MarkerVisibilityListener markerVisibilityListener) {
-		visListeners.add(markerVisibilityListener);
+			MarkerDetectedListener markerDetectedListener) {
+		visListeners.add(markerDetectedListener);
 	}
 
 	class DetectMarkerWorker extends Thread {
@@ -307,28 +307,28 @@ public class ARToolkit {
 				int currNumMakers = artoolkit_detectmarkers(curFrame,
 						transMatMonitor);
 				if (lastNumMarkers > 0 && currNumMakers > 0) {
-					// visible
+					notifyUpdate();
 				} else if (lastNumMarkers == 0 && currNumMakers > 0) {
-					// detected a marker
-					notifyChange(true, currNumMakers);
+					notifyChange(true);
+					notifyUpdate();
 				} else if (lastNumMarkers > 0 && currNumMakers == 0) {
-					// lost the marker
-					notifyChange(false, currNumMakers);
+					notifyChange(false);
+					notifyUpdate();
 				}
 				lastNumMarkers = currNumMakers;
 			}
 		}
 
-		private void notifyChange(boolean visible, int currentNumMarkers) {
-
-			for (final MarkerVisibilityListener visListener : visListeners) {
-				visListener.makerVisibilityChanged(visible);
+		private void notifyChange(boolean visible) {
+			for (final MarkerDetectedListener visListener : visListeners) {
+				visListener.makerDetected(visible);
 			}
+		}
 
-			/*
-			 * Log.w("Change Marker", "New marker :" + visible + "nb : " +
-			 * currentNumMarkers);
-			 */
+		private void notifyUpdate() {
+			for (final MarkerDetectedListener visListener : visListeners) {
+				visListener.makerUpdated();
+			}
 		}
 
 		final void nextFrame(byte[] frame) {

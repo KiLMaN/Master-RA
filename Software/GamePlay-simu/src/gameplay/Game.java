@@ -24,6 +24,8 @@ public class Game {
 	private Position startPointEnemie;
 	private Position objectiveEnemie;
 
+	private long _lastGameTick;
+
 	public Game(ArrayList<Tower> towers, ArrayList<Wave> waves,
 			Position startPoint, Position objectivePoint) {
 		currentGame = this;
@@ -48,6 +50,9 @@ public class Game {
 	/* Global Game Tick */
 	/* Toute la logique du jeu est inclue dans cette fonction */
 	public void gameTick() {
+		// Pour eviter que les updates se fassent trop rapidement
+		_lastGameTick = System.currentTimeMillis();
+
 		// TODO :
 		// Si la partie n'est pas en pause
 		if (!isPaused()) {
@@ -310,5 +315,9 @@ public class Game {
 
 		} else
 			System.err.println("Cannot remove '" + nbPoints + "' points");
+	}
+
+	public long getLastGameTick() {
+		return _lastGameTick;
 	}
 }

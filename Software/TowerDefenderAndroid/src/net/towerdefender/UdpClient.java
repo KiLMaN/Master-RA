@@ -13,6 +13,7 @@ import java.util.Iterator;
 import android.content.Context;
 import android.net.DhcpInfo;
 import android.net.wifi.WifiManager;
+import android.util.Log;
 
 public class UdpClient {
 	private int _recievePort = 6783;
@@ -37,13 +38,15 @@ public class UdpClient {
 
 	public ArrayList<Tower> getTowers() {
 		ArrayList<InetAddress> ipClients = new ArrayList<InetAddress>();
+		ArrayList<Tower> towers = new ArrayList<Tower>();
 		try {
 			ipClients = sendFrame();
 		} catch (Exception e) {
-			e.printStackTrace();
+			Log.w("Towers ", "No towers found in network !");
+			return towers;
 		}
 		Iterator<InetAddress> it = ipClients.iterator();
-		ArrayList<Tower> towers = new ArrayList<Tower>();
+
 		int cpt = 1;
 		while (it.hasNext()) {
 			InetAddress a = it.next();

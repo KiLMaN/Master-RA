@@ -11,7 +11,9 @@ import javax.microedition.khronos.opengles.GL10;
 
 import net.towerdefender.activity.GameActivity;
 import net.towerdefender.image.ARObject;
-import net.towerdefender.image.MarkerVisibilityListener;
+import net.towerdefender.image.MarkerDetectedListener;
+import net.towerdefender.image.ScreenObject;
+import net.towerdefender.image.ScreenObject.ScreenObectType;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
@@ -21,21 +23,23 @@ import android.opengl.Matrix;
  * passed in is unused for OpenGL ES 2.0 renderers -- the static class GLES20 is
  * used instead.
  */
-public class LessonOneRenderer implements MarkerVisibilityListener,
+public class LessonOneRenderer implements MarkerDetectedListener,
 		GLSurfaceView.Renderer {
+
+	private ArrayList<ScreenObject> _screenObject = new ArrayList<ScreenObject>();
+
 	/**
 	 * Store the model matrix. This matrix is used to move models from object
 	 * space (where each model can be thought of being located at the center of
 	 * the universe) to world space.
 	 */
-	private float[] mModelMatrix = new float[16];
+	//private float[] mModelMatrix = new float[16];
 
 	/**
 	 * Store the view matrix. This can be thought of as our camera. This matrix
 	 * transforms world space to eye space; it positions things relative to our
 	 * eye.
 	 */
-	private float[] mViewMatrix = new float[16];
 	private float[] mViewMatrixProjTopDown = new float[16];
 	/**
 	 * Store the projection matrix. This is used to project the scene onto a 2D
@@ -44,16 +48,12 @@ public class LessonOneRenderer implements MarkerVisibilityListener,
 	private float[] mProjectionMatrixTopDown = new float[16];
 	private float[] mProjectionMatrixAR = new float[16];
 
-	/**
-	 * Allocate storage for the final combined matrix. This will be passed into
-	 * the shader program.
-	 */
-	private float[] mMVPMatrix = new float[16];
-
 	/** Store our model data in a float buffer. */
 	//private final FloatBuffer mTriangle1Vertices;
-	private final FloatBuffer mTriangle2Vertices;
-	private final FloatBuffer mTriangle3Vertices;
+	private final FloatBuffer mTowerVertices;
+	private final FloatBuffer mStartVertices;
+	private final FloatBuffer mObjectifVertices;
+	private final FloatBuffer mEnemieVertices;
 
 	/** This will be used to pass in the transformation matrix. */
 	private int mMVMatrixHandle;
@@ -83,26 +83,16 @@ public class LessonOneRenderer implements MarkerVisibilityListener,
 	/** Size of the color data in elements. */
 	private final int mColorDataSize = 4;
 
-	private int idRepere = 1;
+	private int idObjectif = 0;
 
-	/**
-	 * Initialize the model data.
-	 */
+	private int idStart = 1;
+
+	private boolean bMarkerVisible = false;
+	private boolean bStart = false, bObjective = false, bTower = false;
+	private int nbTowerOk = 3;
+
 	public LessonOneRenderer() {
-		// Define points for equilateral triangles.
-
-		// This triangle is red, green, and blue.
-		/*final float[] triangle1VerticesData = {
-				// X, Y, Z, 
-				// R, G, B, A
-				-0.5f, -0.25f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f,
-
-				0.5f, -0.25f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f,
-
-				0.0f, 0.559016994f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f };*/
-
-		// This triangle is yellow, cyan, and magenta.
-		final float[] triangle2VerticesData = {
+		final float[] tourVerticesData = {
 				// X, Y, Z, 
 				// R, G, B, A
 				0f, 0f, 25f, 1.0f, 0f, 0f, 1f,
@@ -119,43 +109,79 @@ public class LessonOneRenderer implements MarkerVisibilityListener,
 
 		};
 
-		// This triangle is white, gray, and black.
-		final float[] triangle3VerticesData = {
-				// X, Y, Z, 
-				// R, G, B, A
-				0f, 0f, 25f, 1.0f, 0f, 0f, 1f,
+		final float[] startVerticesData = {
+				// X, Y, Z, R, G, B, A
+				0f, 0f, 25f, 1.0f, 0.9f, 0f, 1f,
 
-				-25f, -25f, 0f, 0.0f, 0.0f, 1.0f, 1.0f,
+				-25f, -25f, 0f, 1.0f, 0.5f, 0.5f, 1f,
 
-				-25f, 25f, 0f, 0.0f, 0.0f, 1.0f, 1.0f,
+				-25f, 25f, 0f, 1.0f, 0.5f, 0.5f, 1f,
 
-				25f, 25f, 0f, 0.0f, 0.0f, 1.0f, 1.0f,
+				25f, 25f, 0f, 1.0f, 0.5f, 0.5f, 1f,
 
-				25f, -25f, 0f, 0.0f, 0.0f, 1.0f, 1.0f,
+				25f, -25f, 0f, 1.0f, 0.5f, 0.5f, 1f,
 
-				-25f, -25f, 0f, 0.0f, 0.0f, 1.0f, 1.0f };
+				-25f, -25f, 0f, 1.0f, 0.5f, 0.5f, 1f,
+
+		};
+
+		final float[] objectifVerticesData = {
+				// X, Y, Z, R, G, B, A
+				0f, 0f, 25f, 0.0f, 1.0f, 0.0f, 1f,
+
+				-25f, -25f, 0f, 0.0f, 0.7f, 0.33f, 1f,
+
+				-25f, 25f, 0f, 0.0f, 0.7f, 0.33f, 1f,
+
+				25f, 25f, 0f, 0.0f, 0.7f, 0.3f, 1f,
+
+				25f, -25f, 0f, 0.0f, 0.7f, 0.33f, 1f,
+
+				-25f, -25f, 0f, 0.0f, 0.7f, 0.33f, 1f,
+
+		};
+
+		final float[] enemieVerticesData = {
+				// X, Y, Z, R, G, B, A
+				0f, 0f, 10f, 1.0f, 0.0f, 0.0f, 1f,
+
+				-10f, -10f, 0f, 1.0f, 0.0f, 0.5f, 1f,
+
+				-10f, 10f, 0f, 1.0f, 0.0f, 0.5f, 1f,
+
+				10f, 10f, 0f, 1.0f, 0.0f, 0.5f, 1f,
+
+				10f, -10f, 0f, 1.0f, 0.0f, 0.5f, 1f,
+
+				-10f, -10f, 0f, 1.0f, 0.0f, 0.5f, 1f,
+
+		};
 
 		// Initialize the buffers.
-		/*mTriangle1Vertices = ByteBuffer
-				.allocateDirect(triangle1VerticesData.length * mBytesPerFloat)
-				.order(ByteOrder.nativeOrder()).asFloatBuffer();*/
-		mTriangle2Vertices = ByteBuffer
-				.allocateDirect(triangle2VerticesData.length * mBytesPerFloat)
+		mTowerVertices = ByteBuffer
+				.allocateDirect(tourVerticesData.length * mBytesPerFloat)
 				.order(ByteOrder.nativeOrder()).asFloatBuffer();
-		mTriangle3Vertices = ByteBuffer
-				.allocateDirect(triangle3VerticesData.length * mBytesPerFloat)
+		mStartVertices = ByteBuffer
+				.allocateDirect(startVerticesData.length * mBytesPerFloat)
+				.order(ByteOrder.nativeOrder()).asFloatBuffer();
+		mObjectifVertices = ByteBuffer
+				.allocateDirect(objectifVerticesData.length * mBytesPerFloat)
+				.order(ByteOrder.nativeOrder()).asFloatBuffer();
+		mEnemieVertices = ByteBuffer
+				.allocateDirect(enemieVerticesData.length * mBytesPerFloat)
 				.order(ByteOrder.nativeOrder()).asFloatBuffer();
 
 		//mTriangle1Vertices.put(triangle1VerticesData).position(0);
-		mTriangle2Vertices.put(triangle2VerticesData).position(0);
-		mTriangle3Vertices.put(triangle3VerticesData).position(0);
+		mTowerVertices.put(tourVerticesData).position(0);
+		mStartVertices.put(startVerticesData).position(0);
+		mObjectifVertices.put(objectifVerticesData).position(0);
+		mEnemieVertices.put(enemieVerticesData).position(0);
 		Matrix.setIdentityM(mProjectionMatrixAR, 0);
 	}
 
 	@Override
 	public void onSurfaceCreated(GL10 glUnused, EGLConfig config) {
-		// Set the background clear color to gray.
-		GLES20.glClearColor(1f, 0f, 0f, 0.5f);
+		GLES20.glClearColor(0, 0, 0, 0);
 
 		final String vertexShader = "precision mediump float; \n"
 				+ "attribute vec3 a_Position; \n"
@@ -280,25 +306,12 @@ public class LessonOneRenderer implements MarkerVisibilityListener,
 		// Set the OpenGL viewport to the same size as the surface.
 		GLES20.glViewport(0, 0, width, height);
 
-		// Create a new perspective projection matrix. The height will stay the same
-		// while the width will vary as per aspect ratio.
-		//final float ratio = (float) width / height;
-		final float left = -width / 2;
-		final float right = width / 2;
-		final float bottom = -height / 2;
-		final float top = height / 2;
-		final float near = 1.0f;
-		final float far = 50.0f;
-		Matrix.orthoM(mProjectionMatrixTopDown, 0, left, right, bottom, top,
-				near, far);
-		//Matrix.frustumM(mProjectionMatrixTopDown, 0, left, right, bottom, top, near, far);
-
 		GameActivity.getInstance().getArtoolkit().setScreenSize(width, height);
 
 		// Position the eye behind the origin.
 		float eyeX = 0f;
 		float eyeY = 0f;
-		float eyeZ = -0.1f;
+		float eyeZ = 0f;
 
 		// We are looking toward the distance
 		final float lookX = 0.0f;
@@ -309,21 +322,150 @@ public class LessonOneRenderer implements MarkerVisibilityListener,
 		final float upX = 0.0f;
 		final float upY = 1.0f;
 		final float upZ = 0.0f;
-
-		// Set the view matrix. This matrix can be said to represent the camera position.
-		// NOTE: In OpenGL 1, a ModelView matrix is used, which is a combination of a model and
-		// view matrix. In OpenGL 2, we can keep track of these matrices separately if we choose.
 		Matrix.setLookAtM(mViewMatrixProjTopDown, 0, eyeX, eyeY, eyeZ, lookX,
 				lookY, lookZ, upX, upY, upZ);
+
+		final float left = -width / 2;
+		final float right = width / 2;
+		final float bottom = -height / 2;
+		final float top = height / 2;
+		final float near = 1.0f;
+		final float far = 50.0f;
+
+		// Projection Ortho, on n'as pas de perspective
+		Matrix.orthoM(mProjectionMatrixTopDown, 0, left, right, bottom, top,
+				near, far);
+		//Matrix.frustumM(mProjectionMatrixTopDown, 0, left, right, bottom, top, near, far);
 
 	}
 
 	@Override
 	public void onDrawFrame(GL10 glUnused) {
+		// Si on a pas assez d'information pour le calcul alors on affiche un fond rouge en plus
+		if (bMarkerVisible && (bStart && bObjective && bTower))
+			GLES20.glClearColor(0, 0, 0, 0);
+		else
+			GLES20.glClearColor(1, 0, 0, 0.05f);
 
+		// netoyer l'ecran
 		GLES20.glClear(GLES20.GL_DEPTH_BUFFER_BIT | GLES20.GL_COLOR_BUFFER_BIT);
-		GLES20.glClearColor(0, 0, 0, 0);
 
+		float[] mMVmatrix = new float[16];
+
+		for (ScreenObject screenObj : _screenObject) {
+
+			if (screenObj.getARObject().isVisible()) {
+				Matrix.setIdentityM(mMVmatrix, 0);
+				mMVmatrix[12] = screenObj.getPosX();
+				mMVmatrix[13] = screenObj.getPosY();
+
+				// Project model in projection topDown
+				Matrix.multiplyMM(mMVmatrix, 0, mViewMatrixProjTopDown, 0,
+						mMVmatrix, 0);
+				// On dessine le marqueur
+				//drawTriangle(mTriangle3Vertices);
+				switch (screenObj.getType()) {
+				case SCREEN_OBJECT_ENEMIE:
+					//draw(mMVmatrix, mEnemieVertices, mProjectionMatrixTopDown);
+					draw(screenObj.getARObject().getModelMatrix(),
+							mEnemieVertices, mProjectionMatrixAR);
+					break;
+				case SCREEN_OBJECT_OBJECTIVE:
+					//draw(mMVmatrix, mObjectifVertices, mProjectionMatrixTopDown);
+					draw(screenObj.getARObject().getModelMatrix(),
+							mObjectifVertices, mProjectionMatrixAR);
+					break;
+				case SCREEN_OBJECT_START:
+					//draw(mMVmatrix, mStartVertices, mProjectionMatrixTopDown);
+					draw(screenObj.getARObject().getModelMatrix(),
+							mStartVertices, mProjectionMatrixAR);
+					break;
+				case SCREEN_OBJECT_TOWER:
+					//draw(mMVmatrix, mTowerVertices, mProjectionMatrixTopDown);
+					draw(screenObj.getARObject().getModelMatrix(),
+							mTowerVertices, mProjectionMatrixAR);
+					break;
+				default:
+					break;
+
+				}
+				//draw(mMVmatrix, mTriangle3Vertices, mProjectionMatrixTopDown);
+				//drawTopDown(mMVmatrix, mTriangle3Vertices);
+				// On dessisne la pyramide dessus du marqueur avec la modelMatrix
+				//draw(screenObj.getARObject().getModelMatrix(),
+				//		mTriangle2Vertices, mProjectionMatrixAR);
+
+			}
+		}
+
+	}
+
+	private void draw(float[] mMVMatrix, FloatBuffer aTriangleBuffer,
+			float[] mProjectionMatrix) {
+		// Informations de position directement au vertex
+		aTriangleBuffer.position(mPositionOffset);
+		GLES20.glVertexAttribPointer(mPositionHandle, mPositionDataSize,
+				GLES20.GL_FLOAT, false, mStrideBytes, aTriangleBuffer);
+		GLES20.glEnableVertexAttribArray(mPositionHandle);
+		// End Position
+
+		// Informations de couleur directement au vertex
+		aTriangleBuffer.position(mColorOffset);
+		GLES20.glVertexAttribPointer(mColorHandle, mColorDataSize,
+				GLES20.GL_FLOAT, false, mStrideBytes, aTriangleBuffer);
+		GLES20.glEnableVertexAttribArray(mColorHandle);
+		// End Couleurs
+
+		// On passe les matrices de modelview et de projection
+		GLES20.glUniformMatrix4fv(mMVMatrixHandle, 1, false, mMVMatrix, 0);
+		GLES20.glUniformMatrix4fv(mPMatrixHandle, 1, false, mProjectionMatrix,
+				0);
+		// On dessines
+		GLES20.glDrawArrays(GLES20.GL_TRIANGLE_FAN, 0, 6);
+
+	}
+
+	/*private void drawTopDown(float[] mMVMatrix, FloatBuffer vertexBuffer) {
+		// Pass in the position information
+		vertexBuffer.position(mPositionOffset);
+		GLES20.glVertexAttribPointer(mPositionHandle, mPositionDataSize,
+				GLES20.GL_FLOAT, false, mStrideBytes, vertexBuffer);
+
+		GLES20.glEnableVertexAttribArray(mPositionHandle);
+
+		// Pass in the color information
+		vertexBuffer.position(mColorOffset);
+		GLES20.glVertexAttribPointer(mColorHandle, mColorDataSize,
+				GLES20.GL_FLOAT, false, mStrideBytes, vertexBuffer);
+		GLES20.glEnableVertexAttribArray(mColorHandle);
+
+		// Project model in projection topDown
+		//Matrix.multiplyMM(mMVPMatrix, 0, mViewMatrixProjTopDown, 0,
+		//		mModelMatrix, 0);
+
+		// Pass information in fragement
+		GLES20.glUniformMatrix4fv(mMVMatrixHandle, 1, false, mMVMatrix, 0);
+		GLES20.glUniformMatrix4fv(mPMatrixHandle, 1, false,
+				mProjectionMatrixTopDown, 0);
+		// Draw 
+		GLES20.glDrawArrays(GLES20.GL_TRIANGLE_FAN, 0, 6);
+	}
+	*/
+	@Override
+	public void makerDetected(boolean visible) {
+		bMarkerVisible = visible;
+		if (visible) {
+			mProjectionMatrixAR = ARObject.getProjMatrix();
+		}
+	}
+
+	@Override
+	public void makerUpdated() {
+		// Update de la matrice de projectionAR // Pas necessaire mais au cas ou 
+		mProjectionMatrixAR = ARObject.getProjMatrix();
+		bObjective = false;
+		bStart = false;
+		bTower = false;
 		ARObject markerRepere = null;
 		ArrayList<ARObject> listeVisible = new ArrayList<ARObject>();
 
@@ -332,11 +474,11 @@ public class LessonOneRenderer implements MarkerVisibilityListener,
 		for (ARObject ob : vec) {
 			if (ob.isVisible()) {
 
-				mModelMatrix = ob.getModelMatrix();
-				drawTriangleDirect(mTriangle2Vertices);
+				//mModelMatrix = ob.getModelMatrix();
+				//drawTriangleDirect(mTriangle2Vertices);
 
 				// On choisis le repere en fonction de l'ID
-				if (markerRepere == null && ob.getId() == this.idRepere)
+				if (markerRepere == null && ob.getId() == this.idStart)
 					markerRepere = ob;
 
 				// Dans tout les cas on l'ajoute dans la liste de visible
@@ -345,98 +487,112 @@ public class LessonOneRenderer implements MarkerVisibilityListener,
 			}
 		}
 
+		float[] mDeprojection = null;
+		// Il nous faut le marquer de repere pour tout les calculs
 		if (markerRepere != null) {
 			// Récupération des matrices de modelView
 			// La matrice mDeprojection est utilisée pour déprojeter les autres
-			float[] mDeprojection = markerRepere.getModelMatrix();
+			mDeprojection = markerRepere.getModelMatrix();
 			// On inverse la matrice de mDeprojection pour calculer la déprojection
 			Matrix.invertM(mDeprojection, 0, mDeprojection, 0);
+		}
 
-			// On recupere les matrice de chacun des marqueurs
-			float[] mModelMarker = new float[16];
+		// On recupere les matrice de chacun des marqueurs
+		float[] mModelMarker = new float[16];
+		//float[] mModelTopDown = new float[16];
 
-			for (ARObject ob : listeVisible) {
+		for (ARObject ob : listeVisible) {
+			// Si on à le repere alors on peut calculer la déprojection
+			if (markerRepere != null) {
 				// Puis on multiplie la matrice du marqueur pour obtenir la matrice "model" du markeur par rapport au marqueur "repere"
-				Matrix.multiplyMM(mModelMarker, 0, mDeprojection, 0, ob.getModelMatrix(),
-						0);
+				Matrix.multiplyMM(mModelMarker, 0, mDeprojection, 0,
+						ob.getModelMatrix(), 0);
 
 				// On reintitialise la matrice mModelMatrix a une matrice identity
-				Matrix.setIdentityM(mModelMatrix, 0);
-				// On ne copie que les coordonées en X et Y (Z n'est pas utilisé)
-				mModelMatrix[13] = mModelMarker[13];
-				mModelMatrix[12] = mModelMarker[12];
-				// On dessine le marqueur
-				drawTriangle(mTriangle3Vertices);
+				//Matrix.setIdentityM(mModelTopDown, 0);
+				// On ne copie que les coordonées en X et Y et Z utilisé pour la compensation (TODO : A AMELIORER)
+				//mModelMatrix = mModelMarker;
+				//mModelTopDown[13] = mModelMarker[13];
+				//mModelTopDown[12] = mModelMarker[12];
+				//mModelTopDown[14] = mModelMarker[14];
 
+				// Project model in projection topDown
+				//Matrix.multiplyMM(mModelMarker, 0, mViewMatrixProjTopDown, 0,
+				//		mModelTopDown, 0);
+				// On dessine le marqueur
+				//drawTriangle(mTriangle3Vertices);
+			}
+
+			boolean bNewObject = true;
+			// On verifie tout les objects déjà existants
+			for (ScreenObject screenObj : _screenObject) {
+				// Si l'ID correspond alors on update les positions
+				if (screenObj.getId() == ob.getId()) {
+
+					bNewObject = false;
+					screenObj.setPosition(mModelMarker[12], mModelMarker[13]);
+
+					break;
+				}
+			}
+
+			// Si on a pas encore déjà creer l'objet, alors on le fait maintenant
+			if (bNewObject) {
+				// Par défaut c'est une tour
+				ScreenObectType type = ScreenObectType.SCREEN_OBJECT_TOWER;
+
+				// Si l'Id correspond a l'ID du départ on definit l'objet comme le départ
+				if (this.idStart == ob.getId()) {
+					type = ScreenObectType.SCREEN_OBJECT_START;
+
+				}
+				// Si l'Id correspond a l'ID de l'objectif on definit l'objet comme l'objectif
+				else if (this.idObjectif == ob.getId()) {
+					type = ScreenObectType.SCREEN_OBJECT_OBJECTIVE;
+				}
+
+				ScreenObject screenObj = new ScreenObject(ob.getId(), type,
+						mModelMarker[12], mModelMarker[13]);
+				screenObj.setARObject(ob);
+
+				// Ne pas oublier de l'ajouter dans la liste des objets
+				_screenObject.add(screenObj);
 			}
 		}
-	}
 
-	private void drawTriangleDirect(FloatBuffer aTriangleBuffer) {
-		// Pass in the position information
-		aTriangleBuffer.position(mPositionOffset);
-		GLES20.glVertexAttribPointer(mPositionHandle, mPositionDataSize,
-				GLES20.GL_FLOAT, false, mStrideBytes, aTriangleBuffer);
+		int cptTower = 0;
+		// On verifie si toutes les positions sont mises
+		for (ScreenObject screenObj : _screenObject) {
+			// Si l'ID correspond alors on update les positions
+			if (screenObj.getARObject().isVisible()) {
+				switch (screenObj.getType()) {
+				case SCREEN_OBJECT_ENEMIE:
+					break;
+				case SCREEN_OBJECT_OBJECTIVE:
+					if (screenObj.getPosX() != 0 || screenObj.getPosY() != 0)
+						bObjective = true;
+					break;
+				case SCREEN_OBJECT_START:
+					//if (screenObj.getPosX() != 0 || screenObj.getPosY() != 0)
+					bStart = true;
+					break;
+				case SCREEN_OBJECT_TOWER:
+					if (screenObj.getPosX() != 0 || screenObj.getPosY() != 0)
+						if (++cptTower >= nbTowerOk)
+							bTower = true;
+					break;
+				default:
+					break;
 
-		GLES20.glEnableVertexAttribArray(mPositionHandle);
-
-		// Pass in the color information
-		aTriangleBuffer.position(mColorOffset);
-		GLES20.glVertexAttribPointer(mColorHandle, mColorDataSize,
-				GLES20.GL_FLOAT, false, mStrideBytes, aTriangleBuffer);
-
-		GLES20.glEnableVertexAttribArray(mColorHandle);
-
-		mMVPMatrix = mModelMatrix.clone();
-		mProjectionMatrixAR = ARObject.getProjMatrix();
-
-		GLES20.glUniformMatrix4fv(mMVMatrixHandle, 1, false, mMVPMatrix, 0);
-		GLES20.glUniformMatrix4fv(mPMatrixHandle, 1, false,
-				mProjectionMatrixAR, 0);
-		GLES20.glDrawArrays(GLES20.GL_TRIANGLE_FAN, 0, 6);
-
-	}
-
-	/**
-	 * Draws a triangle from the given vertex data.
-	 * 
-	 * @param aTriangleBuffer
-	 *            The buffer containing the vertex data.
-	 */
-	private void drawTriangle(final FloatBuffer aTriangleBuffer) {
-		// Pass in the position information
-		aTriangleBuffer.position(mPositionOffset);
-		GLES20.glVertexAttribPointer(mPositionHandle, mPositionDataSize,
-				GLES20.GL_FLOAT, false, mStrideBytes, aTriangleBuffer);
-
-		GLES20.glEnableVertexAttribArray(mPositionHandle);
-
-		// Pass in the color information
-		aTriangleBuffer.position(mColorOffset);
-		GLES20.glVertexAttribPointer(mColorHandle, mColorDataSize,
-				GLES20.GL_FLOAT, false, mStrideBytes, aTriangleBuffer);
-
-		GLES20.glEnableVertexAttribArray(mColorHandle);
-
-		Matrix.multiplyMM(mMVPMatrix, 0, mViewMatrixProjTopDown, 0,
-				mModelMatrix, 0);
-
-		/*mProjectionMatrix = ARObject.getProjMatrix();
-		mProjectionMatrix[10] = -mProjectionMatrix[10];
-		mProjectionMatrix[11] = -mProjectionMatrix[11];*/
-
-		GLES20.glUniformMatrix4fv(mMVMatrixHandle, 1, false, mMVPMatrix, 0);
-		GLES20.glUniformMatrix4fv(mPMatrixHandle, 1, false,
-				mProjectionMatrixTopDown, 0);
-		GLES20.glDrawArrays(GLES20.GL_TRIANGLE_FAN, 0, 6);
-	}
-
-	@Override
-	public void makerVisibilityChanged(boolean visible) {
-		if (visible)
-			mProjectionMatrixAR = ARObject.getProjMatrix();
-		else
-			Matrix.setIdentityM(mProjectionMatrixAR, 0);
+				}
+			}
+		}
+		// Calcul des position enemies
+		if (bMarkerVisible && (bStart && bObjective && bTower)) {
+			if (System.currentTimeMillis()
+					- GameActivity.getInstance().getGame().getLastGameTick() >= 100)
+				GameActivity.getInstance().getGame().gameTick();
+		}
 
 	}
 }
