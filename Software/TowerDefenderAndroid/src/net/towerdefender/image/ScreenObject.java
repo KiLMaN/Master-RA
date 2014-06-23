@@ -76,7 +76,7 @@ public class ScreenObject {
 	}
 
 	public void setPosition(float _PosX, float _PosY) {
-		setPosY(_PosX);
+		setPosX(_PosX);
 		setPosY(_PosY);
 	}
 

@@ -48,6 +48,7 @@ public class LessonOneRenderer implements MarkerDetectedListener,
 	 * eye.
 	 */
 	private float[] mViewMatrixProjTopDown = new float[16];
+	private float[] mViewMatrixTower = new float[16];
 	/**
 	 * Store the projection matrix. This is used to project the scene onto a 2D
 	 * viewport.
@@ -387,8 +388,12 @@ public class LessonOneRenderer implements MarkerDetectedListener,
 					break;
 				case SCREEN_OBJECT_OBJECTIVE:
 					//draw(mMVmatrix, mObjectifVertices, mProjectionMatrixTopDown);
-					draw(screenObj.getARObject().getModelMatrix(),
-							mObjectifVertices, mProjectionMatrixAR);
+					if (mMatricProj != null) {
+						draw(screenObj.getModelMatrix(mMatricProj),
+								mObjectifVertices, mProjectionMatrixAR);
+					}
+					//draw(screenObj.getARObject().getModelMatrix(),
+					//		mObjectifVertices, mProjectionMatrixAR);
 					break;
 				case SCREEN_OBJECT_START:
 					//draw(mMVmatrix, mStartVertices, mProjectionMatrixTopDown);
@@ -397,8 +402,12 @@ public class LessonOneRenderer implements MarkerDetectedListener,
 					break;
 				case SCREEN_OBJECT_TOWER:
 					//draw(mMVmatrix, mTowerVertices, mProjectionMatrixTopDown);
-					draw(screenObj.getARObject().getModelMatrix(),
-							mTowerVertices, mProjectionMatrixAR);
+					if (mMatricProj != null) {
+						draw(screenObj.getModelMatrix(mMatricProj),
+								mTowerVertices, mProjectionMatrixAR);
+					}
+					//draw(screenObj.getARObject().getModelMatrix(),
+					//		mTowerVertices, mProjectionMatrixAR);
 					break;
 				default:
 					break;
@@ -609,31 +618,31 @@ public class LessonOneRenderer implements MarkerDetectedListener,
 		// Calcul des position enemies
 		if (bMarkerVisible && (bStart && bObjective && bTower)) {
 			Game currentGame = GameActivity.getInstance().getGame();
-			if (!currentGame.isPlaying()) {
 
-				ArrayList<Tower> listTower = GameActivity.getInstance()
-						.getGame().getListTowers();
-				boolean bNewTower = true;
-				for (ScreenObject screenObj : _screenObject) {
-					if (screenObj.getType() == ScreenObectType.SCREEN_OBJECT_TOWER) {
-						for (Tower tower : listTower) {
-							if (tower.getIdTower() == screenObj.getId()) {
-								tower.setPosition(new Position(screenObj
-										.getPosX(), screenObj.getPosY()));
-								bNewTower = false;
-								break;
-							}
+			ArrayList<Tower> listTower = GameActivity.getInstance().getGame()
+					.getListTowers();
+			boolean bNewTower = true;
+			for (ScreenObject screenObj : _screenObject) {
+				if (screenObj.getType() == ScreenObectType.SCREEN_OBJECT_TOWER) {
+					for (Tower tower : listTower) {
+						if (tower.getIdTower() == screenObj.getId()) {
+							tower.setPosition(new Position(screenObj.getPosX(),
+									screenObj.getPosY()));
+							bNewTower = false;
+							break;
 						}
-						if (bNewTower) {
-							System.out
-									.println("A tower has been found but not in the network");
-							Tower tower = new Tower(screenObj.getId(),
-									new Position(screenObj.getPosX(),
-											screenObj.getPosY()));
-							currentGame.addTower(tower);
-							//TODO: rescan network
-						}
-					} else if (screenObj.getType() == ScreenObectType.SCREEN_OBJECT_OBJECTIVE) {
+					}
+					if (bNewTower) {
+						System.out
+								.println("A tower has been found but not in the network");
+						Tower tower = new Tower(screenObj.getId(),
+								new Position(screenObj.getPosX(),
+										screenObj.getPosY()));
+						currentGame.addTower(tower);
+						//TODO: rescan network
+					}
+				} else if (!currentGame.isPlaying()) {
+					if (screenObj.getType() == ScreenObectType.SCREEN_OBJECT_OBJECTIVE) {
 						currentGame.setObjectiveEnemie(new Position(screenObj
 								.getPosX(), screenObj.getPosY()));
 
@@ -641,21 +650,16 @@ public class LessonOneRenderer implements MarkerDetectedListener,
 						currentGame.setStartPointEnemie(new Position(screenObj
 								.getPosX(), screenObj.getPosY()));
 					}
-
-				}
-
-			} else {
-				if (!currentGame.isPaused()) {
-					if (System.currentTimeMillis()
-							- GameActivity.getInstance().getGame()
-									.getLastGameTick() >= 100) {
-						GameActivity.getInstance().getGame().gameTick();
-					}
 				}
 			}
-
+			if (!currentGame.isPaused()) {
+				if (System.currentTimeMillis()
+						- GameActivity.getInstance().getGame()
+								.getLastGameTick() >= 100) {
+					GameActivity.getInstance().getGame().gameTick();
+				}
+			}
 		}
-
 	}
 
 	@Override
