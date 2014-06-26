@@ -2,6 +2,8 @@ package net.towerdefender.scenes;
 
 import gameplay.Tower;
 
+import java.util.ArrayList;
+
 import javax.microedition.khronos.opengles.GL10;
 
 import net.towerdefender.activity.GameActivity;
@@ -280,8 +282,9 @@ public class GameScene extends BaseScene implements GameTickUpdateListener {
 		this.setChildScene(analogOnScreenControl);
 	}
 
-	private void createTowersButtons(int numberButtons, final int widthButtons,
-			int heightButtons) {
+	private void createTowersButtons(ArrayList<Tower> towers,
+			final int widthButtons, int heightButtons) {
+		int numberButtons = towers.size();
 		pictureTower = new Sprite[numberButtons];
 
 		for (int i = 0; i <= numberButtons - 1; i++) {
@@ -294,8 +297,8 @@ public class GameScene extends BaseScene implements GameTickUpdateListener {
 			pictureTower[i].setHeight(heightButtons);
 			pictureTower[i].setWidth(widthButtons);
 			Text towerText = new Text(40, 25, resourcesManager.Coolvetica,
-					Integer.toString(i + 1), new TextOptions(
-							HorizontalAlign.CENTER), vbom);
+					Integer.toString(towers.get(i).getIdTower()),
+					new TextOptions(HorizontalAlign.CENTER), vbom);
 			pictureTower[i].attachChild(towerText);
 			gameHUD.registerTouchArea(pictureTower[i]);
 			gameHUD.setTouchAreaBindingOnActionDownEnabled(true);
@@ -357,7 +360,7 @@ public class GameScene extends BaseScene implements GameTickUpdateListener {
 					} else {
 
 						createTowersButtons(GameActivity.getInstance()
-								.getGame().getTowers().size(), 100, 100);
+								.getGame().getTowers(), 100, 100);
 						displayList = true;
 
 					}
@@ -445,7 +448,7 @@ public class GameScene extends BaseScene implements GameTickUpdateListener {
 					this.dispose();
 
 					createTowersButtons(GameActivity.getInstance().getGame()
-							.getTowers().size(), 100, 100);
+							.getTowers(), 100, 100);
 					createTabletButton(100, 100);
 					displayList = true;
 				}

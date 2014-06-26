@@ -15,8 +15,8 @@ public class CommunicationTower {
 	private boolean running = false;
 	private boolean connected = false;
 	private static final int SERVERPORT = 6786;
-	private static int positionV = 50;
-	private static String SERVER_IP = "";
+	private int positionV = 50;
+	private String SERVER_IP = "";
 	private OutputStream out;
 	DataOutputStream dos;
 
