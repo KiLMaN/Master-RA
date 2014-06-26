@@ -69,6 +69,7 @@ public class GameActivity extends BaseGameActivity implements
 
 	/* Augmented Reality Renderer and Surface */
 	//public ARRajawaliRender mARRajawaliRender;
+	private LessonOneRenderer mRenderera;
 	private GLSurfaceView mRAView;
 
 	/* Marker detector */
@@ -158,6 +159,7 @@ public class GameActivity extends BaseGameActivity implements
 	}
 
 	public void setCurrentlyControlledTower(Tower _tower) {
+		this.mRenderera.setTowerView(_tower);
 		if (_tower != null) {
 			if (mCurrentlyControlledTower != null) {
 				this.mCurrentlyControlledTower.disconnect();
@@ -323,7 +325,7 @@ public class GameActivity extends BaseGameActivity implements
 		this.mRenderSurfaceView.setRenderer(this.mEngine, this);
 
 		//this.mARRajawaliRender = new ARRajawaliRender(this);
-		LessonOneRenderer mRenderera = new LessonOneRenderer();
+		mRenderera = new LessonOneRenderer();
 		mRAView = new GLSurfaceView(this);
 
 		mRAView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
@@ -372,31 +374,27 @@ public class GameActivity extends BaseGameActivity implements
 						* double[] { 0, 0 }); markerInfo.registerARObject(obj);
 						*/
 
-		obj = new GlyphObject("objectif", "marker6_objectif.patt", 100.0,
+		obj = new GlyphObject(9, "objectif", "marker1_v2.patt", 100.0,
 				new double[] { 0, 0 }, 0x00FFFF);
 		markerInfo.registerARObject(obj);
 
-		obj = new GlyphObject("start", "marker7_start.patt", 100.0,
+		obj = new GlyphObject(10, "start", "marker4_v2.patt", 100.0,
 				new double[] { 0, 0 }, 0xFFFFFF);
 		markerInfo.registerARObject(obj);
 
-		obj = new GlyphObject("tour1", "marker1_tour.patt", 100.0,
+		obj = new GlyphObject(1, "tour1", "marker5_v2.patt", 100.0,
 				new double[] { 0, 0 }, 0xFFFF00);
 		markerInfo.registerARObject(obj);
 
-		obj = new GlyphObject("tour2", "marker2_tour.patt", 100.0,
+		obj = new GlyphObject(2, "tour2", "marker3_v2.patt", 100.0,
 				new double[] { 0, 0 }, 0xFFFF00);
 		markerInfo.registerARObject(obj);
 
-		obj = new GlyphObject("tour3", "marker3_tour.patt", 100.0,
+		obj = new GlyphObject(3, "tour3", "marker6_v2.patt", 100.0,
 				new double[] { 0, 0 }, 0xFFFF00);
 		markerInfo.registerARObject(obj);
 
-		obj = new GlyphObject("tour4", "marker4_tour.patt", 100.0,
-				new double[] { 0, 0 }, 0xFFFF00);
-		markerInfo.registerARObject(obj);
-
-		obj = new GlyphObject("tour5", "marker5_tour.patt", 100.0,
+		obj = new GlyphObject(4, "tour4", "marker2_v2.patt", 100.0,
 				new double[] { 0, 0 }, 0xFFFF00);
 		markerInfo.registerARObject(obj);
 

@@ -55,6 +55,7 @@ public class LessonOneRenderer implements MarkerDetectedListener,
 	 */
 	private float[] mProjectionMatrixTopDown = new float[16];
 	private float[] mProjectionMatrixAR = new float[16];
+	private float[] mProjectionMatrixTower = new float[16];
 
 	/** Store our model data in a float buffer. */
 	//private final FloatBuffer mTriangle1Vertices;
@@ -91,9 +92,9 @@ public class LessonOneRenderer implements MarkerDetectedListener,
 	/** Size of the color data in elements. */
 	private final int mColorDataSize = 4;
 
-	private int idObjectif = 0;
+	private int idObjectif = 9;
 
-	private int idStart = 1;
+	private int idStart = 10;
 
 	private boolean bMarkerVisible = false;
 	private boolean bStart = false, bObjective = false, bTower = false;
@@ -318,22 +319,22 @@ public class LessonOneRenderer implements MarkerDetectedListener,
 
 		GameActivity.getInstance().getArtoolkit().setScreenSize(width, height);
 
-		// Position the eye behind the origin.
+		/*// Position the eye behind the origin.
 		float eyeX = 0f;
 		float eyeY = 0f;
 		float eyeZ = 0f;
 
 		// We are looking toward the distance
-		final float lookX = 0.0f;
-		final float lookY = 0.0f;
-		final float lookZ = 1f;
+		float lookX = 0.0f;
+		float lookY = 0.0f;
+		float lookZ = 1f;
 
 		// Set our up vector. This is where our head would be pointing were we holding the camera.
-		final float upX = 0.0f;
-		final float upY = 1.0f;
-		final float upZ = 0.0f;
+		float upX = 0.0f;
+		float upY = 1.0f;
+		float upZ = 0.0f;
 		Matrix.setLookAtM(mViewMatrixProjTopDown, 0, eyeX, eyeY, eyeZ, lookX,
-				lookY, lookZ, upX, upY, upZ);
+				lookY, lookZ, upX, upY, upZ);*/
 
 		final float left = -width / 2;
 		final float right = width / 2;
@@ -345,84 +346,166 @@ public class LessonOneRenderer implements MarkerDetectedListener,
 		// Projection Ortho, on n'as pas de perspective
 		Matrix.orthoM(mProjectionMatrixTopDown, 0, left, right, bottom, top,
 				near, far);
+		float ratio = (float) width / height;
+		Matrix.perspectiveM(mProjectionMatrixTower, 0, 45, ratio, 1, 5000);
 		//Matrix.frustumM(mProjectionMatrixTopDown, 0, left, right, bottom, top, near, far);
 
+	}
+
+	boolean bTowerView = false;
+	ScreenObject _TowerView = null;
+
+	public void setTowerView(Tower tower) {
+		if (tower != null) {
+			int i = 0;
+			for (i = 0; i < _screenObject.size(); i++) {
+				if (_screenObject.get(i).getARObject().getIdRA() == tower
+						.getIdFromIP()) {
+					_TowerView = _screenObject.get(i);
+					break;
+				}
+			}
+			bTowerView = true;
+		} else {
+			_TowerView = null;
+			bTowerView = false;
+		}
 	}
 
 	@Override
 	public void onDrawFrame(GL10 glUnused) {
 		// Si on a pas assez d'information pour le calcul alors on affiche un fond rouge en plus
 		if (bMarkerVisible && (bStart && bObjective && bTower))
-			GLES20.glClearColor(0, 0, 0, 0);
+			GLES20.glClearColor(0f, 0f, 0f, 0f);
 		else
-			GLES20.glClearColor(1, 0, 0, 0.05f);
+			GLES20.glClearColor(0.5f, 0f, 0f, 0.5f);
 
 		// netoyer l'ecran
 		GLES20.glClear(GLES20.GL_DEPTH_BUFFER_BIT | GLES20.GL_COLOR_BUFFER_BIT);
 
-		float[] mMVmatrix = new float[16];
-		float[] mMatricProj = null;
-		if (markerRepere != null) {
-			mMatricProj = markerRepere.getModelMatrix();
-		}
-		for (int i = 0; i < _screenObject.size(); i++) {
-			ScreenObject screenObj = _screenObject.get(i);
-			if ((screenObj.getARObject() != null && screenObj.getARObject()
-					.isVisible()) || (screenObj.getARObject() == null)) {
-				//Matrix.setIdentityM(mMVmatrix, 0);
-				//mMVmatrix[12] = screenObj.getPosX();
-				//	mMVmatrix[13] = screenObj.getPosY();
-
-				// Project model in projection topDown
-				Matrix.multiplyMM(mMVmatrix, 0, mViewMatrixProjTopDown, 0,
-						mMVmatrix, 0);
-				// On dessine le marqueur
-				//drawTriangle(mTriangle3Vertices);
-				switch (screenObj.getType()) {
-				case SCREEN_OBJECT_ENEMIE:
-					//draw(mMVmatrix, mEnemieVertices, mProjectionMatrixTopDown);
-					if (mMatricProj != null) {
-						draw(screenObj.getModelMatrix(mMatricProj),
-								mEnemieVertices, mProjectionMatrixAR);
-					}
-					break;
-				case SCREEN_OBJECT_OBJECTIVE:
-					//draw(mMVmatrix, mObjectifVertices, mProjectionMatrixTopDown);
-					if (mMatricProj != null) {
-						draw(screenObj.getModelMatrix(mMatricProj),
-								mObjectifVertices, mProjectionMatrixAR);
-					}
-					//draw(screenObj.getARObject().getModelMatrix(),
-					//		mObjectifVertices, mProjectionMatrixAR);
-					break;
-				case SCREEN_OBJECT_START:
-					//draw(mMVmatrix, mStartVertices, mProjectionMatrixTopDown);
-					draw(screenObj.getARObject().getModelMatrix(),
-							mStartVertices, mProjectionMatrixAR);
-					break;
-				case SCREEN_OBJECT_TOWER:
-					//draw(mMVmatrix, mTowerVertices, mProjectionMatrixTopDown);
-					if (mMatricProj != null) {
-						draw(screenObj.getModelMatrix(mMatricProj),
-								mTowerVertices, mProjectionMatrixAR);
-					}
-					//draw(screenObj.getARObject().getModelMatrix(),
-					//		mTowerVertices, mProjectionMatrixAR);
-					break;
-				default:
-					break;
-
-				}
-				//draw(mMVmatrix, mTriangle3Vertices, mProjectionMatrixTopDown);
-				//drawTopDown(mMVmatrix, mTriangle3Vertices);
-				// On dessisne la pyramide dessus du marqueur avec la modelMatrix
-				//draw(screenObj.getARObject().getModelMatrix(),
-				//		mTriangle2Vertices, mProjectionMatrixAR);
-
+		if (!bTowerView || _TowerView == null) {
+			float[] mMVmatrix = new float[16];
+			float[] mMatricProj = null;
+			if (markerRepere != null) {
+				mMatricProj = markerRepere.getModelMatrix();
 			}
-			//_screenObject.notifyAll();
-		}
+			for (int i = 0; i < _screenObject.size(); i++) {
+				ScreenObject screenObj = _screenObject.get(i);
+				if ((screenObj.getARObject() != null && screenObj.getARObject()
+						.isVisible()) || (screenObj.getARObject() == null)) {
 
+					/*Matrix.setIdentityM(mMVmatrix, 0);
+					mMVmatrix[12] = screenObj.getPosX();
+					mMVmatrix[13] = screenObj.getPosY();
+
+					// Project model in projection topDown
+					Matrix.multiplyMM(mMVmatrix, 0, mViewMatrixProjTopDown, 0,
+							mMVmatrix, 0);*/
+
+					// On dessine le marqueur
+					//drawTriangle(mTriangle3Vertices);
+					switch (screenObj.getType()) {
+					case SCREEN_OBJECT_ENEMIE:
+						if (mMatricProj != null) {
+							draw(screenObj.getModelMatrix(mMatricProj),
+									mEnemieVertices, mProjectionMatrixAR);
+						}
+						break;
+					case SCREEN_OBJECT_OBJECTIVE:
+						if (mMatricProj != null) {
+							draw(screenObj.getModelMatrix(mMatricProj),
+									mObjectifVertices, mProjectionMatrixAR);
+						}
+						//draw(screenObj.getARObject().getModelMatrix(),
+						//		mObjectifVertices, mProjectionMatrixAR);
+						break;
+					case SCREEN_OBJECT_START:
+						draw(screenObj.getARObject().getModelMatrix(),
+								mStartVertices, mProjectionMatrixAR);
+						break;
+					case SCREEN_OBJECT_TOWER:
+						if (mMatricProj != null) {
+							draw(screenObj.getModelMatrix(mMatricProj),
+									mTowerVertices, mProjectionMatrixAR);
+						}
+						//draw(screenObj.getARObject().getModelMatrix(),
+						//		mTowerVertices, mProjectionMatrixAR);
+						break;
+					default:
+						break;
+
+					}
+				}
+			}
+		} else {
+			float[] mViewMatrixTowerView = new float[16];
+			// Position the eye behind the origin.
+			float eyeX = _TowerView.getPosX();
+			float eyeY = 5f;
+			float eyeZ = _TowerView.getPosY();
+
+			// We are looking toward the distance
+			float lookX = _TowerView.getPosX() + 1;
+			float lookY = 5f;
+			float lookZ = _TowerView.getPosY();
+
+			// Set our up vector. This is where our head would be pointing were we holding the camera.
+			float upX = 0.0f;
+			float upY = 0.0f;
+			float upZ = 1.0f;
+
+			Matrix.setLookAtM(mViewMatrixTowerView, 0, eyeX, eyeY, eyeZ, lookX,
+					lookY, lookZ, upX, upY, upZ);
+
+			for (int i = 0; i < _screenObject.size(); i++) {
+				ScreenObject screenObj = _screenObject.get(i);
+
+				if (_TowerView == screenObj)
+					continue;
+				if ((screenObj.getARObject() != null && screenObj.getARObject()
+						.isVisible()) || (screenObj.getARObject() == null)) {
+
+					/*Matrix.setIdentityM(mMVmatrix, 0);
+					mMVmatrix[12] = screenObj.getPosX();
+					mMVmatrix[13] = screenObj.getPosY();
+
+					// Project model in projection topDown
+					Matrix.multiplyMM(mMVmatrix, 0, mViewMatrixProjTopDown, 0,
+							mMVmatrix, 0);*/
+
+					// On dessine le marqueur
+					//drawTriangle(mTriangle3Vertices);
+					switch (screenObj.getType()) {
+					case SCREEN_OBJECT_ENEMIE:
+
+						break;
+					case SCREEN_OBJECT_OBJECTIVE:
+
+						draw(screenObj.getModelMatrix(mViewMatrixTowerView),
+								mObjectifVertices, mProjectionMatrixTower);
+
+						//draw(screenObj.getARObject().getModelMatrix(),
+						//		mObjectifVertices, mProjectionMatrixAR);
+						break;
+					case SCREEN_OBJECT_START:
+						//draw(mMVmatrix, mStartVertices, mProjectionMatrixTopDown);
+						draw(screenObj.getModelMatrix(mViewMatrixTowerView),
+								mStartVertices, mProjectionMatrixTower);
+						break;
+					case SCREEN_OBJECT_TOWER:
+						//draw(mMVmatrix, mTowerVertices, mProjectionMatrixTopDown);
+						draw(screenObj.getModelMatrix(mViewMatrixTowerView),
+								mTowerVertices, mProjectionMatrixTower);
+						//draw(screenObj.getARObject().getModelMatrix(),
+						//		mTowerVertices, mProjectionMatrixAR);
+						break;
+					default:
+						break;
+
+					}
+				}
+			}
+		}
 	}
 
 	private void draw(float[] mMVMatrix, FloatBuffer aTriangleBuffer,
@@ -450,32 +533,6 @@ public class LessonOneRenderer implements MarkerDetectedListener,
 
 	}
 
-	/*private void drawTopDown(float[] mMVMatrix, FloatBuffer vertexBuffer) {
-		// Pass in the position information
-		vertexBuffer.position(mPositionOffset);
-		GLES20.glVertexAttribPointer(mPositionHandle, mPositionDataSize,
-				GLES20.GL_FLOAT, false, mStrideBytes, vertexBuffer);
-
-		GLES20.glEnableVertexAttribArray(mPositionHandle);
-
-		// Pass in the color information
-		vertexBuffer.position(mColorOffset);
-		GLES20.glVertexAttribPointer(mColorHandle, mColorDataSize,
-				GLES20.GL_FLOAT, false, mStrideBytes, vertexBuffer);
-		GLES20.glEnableVertexAttribArray(mColorHandle);
-
-		// Project model in projection topDown
-		//Matrix.multiplyMM(mMVPMatrix, 0, mViewMatrixProjTopDown, 0,
-		//		mModelMatrix, 0);
-
-		// Pass information in fragement
-		GLES20.glUniformMatrix4fv(mMVMatrixHandle, 1, false, mMVMatrix, 0);
-		GLES20.glUniformMatrix4fv(mPMatrixHandle, 1, false,
-				mProjectionMatrixTopDown, 0);
-		// Draw 
-		GLES20.glDrawArrays(GLES20.GL_TRIANGLE_FAN, 0, 6);
-	}
-	*/
 	@Override
 	public void makerDetected(boolean visible) {
 		bMarkerVisible = visible;
@@ -505,8 +562,9 @@ public class LessonOneRenderer implements MarkerDetectedListener,
 				//drawTriangleDirect(mTriangle2Vertices);
 
 				// On choisis le repere en fonction de l'ID
-				if (markerRepere == null && ob.getId() == this.idStart)
+				if (markerRepere == null && ob.getIdRA() == this.idStart) {
 					markerRepere = ob;
+				}
 
 				// Dans tout les cas on l'ajoute dans la liste de visible
 				listeVisible.add(ob);
@@ -554,7 +612,7 @@ public class LessonOneRenderer implements MarkerDetectedListener,
 			// On verifie tout les objects déjà existants
 			for (ScreenObject screenObj : _screenObject) {
 				// Si l'ID correspond alors on update les positions
-				if (screenObj.getId() == ob.getId()) {
+				if (screenObj.getId() == ob.getIdRA()) {
 
 					bNewObject = false;
 					screenObj.setPosition(mModelMarker[12], mModelMarker[13]);
@@ -569,16 +627,16 @@ public class LessonOneRenderer implements MarkerDetectedListener,
 				ScreenObectType type = ScreenObectType.SCREEN_OBJECT_TOWER;
 
 				// Si l'Id correspond a l'ID du départ on definit l'objet comme le départ
-				if (this.idStart == ob.getId()) {
+				if (this.idStart == ob.getIdRA()) {
 					type = ScreenObectType.SCREEN_OBJECT_START;
 
 				}
 				// Si l'Id correspond a l'ID de l'objectif on definit l'objet comme l'objectif
-				else if (this.idObjectif == ob.getId()) {
+				else if (this.idObjectif == ob.getIdRA()) {
 					type = ScreenObectType.SCREEN_OBJECT_OBJECTIVE;
 				}
 
-				ScreenObject screenObj = new ScreenObject(ob.getId(), type,
+				ScreenObject screenObj = new ScreenObject(ob.getIdRA(), type,
 						mModelMarker[12], mModelMarker[13]);
 				screenObj.setARObject(ob);
 
@@ -649,6 +707,7 @@ public class LessonOneRenderer implements MarkerDetectedListener,
 					} else if (screenObj.getType() == ScreenObectType.SCREEN_OBJECT_START) {
 						currentGame.setStartPointEnemie(new Position(screenObj
 								.getPosX(), screenObj.getPosY()));
+						//_TowerView = screenObj;
 					}
 				}
 			}

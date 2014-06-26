@@ -19,15 +19,15 @@ public class GlyphObject extends ARObject {
 	Material material;
 	int _color;
 
-	public GlyphObject(String name, String patternName, double markerWidth,
-			double[] markerCenter) {
-		super(name, patternName, markerWidth, markerCenter);
+	public GlyphObject(int id, String name, String patternName,
+			double markerWidth, double[] markerCenter) {
+		super(id, name, patternName, markerWidth, markerCenter);
 		_color = 0x0000FF;
 	}
 
-	public GlyphObject(String name, String patternName, double markerWidth,
-			double[] markerCenter, int color) {
-		this(name, patternName, markerWidth, markerCenter);
+	public GlyphObject(int id, String name, String patternName,
+			double markerWidth, double[] markerCenter, int color) {
+		this(id, name, patternName, markerWidth, markerCenter);
 		_color = color;
 	}
 

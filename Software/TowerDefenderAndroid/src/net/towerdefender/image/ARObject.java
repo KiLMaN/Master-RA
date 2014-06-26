@@ -33,6 +33,7 @@ public abstract class ARObject {
 	 * Is this object visible? -> is the marker belonging to this object
 	 * visible?
 	 */
+	private int _idRA = 0;
 	private boolean visible = false;
 	private boolean hidden = true;
 	@SuppressWarnings("unused")
@@ -68,8 +69,9 @@ public abstract class ARObject {
 	 * @param markerWidth
 	 * @param markerCenter
 	 */
-	public ARObject(String name, String patternName, double markerWidth,
-			double[] markerCenter) {
+	public ARObject(int ID, String name, String patternName,
+			double markerWidth, double[] markerCenter) {
+		this._idRA = ID;
 		this.name = name;
 		this.patternName = patternName;
 		this.markerWidth = markerWidth;
@@ -95,6 +97,14 @@ public abstract class ARObject {
 
 	protected void setId(int id) {
 		this.id = id;
+	}
+
+	public int getIdRA() {
+		return _idRA;
+	}
+
+	protected void setIdRA(int id) {
+		this._idRA = id;
 	}
 
 	public String getPatternName() {
