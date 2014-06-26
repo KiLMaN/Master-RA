@@ -65,6 +65,8 @@ public class ResourcesManager {
 	public ITextureRegion buttonOptionTablet_region;
 	public ITextureRegion buttonOptionTower_region;
 	private BuildableBitmapTextureAtlas tabletTextureAtlas;
+	private BuildableBitmapTextureAtlas transparentTextureAtlas;
+	public ITextureRegion transparent_region;
 
 	/* Tools */
 	public ITextureRegion buttonOptionBack_region;
@@ -208,6 +210,25 @@ public class ResourcesManager {
 	}
 
 	private void loadGameGraphics() {
+		BitmapTextureAtlasTextureRegionFactory
+		.setAssetBasePath("gfx/TowerDefender/game/");
+
+transparentTextureAtlas = new BuildableBitmapTextureAtlas(
+		activity.getTextureManager(), 1, 1, TextureOptions.NEAREST);
+
+transparent_region = BitmapTextureAtlasTextureRegionFactory
+		.createFromAsset(transparentTextureAtlas, activity, "cache.png");
+
+try {
+	this.transparentTextureAtlas
+			.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(
+					0, 1, 0));
+	this.transparentTextureAtlas.load();
+} catch (final TextureAtlasBuilderException e) {
+	Log.e("TD2", e.toString());
+}
+
+
 
 		BitmapTextureAtlasTextureRegionFactory
 				.setAssetBasePath("gfx/TowerDefender/");
@@ -340,6 +361,7 @@ public class ResourcesManager {
 
 	public void unloadMenuTextures() {
 		menuTextureAtlas.unload();
+		menuTextureAtlas=null;
 	}
 
 	public void loadMenuTextures() {
