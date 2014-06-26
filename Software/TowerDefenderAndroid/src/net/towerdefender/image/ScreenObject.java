@@ -10,6 +10,10 @@ public class ScreenObject {
 
 	private float _posX = 0;
 	private float _posY = 0;
+
+	private float _posXTower = 0;
+	private float _posYTower = 0;
+
 	private int _id = 0;
 
 	private ScreenObectType _type = ScreenObectType.SCREEN_OBJECT_ENEMIE;
@@ -59,6 +63,44 @@ public class ScreenObject {
 			this._posY = _PosY;
 	}
 
+	public float getPosXTower(ScreenObject ref) {
+		if (_type == ScreenObectType.SCREEN_OBJECT_ENEMIE) {
+			if (ref != null)
+				return _enemie.getPosition().getPositionX()
+						- ref.getPosXTower(null);
+			else
+				return _enemie.getPosition().getPositionX();
+		}
+
+		return _posXTower;
+	}
+
+	public void setPosXTower(float _PosX) {
+		if (_type == ScreenObectType.SCREEN_OBJECT_ENEMIE)
+			_enemie.getPosition().setPositionX(_PosX);
+		else
+			this._posXTower = _PosX;
+	}
+
+	public float getPosYTower(ScreenObject ref) {
+		if (_type == ScreenObectType.SCREEN_OBJECT_ENEMIE) {
+			if (ref != null)
+				return _enemie.getPosition().getPositionY()
+						- ref.getPosYTower(null);
+			else
+				return _enemie.getPosition().getPositionY();
+		}
+
+		return _posYTower;
+	}
+
+	public void setPosYTower(float _PosY) {
+		if (_type == ScreenObectType.SCREEN_OBJECT_ENEMIE)
+			_enemie.getPosition().setPositionY(_PosY);
+		else
+			this._posYTower = _PosY;
+	}
+
 	public ScreenObectType getType() {
 		return _type;
 	}
@@ -80,6 +122,11 @@ public class ScreenObject {
 		setPosY(_PosY);
 	}
 
+	public void setPositionTowerWise(float _PosX, float _PosY) {
+		setPosXTower(_PosX);
+		setPosYTower(_PosY);
+	}
+
 	public Enemie get_enemie() {
 		return _enemie;
 	}
@@ -94,6 +141,17 @@ public class ScreenObject {
 		Matrix.setIdentityM(tran, 0);
 		tran[12] = this.getPosX();
 		tran[13] = this.getPosY();
+		Matrix.multiplyMM(tran, 0, matrixProj, 0, tran, 0);
+		return tran;
+
+	}
+
+	public float[] getModelMatrixTower(float[] matrixProj, ScreenObject ref) {
+		float[] tran = new float[16];
+
+		Matrix.setIdentityM(tran, 0);
+		tran[12] = this.getPosXTower(ref);
+		tran[13] = this.getPosYTower(ref);
 		Matrix.multiplyMM(tran, 0, matrixProj, 0, tran, 0);
 		return tran;
 

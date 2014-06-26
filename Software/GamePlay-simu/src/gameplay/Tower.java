@@ -169,10 +169,10 @@ public class Tower extends CommunicationTower {
 		if (best != null) {
 			boolean dead = target.hitBy(best, this);
 			if (dead == true) {
-				Game currentGame = Game.getCurrentGame();
+				//Game currentGame = Game.getCurrentGame();
 
 				// player score incremented
-				currentGame.addPoints(GameConfig.NUMBER_POINTS_AT_KILL);
+				//currentGame.addPoints(GameConfig.NUMBER_POINTS_AT_KILL);
 
 				/*
 				 * System.out.println("Points player :" +

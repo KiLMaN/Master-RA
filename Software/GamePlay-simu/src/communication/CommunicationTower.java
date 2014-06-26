@@ -52,8 +52,7 @@ public class CommunicationTower {
 			ip[1] = Integer.parseInt(ips[1]);
 			ip[2] = Integer.parseInt(ips[2]);
 			ip[3] = Integer.parseInt(ips[3]);
-		} catch (UnknownHostException e) {
-
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return ip;

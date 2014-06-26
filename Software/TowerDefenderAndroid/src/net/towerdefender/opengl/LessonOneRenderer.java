@@ -347,7 +347,9 @@ public class LessonOneRenderer implements MarkerDetectedListener,
 		Matrix.orthoM(mProjectionMatrixTopDown, 0, left, right, bottom, top,
 				near, far);
 		float ratio = (float) width / height;
-		Matrix.perspectiveM(mProjectionMatrixTower, 0, 45, ratio, 1, 5000);
+		//Matrix.orthoM(mProjectionMatrixTower, 0, left, right, bottom, top,
+		//		near, far);
+		Matrix.perspectiveM(mProjectionMatrixTower, 0, 30, ratio, 1, 5000);
 		//Matrix.frustumM(mProjectionMatrixTopDown, 0, left, right, bottom, top, near, far);
 
 	}
@@ -360,7 +362,7 @@ public class LessonOneRenderer implements MarkerDetectedListener,
 			int i = 0;
 			for (i = 0; i < _screenObject.size(); i++) {
 				if (_screenObject.get(i).getARObject().getIdRA() == tower
-						.getIdFromIP()) {
+						.getIdTower()) {
 					_TowerView = _screenObject.get(i);
 					break;
 				}
@@ -440,14 +442,14 @@ public class LessonOneRenderer implements MarkerDetectedListener,
 		} else {
 			float[] mViewMatrixTowerView = new float[16];
 			// Position the eye behind the origin.
-			float eyeX = _TowerView.getPosX();
-			float eyeY = 5f;
-			float eyeZ = _TowerView.getPosY();
+			float eyeX = _TowerView.getPosXTower(null);
+			float eyeY = 0f;
+			float eyeZ = _TowerView.getPosYTower(null);
 
 			// We are looking toward the distance
-			float lookX = _TowerView.getPosX() + 1;
-			float lookY = 5f;
-			float lookZ = _TowerView.getPosY();
+			float lookX = _TowerView.getPosXTower(null) - 1;
+			float lookY = 0f;
+			float lookZ = _TowerView.getPosYTower(null);
 
 			// Set our up vector. This is where our head would be pointing were we holding the camera.
 			float upX = 0.0f;
@@ -465,6 +467,9 @@ public class LessonOneRenderer implements MarkerDetectedListener,
 				if ((screenObj.getARObject() != null && screenObj.getARObject()
 						.isVisible()) || (screenObj.getARObject() == null)) {
 
+					//draw(screenObj.getARObject().getModelMatrix(),
+					//		mObjectifVertices, mProjectionMatrixAR);
+
 					/*Matrix.setIdentityM(mMVmatrix, 0);
 					mMVmatrix[12] = screenObj.getPosX();
 					mMVmatrix[13] = screenObj.getPosY();
@@ -477,25 +482,30 @@ public class LessonOneRenderer implements MarkerDetectedListener,
 					//drawTriangle(mTriangle3Vertices);
 					switch (screenObj.getType()) {
 					case SCREEN_OBJECT_ENEMIE:
-
+						draw(screenObj.getModelMatrixTower(
+								mViewMatrixTowerView, Repere), mEnemieVertices,
+								mProjectionMatrixTower);
 						break;
 					case SCREEN_OBJECT_OBJECTIVE:
 
-						draw(screenObj.getModelMatrix(mViewMatrixTowerView),
-								mObjectifVertices, mProjectionMatrixTower);
+						draw(screenObj.getModelMatrixTower(
+								mViewMatrixTowerView, null), mObjectifVertices,
+								mProjectionMatrixTower);
 
 						//draw(screenObj.getARObject().getModelMatrix(),
 						//		mObjectifVertices, mProjectionMatrixAR);
 						break;
 					case SCREEN_OBJECT_START:
 						//draw(mMVmatrix, mStartVertices, mProjectionMatrixTopDown);
-						draw(screenObj.getModelMatrix(mViewMatrixTowerView),
-								mStartVertices, mProjectionMatrixTower);
+						draw(screenObj.getModelMatrixTower(
+								mViewMatrixTowerView, null), mStartVertices,
+								mProjectionMatrixTower);
 						break;
 					case SCREEN_OBJECT_TOWER:
 						//draw(mMVmatrix, mTowerVertices, mProjectionMatrixTopDown);
-						draw(screenObj.getModelMatrix(mViewMatrixTowerView),
-								mTowerVertices, mProjectionMatrixTower);
+						draw(screenObj.getModelMatrixTower(
+								mViewMatrixTowerView, null), mTowerVertices,
+								mProjectionMatrixTower);
 						//draw(screenObj.getARObject().getModelMatrix(),
 						//		mTowerVertices, mProjectionMatrixAR);
 						break;
@@ -542,6 +552,8 @@ public class LessonOneRenderer implements MarkerDetectedListener,
 	}
 
 	ARObject markerRepere = null;
+	ARObject markerTower = null;
+	ScreenObject Repere = null;
 
 	@Override
 	public void makerUpdated() {
@@ -551,6 +563,7 @@ public class LessonOneRenderer implements MarkerDetectedListener,
 		bStart = false;
 		bTower = false;
 		markerRepere = null;
+		markerTower = null;
 		ArrayList<ARObject> listeVisible = new ArrayList<ARObject>();
 
 		Vector<ARObject> vec = GameActivity.getInstance().getArtoolkit()
@@ -566,6 +579,10 @@ public class LessonOneRenderer implements MarkerDetectedListener,
 					markerRepere = ob;
 				}
 
+				if (markerTower == null && _TowerView != null
+						&& ob.getIdRA() == _TowerView.getId()) {
+					markerTower = ob;
+				}
 				// Dans tout les cas on l'ajoute dans la liste de visible
 				listeVisible.add(ob);
 
@@ -573,6 +590,7 @@ public class LessonOneRenderer implements MarkerDetectedListener,
 		}
 
 		float[] mDeprojection = null;
+		float[] mDeprojectionTower = null;
 		// Il nous faut le marquer de repere pour tout les calculs
 		if (markerRepere != null) {
 			// Récupération des matrices de modelView
@@ -581,9 +599,19 @@ public class LessonOneRenderer implements MarkerDetectedListener,
 			// On inverse la matrice de mDeprojection pour calculer la déprojection
 			Matrix.invertM(mDeprojection, 0, mDeprojection, 0);
 		}
+		if (markerTower != null) {
+			// Récupération des matrices de modelView
+			// La matrice mDeprojection est utilisée pour déprojeter les autres
+			mDeprojectionTower = markerTower.getModelMatrix();
+
+			// On inverse la matrice de mDeprojection pour calculer la déprojection
+			Matrix.invertM(mDeprojectionTower, 0, mDeprojectionTower, 0);
+
+		}
 
 		// On recupere les matrice de chacun des marqueurs
 		float[] mModelMarker = new float[16];
+		float[] mModelMarkerTowerView = new float[16];
 		//float[] mModelTopDown = new float[16];
 
 		for (ARObject ob : listeVisible) {
@@ -592,6 +620,10 @@ public class LessonOneRenderer implements MarkerDetectedListener,
 				// Puis on multiplie la matrice du marqueur pour obtenir la matrice "model" du markeur par rapport au marqueur "repere"
 				Matrix.multiplyMM(mModelMarker, 0, mDeprojection, 0,
 						ob.getModelMatrix(), 0);
+				if (mDeprojectionTower != null) {
+					Matrix.multiplyMM(mModelMarkerTowerView, 0,
+							mDeprojectionTower, 0, ob.getModelMatrix(), 0);
+				}
 
 				// On reintitialise la matrice mModelMatrix a une matrice identity
 				//Matrix.setIdentityM(mModelTopDown, 0);
@@ -614,9 +646,16 @@ public class LessonOneRenderer implements MarkerDetectedListener,
 				// Si l'ID correspond alors on update les positions
 				if (screenObj.getId() == ob.getIdRA()) {
 
+					if (markerRepere == ob) {
+						Repere = screenObj;
+					}
+
 					bNewObject = false;
 					screenObj.setPosition(mModelMarker[12], mModelMarker[13]);
-
+					if (_TowerView != null)
+						screenObj.setPositionTowerWise(
+								mModelMarkerTowerView[12],
+								mModelMarkerTowerView[13]);
 					break;
 				}
 			}
@@ -639,6 +678,9 @@ public class LessonOneRenderer implements MarkerDetectedListener,
 				ScreenObject screenObj = new ScreenObject(ob.getIdRA(), type,
 						mModelMarker[12], mModelMarker[13]);
 				screenObj.setARObject(ob);
+				if (_TowerView != null)
+					screenObj.setPositionTowerWise(mModelMarkerTowerView[12],
+							mModelMarkerTowerView[13]);
 
 				// Ne pas oublier de l'ajouter dans la liste des objets
 				_screenObject.add(screenObj);
