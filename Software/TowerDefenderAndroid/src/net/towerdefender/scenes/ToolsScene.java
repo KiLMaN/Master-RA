@@ -151,7 +151,9 @@ public class ToolsScene extends BaseScene {
 
 			public boolean onAreaTouched(final TouchEvent pSceneTouchEvent,
 					final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
-				SceneManager.getInstance().loadGameScene(engine);
+				if (pSceneTouchEvent.isActionUp()){
+					SceneManager.getInstance().loadGameScene(engine);
+				}
 				return true;
 			}
 

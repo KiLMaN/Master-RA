@@ -18,7 +18,7 @@ import android.util.Log;
 public class UdpClient {
 	private int _recievePort = 6783;
 	private Context _context;
-	private int TIMEOUT_RECEPTION_REPONSE = 2000; // Time en ms
+	private int TIMEOUT_RECEPTION_REPONSE = 5000; // Time en ms
 
 	public UdpClient(Context mcontext) {
 		this._context = mcontext;
@@ -46,7 +46,6 @@ public class UdpClient {
 			return towers;
 		}
 		Iterator<InetAddress> it = ipClients.iterator();
-
 		int cpt = 1;
 		while (it.hasNext()) {
 			InetAddress a = it.next();
@@ -77,14 +76,13 @@ public class UdpClient {
 		socket.receive(packet);
 
 		ArrayList<InetAddress> ipClients = new ArrayList<InetAddress>();
-		while (packet.getLength() == 0 || packet.getData()[0] == (byte) 0xD0) {
-			socket.receive(packet);
-			ipClients.add(packet.getAddress());
+		while (true) {
+			try {
+				socket.receive(packet);
+				ipClients.add(packet.getAddress());
+			} catch (Exception e) {
+				return ipClients;
+			}
 		}
-		if (packet.getLength() > 0)
-			System.out.println(packet.getLength());
-		socket.close();
-
-		return ipClients;
 	}
 }
