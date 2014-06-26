@@ -160,6 +160,7 @@ public class GameActivity extends BaseGameActivity implements
 
 	public void setCurrentlyControlledTower(Tower _tower) {
 		this.mRenderera.setTowerView(_tower);
+
 		if (_tower != null) {
 			if (mCurrentlyControlledTower != null) {
 				this.mCurrentlyControlledTower.disconnect();

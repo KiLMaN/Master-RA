@@ -10,6 +10,10 @@ public class ScreenObject {
 
 	private float _posX = 0;
 	private float _posY = 0;
+
+	private float _posXTower = 0;
+	private float _posYTower = 0;
+
 	private int _id = 0;
 
 	private ScreenObectType _type = ScreenObectType.SCREEN_OBJECT_ENEMIE;
@@ -59,6 +63,32 @@ public class ScreenObject {
 			this._posY = _PosY;
 	}
 
+	public float getPosXTower() {
+		if (_type == ScreenObectType.SCREEN_OBJECT_ENEMIE)
+			return _enemie.getPositionTower().getPositionX();
+		return _posXTower;
+	}
+
+	public void setPosXTower(float _PosX) {
+		if (_type == ScreenObectType.SCREEN_OBJECT_ENEMIE)
+			_enemie.getPositionTower().setPositionX(_PosX);
+		else
+			this._posXTower = _PosX;
+	}
+
+	public float getPosYTower() {
+		if (_type == ScreenObectType.SCREEN_OBJECT_ENEMIE)
+			return _enemie.getPositionTower().getPositionY();
+		return _posYTower;
+	}
+
+	public void setPosYTower(float _PosY) {
+		if (_type == ScreenObectType.SCREEN_OBJECT_ENEMIE)
+			_enemie.getPositionTower().setPositionY(_PosY);
+		else
+			this._posYTower = _PosY;
+	}
+
 	public ScreenObectType getType() {
 		return _type;
 	}
@@ -80,6 +110,11 @@ public class ScreenObject {
 		setPosY(_PosY);
 	}
 
+	public void setPositionTowerWise(float _PosX, float _PosY) {
+		setPosXTower(_PosX);
+		setPosYTower(_PosY);
+	}
+
 	public Enemie get_enemie() {
 		return _enemie;
 	}
@@ -94,6 +129,17 @@ public class ScreenObject {
 		Matrix.setIdentityM(tran, 0);
 		tran[12] = this.getPosX();
 		tran[13] = this.getPosY();
+		Matrix.multiplyMM(tran, 0, matrixProj, 0, tran, 0);
+		return tran;
+
+	}
+
+	public float[] getModelMatrixTower(float[] matrixProj) {
+		float[] tran = new float[16];
+
+		Matrix.setIdentityM(tran, 0);
+		tran[12] = this.getPosXTower();
+		tran[13] = this.getPosYTower();
 		Matrix.multiplyMM(tran, 0, matrixProj, 0, tran, 0);
 		return tran;
 

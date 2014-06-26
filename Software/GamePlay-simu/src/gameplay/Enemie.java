@@ -4,6 +4,7 @@ public class Enemie {
 
 	private int idEnemie = 0;
 	private Position position;
+	private Position positionTowerWise;
 	private Position objectif;
 	private Path path;
 	private int health;
@@ -113,6 +114,14 @@ public class Enemie {
 
 	public void setPosition(Position position) {
 		this.position = position;
+	}
+
+	public Position getPositionTower() {
+		return this.positionTowerWise;
+	}
+
+	public void setPositionTower(Position position) {
+		this.positionTowerWise = position;
 	}
 
 	public int getHealth() {
